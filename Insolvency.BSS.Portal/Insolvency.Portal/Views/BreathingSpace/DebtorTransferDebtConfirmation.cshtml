@@ -1,0 +1,47 @@
+﻿@model Insolvency.Portal.Models.ViewModels.DebtTransferConfirmationViewModel;
+
+@{
+    ViewData["Title"] = @Localizer["Transfer Debt Confirmation"];
+}
+
+<div class="govuk-grid-column-two-thirds" id="content">
+    <a id="back-link" href="javascript: history.go(-1)" class="govuk-back-link">Back</a>
+    <h1 id="transfer-debt-confirmation-heading" class="govuk-heading-l">
+        Confirm you're transferring this debt to the new creditor
+    </h1>
+    <h2 id="transfer-debt-confirmation-subtitle" class="govuk-heading-s govuk-!-margin-bottom-2">Debt@(Model.DebtDetail.Debt.HasDebtTypeName ? $": {Model.DebtDetail.Debt.SelectedDebtTypeName}": null)</h2>
+    <ul class="govuk-list">
+        <li id="transfer-debt-confirmation-creditor">Creditor: @Model.DebtDetail.Debt.SoldToCreditorName</li>
+        <li id="transfer-debt-confirmation-old-creditor">Old creditor: @Model.DebtDetail.Creditor.Name</li>
+        @if (Model.DebtDetail.Debt.HasDebtAmount)
+        {
+            <li id="transfer-debt-confirmation-debt-amount">Amount: £@Model.DebtDetail.Debt.DebtAmount</li>
+        }
+        @if (Model.DebtDetail.Debt.HasReference)
+        {
+            <li id="transfer-debt-confirmation-debt-ref">Reference: @Model.DebtDetail.Debt.Reference</li>
+        }
+        @if (Model.DebtDetail.Debt.HasNi)
+        {
+            <li id="transfer-debt-confirmation-nino">National Insurance Number: @Model.DebtDetail.Debt.NINO</li>
+        }
+        <li id="transfer-debt-confirmation-entered-on">Debt was entered on @Model.DebtDetail.Debt.FormattedCommencementDate</li>
+    </ul>
+    @if (Model.IsAdHocCreditor)
+    {
+        <h2 id="debt-heading" class="govuk-heading-s govuk-!-margin-bottom-2">Creditor Address</h2>
+        <p id="detail-text" class="govuk-body break-word">@Model.DebtSoldToCreditor.ToSingleLineString()</p>
+    }
+
+    <form method="post"
+          id="transfer-debt-confirmation-form"
+          asp-action="DebtorTransferDebtSubmit"
+          asp-controller="BreathingSpace"
+          asp-route-journeyKey="@ViewData["JourneyKey"].ToString()"
+          asp-route-parentJourneyKey="@ViewData["ParentJourneyKey"].ToString()">
+        <button id="transfer-debt-confirmation-confirm-and-continue"
+                class="govuk-button" value="Confirm and continue" data-module="govuk-button" type="submit">
+            Confirm and continue
+        </button>
+    </form>
+</div>

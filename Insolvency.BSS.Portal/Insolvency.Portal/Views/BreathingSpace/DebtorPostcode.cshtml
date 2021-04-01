@@ -1,0 +1,80 @@
+﻿@using Insolvency.Portal.Models.ViewModels
+@model Insolvency.Portal.Models.ViewModels.AddressSearchViewModel;
+
+@{
+    ViewData["Title"] = @Localizer["Address Search"];
+
+    ViewData["AddressSearchMetadata"] = new AddressSearchMetadata
+    {
+        ChangeControllerName = "BreathingSpace",
+        ChangeActionName = "DebtorPostcode"
+    };
+
+    var isPostcodeValid = true;
+
+    if (ViewData.ModelState.TryGetValue("Postcode", out var postcode))
+        isPostcodeValid = postcode.Errors.Count == 0;
+
+    var inputMode = !Model?.Addresses?.Any() ?? true;
+
+    var IdOverwrite = new Dictionary<string, string> {
+        {"SelectedAddress","SelectedAddress"},
+    };
+}
+
+<div class="govuk-grid-column-two-thirds @(!ViewData.ModelState.IsValid ? "govuk-error-summary" : "display-none") " id="error-summary">
+    <h2 class="govuk-error-summary__title">
+        @Localizer["There is a problem"]
+    </h2>
+    <div id="error-list" bss-error-summary="All" id-overwrite="IdOverwrite" class="govuk-error-summary__body"></div>
+</div>
+
+<div class="govuk-grid-column-two-thirds" id="content">
+    <form class="form" method="post">
+        <input asp-for="@Model.AddressId" type="hidden" />
+        <input asp-for="@Model.ReturnAction" type="hidden" />
+        <a id="back-link" href="javascript: history.go(-1)" class="govuk-back-link"> @Localizer["Back"]</a>
+        <fieldset class="govuk-fieldset" name="client">
+            <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
+                <h1 class="govuk-fieldset__heading">
+                    @Localizer["Add your client's address"]
+                </h1>
+            </legend>
+            <partial name="_AddressSearchPartial" model="Model" />
+        </fieldset>
+        @if (inputMode)
+        {
+            <button id="search-button"
+                asp-controller="BreathingSpace"
+                asp-action="DebtorPostcode"
+                asp-route-journeyKey="@ViewData["JourneyKey"].ToString()"
+                asp-route-parentJourneyKey="@ViewData["ParentJourneyKey"]?.ToString()"
+                class="govuk-button"
+                data-module="govuk-button"
+                type="submit">
+                @Localizer["Find Address"]
+            </button>
+        }
+        else
+        {
+            <button id="save-button"
+                asp-controller="BreathingSpace"
+                asp-action="DebtorPostcodeSave"
+                asp-route-journeyKey="@ViewData["JourneyKey"].ToString()"
+                asp-route-parentJourneyKey="@ViewData["ParentJourneyKey"]?.ToString()"
+                class="govuk-button"
+                data-module="govuk-button"
+                type="submit">
+                @Localizer["Save and continue"]
+            </button>
+        }
+    </form>
+    <a asp-controller="BreathingSpace"
+       asp-action="DebtorManualAddressSubmit"
+       asp-route-addId="@(Model?.AddressId ?? default)"
+       asp-route-returnAction="@Model.ReturnAction"
+       asp-route-journeyKey="@ViewData["JourneyKey"].ToString()"
+       asp-route-parentJourneyKey="@ViewData["ParentJourneyKey"]?.ToString()"
+       id="address-manual"
+       class="govuk-link govuk-body"> @Localizer["Enter address manually"]</a>
+</div>

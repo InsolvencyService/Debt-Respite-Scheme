@@ -1,0 +1,31 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization;
+@using Insolvency.Portal.Controllers;
+@model SetSessionModel
+@inject IViewLocalizer Localizer
+
+<form class="form" asp-controller="Account" asp-action="SetSession" method="post">
+    <fieldset class="govuk-fieldset" name="client">
+        <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
+            <h1 class="govuk-fieldset__heading">
+                <span class="govuk-caption-l"> @Localizer["Set up session values"]</span>
+                @Localizer["Which are your session values?"]
+            </h1>
+        </legend>
+        @for (int i = 0; i < Model.Values.Count(); i++)
+        {
+            <div class="govuk-form-group">
+                <bss-input asp-for="@Model.Values[i].Name" input-class="govuk-input--width-10" label-class="govuk-!-font-weight-bold"></bss-input>
+            </div>
+            <div class="govuk-form-group">
+                <bss-input asp-for="@Model.Values[i].Value" input-class="govuk-input--width-10" label-class="govuk-!-font-weight-bold"></bss-input>
+            </div>
+        }
+        <div class="govuk-form-group">
+            <bss-input asp-for="@Model.RedirectUrl" input-class="govuk-input--width-10" label-class="govuk-!-font-weight-bold"></bss-input>
+        </div>
+    </fieldset>
+
+    <button id="search-button" class="govuk-button" data-module="govuk-button" type="submit">
+        @Localizer["Redirect"]
+    </button>
+</form>

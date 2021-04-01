@@ -1,0 +1,42 @@
+﻿@using Insolvency.Portal.Models.ViewModels
+@model Insolvency.Portal.Models.ViewModels.DebtorRadioYesNoViewModel;
+
+<span class="govuk-error-message field-validation-valid"
+      asp-validation-for="SubmitOption">
+</span>
+<div class="govuk-radios @(Model.IsRadioInline ? "govuk-radios--inline" : string.Empty)">
+    <div class="govuk-radios__item">
+        <input class="govuk-radios__input condition"
+               id="submit-yes"
+               asp-for="SubmitOption"
+               type="radio"
+               value="@Option.Yes"
+               checked="@Model.IsYesChecked" />
+        <label class="govuk-label govuk-radios__label @(Model?.HasNoHint ?? false ? string.Empty : "govuk-label--s")" for="submit-yes">
+            @Localizer["Yes"]
+            @if (Model?.HasYesHint ?? false)
+            {
+                <span id="radio-yes-item-hint" class="govuk-hint govuk-radios__hint">
+                    @Localizer[Model.YesHint]
+                </span>
+            }
+        </label>
+    </div>
+    <div class="govuk-radios__item">
+        <input class="govuk-radios__input"
+               id="submit-no"
+               asp-for="SubmitOption"
+               type="radio"
+               value="@Option.No"
+               checked="@Model.IsNoChecked" />
+        <label class="govuk-label govuk-radios__label @(Model?.HasNoHint ?? false ? string.Empty : "govuk-label--s")" for="submit-no">
+            @Localizer["No"]
+            @if (Model?.HasNoHint ?? false)
+            {
+                <span id="radio-no-item-hint" class="govuk-hint govuk-radios__hint">
+                    @Localizer[Model.NoHint]
+                </span>
+            }
+        </label>
+    </div>
+</div>

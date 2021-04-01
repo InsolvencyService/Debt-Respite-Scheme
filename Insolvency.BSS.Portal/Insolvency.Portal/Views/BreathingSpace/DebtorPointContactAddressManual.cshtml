@@ -1,0 +1,34 @@
+﻿@model Insolvency.Portal.Models.AddressWithValidation;
+
+@{
+    var IdOverwrite = new Dictionary<string, string> {
+        {"AddressLine1","Address1-input"},
+        {"AddressLine2","Address2-input"}
+    };
+    ViewData["Title"] = @Localizer["Point of Contact Address"];
+}
+
+<div class="govuk-grid-column-two-thirds @(!ViewData.ModelState.IsValid ? "govuk-error-summary" : "display-none")" id="error-summary">
+    <h2 class="govuk-error-summary__title">
+        @Localizer["There is a problem"]
+    </h2>
+    <div id="error-list" bss-error-summary="All" id-overwrite="IdOverwrite" class="govuk-error-summary__body"></div>
+</div>
+<div class="govuk-grid-column-two-thirds" id="content">
+    <form class="form" asp-controller="BreathingSpace" asp-action="DebtorPointContactAddressManual" asp-route-journeyKey="@ViewData["JourneyKey"].ToString()" method="post">
+        <input asp-for="AddressId" type="hidden" />
+        <input asp-for="ReturnAction" type="hidden" />
+        <a id="back-link" href="javascript: history.go(-1)" class="govuk-back-link"> @Localizer["Back"]</a>
+        <fieldset class="govuk-fieldset" name="client">
+            <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
+                <h1 class="govuk-fieldset__heading">
+                    @Localizer["Add point of contact address"]
+                </h1>
+            </legend>
+            <partial name="_AddressWithValidationPartial" model="Model" />
+        </fieldset>
+        <button id="save-button" class="govuk-button" data-module="govuk-button" type="submit">
+            @Localizer["Save and continue"]
+        </button>
+    </form>
+</div>

@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Insolvency.Notifications.StatusUpdate": {
+      "commandName": "Project",
+      "commandLineArgs": "host start -p 7073"
+    }
+  }
+}

@@ -1,0 +1,211 @@
+@model Insolvency.Portal.Models.ViewModels.DebtorNominatedContactSummaryViewModel;
+@{
+    var returnAction = ViewData["return-action"] as string;
+    var isEnded = ViewData.ContainsKey("IsBreathingSpaceEnded") ? (bool)ViewData["IsBreathingSpaceEnded"] : false;
+}
+
+@if (Model != null)
+{
+    <dl class="govuk-summary-list">
+        <div class="govuk-summary-list__row">
+            <dt id="point-contact-summary-name-lbl" class="govuk-summary-list__key">
+                @Localizer["Name"]
+            </dt>
+            <dd id="point-contact-summary-name" class="govuk-summary-list__value">
+                @Model.FullName
+            </dd>
+            <dd class="govuk-summary-list__actions">
+                @if (!isEnded)
+                {
+                    <ul class="govuk-list">
+                        <li>
+                            <a id="point-contact-summary-chng-name" class="govuk-link govuk-body"
+                               asp-controller="BreathingSpace"
+                               asp-action="DebtorAddNominatedContact"
+                               asp-route-edit="true"
+                               asp-route-returnAction="@returnAction"
+                               asp-route-inputFocus="FullName"
+                               asp-route-journeyKey="@Guid.NewGuid()"
+                               asp-route-parentJourneyKey="@ViewData["JourneyKey"].ToString()">
+                                @Localizer["Change"]<span class="govuk-visually-hidden"> nominated contact name</span>
+                            </a>
+                        </li>
+                    </ul>
+                }
+            </dd>
+        </div>
+        <div class="govuk-summary-list__row">
+            <dt id="point-contact-summary-role-lbl" class="govuk-summary-list__key">
+                @Localizer["Role"]
+            </dt>
+            <dd id="point-contact-summary-role" class="govuk-summary-list__value">
+                @Model.FormattedPointContactRole
+            </dd>
+            <dd class="govuk-summary-list__actions">
+                @if (!isEnded)
+                {
+                    <ul class="govuk-list">
+                        <li>
+                            <a id="point-contact-summary-chng-role" class="govuk-link govuk-body"
+                               asp-controller="BreathingSpace"
+                               asp-action="DebtorAddNominatedContact"
+                               asp-route-edit="true"
+                               asp-route-returnAction="@returnAction"
+                               asp-route-inputFocus="PointOfContactRole"
+                               asp-route-journeyKey="@Guid.NewGuid()"
+                               asp-route-parentJourneyKey="@ViewData["JourneyKey"].ToString()"
+                               asp-fragment="point-contact-role">
+                                @Localizer["Change"] <span class="govuk-visually-hidden"> nominated contact role</span>
+                            </a>
+                        </li>
+                    </ul>
+                }
+            </dd>
+        </div>
+        <div class="govuk-summary-list__row">
+            <dt id="point-contact-summary-tel-lbl" class="govuk-summary-list__key">
+                @Localizer["Telephone number"]
+            </dt>
+            <dd id="point-contact-summary-tel" class="govuk-summary-list__value">
+                @Model.TelephoneNumber
+            </dd>
+            <dd class="govuk-summary-list__actions">
+                @if (!isEnded)
+                {
+                    <ul class="govuk-list">
+                        <li>
+                            <a id="point-contact-summary-chng-tel" class="govuk-link govuk-body"
+                               asp-controller="BreathingSpace"
+                               asp-action="DebtorAddNominatedContact"
+                               asp-route-edit="true"
+                               asp-route-returnAction="@returnAction"
+                               asp-route-inputFocus="TelephoneNumber"
+                               asp-route-journeyKey="@Guid.NewGuid()"
+                               asp-route-parentJourneyKey="@ViewData["JourneyKey"].ToString()">
+                                @if (Model.AllowAddTelephoneNumber)
+                                {
+                                    @Localizer["Add"]<span class="govuk-visually-hidden"> nominated contact telephone number</span>
+                                }
+                                else
+                                {
+                                    @Localizer["Change"]<span class="govuk-visually-hidden"> nominated contact telephone number</span>
+                                }
+                            </a>
+                        </li>
+                    </ul>
+                }
+            </dd>
+        </div>
+        <div class="govuk-summary-list__row">
+            <dt id="point-contact-summary-not-lbl" class="govuk-summary-list__key">
+                @Localizer["Notification preference"]
+            </dt>
+            <dd id="point-contact-summary-notification" class="govuk-summary-list__value">
+                @Model.FormattedNotificationMethod
+            </dd>
+            <dd class="govuk-summary-list__actions">
+                @if (!isEnded)
+                {
+                    <ul class="govuk-list">
+                        <li>
+                            <a id="point-contact-summary-chng-notification" class="govuk-link govuk-body"
+                               asp-controller="BreathingSpace"
+                               asp-action="DebtorAddNominatedContact"
+                               asp-route-edit="true"
+                               asp-route-addressChange="true"
+                               asp-route-returnAction="@returnAction"
+                               asp-route-inputFocus="ContactConfirmationMethod"
+                               asp-route-journeyKey="@Guid.NewGuid()"
+                               asp-route-parentJourneyKey="@ViewData["JourneyKey"].ToString()"
+                               asp-fragment="confirmation-method">
+                                @Localizer["Change"]<span class="govuk-visually-hidden"> nominated contact notification preference</span>
+                            </a>
+                        </li>
+                    </ul>
+                }
+            </dd>
+        </div>
+        <div class="govuk-summary-list__row">
+            <dt id="point-contact-summary-email-lbl" class="govuk-summary-list__key">
+                @Localizer["Email address"]
+            </dt>
+            <dd id="point-contact-summary-email" class="govuk-summary-list__value">
+                @Model.EmailAddress
+            </dd>
+            <dd class="govuk-summary-list__actions">
+                @if (!isEnded)
+                {
+                    <ul class="govuk-list">
+                        <li>
+                            <a id="point-contact-summary-chng-email" class="govuk-link govuk-body"
+                               asp-controller="BreathingSpace"
+                               asp-action="DebtorAddNominatedContact"
+                               asp-route-edit="true"
+                               asp-route-returnAction="@returnAction"
+                               asp-route-inputFocus="EmailAddress"
+                               asp-route-journeyKey="@Guid.NewGuid()"
+                               asp-route-parentJourneyKey="@ViewData["JourneyKey"].ToString()">
+                                @if (Model.AllowAddEmailAddress)
+                                {
+                                    @Localizer["Add"]<span class="govuk-visually-hidden"> nominated contact email address</span>
+                                }
+                                else
+                                {
+                                    @Localizer["Change"]<span class="govuk-visually-hidden"> nominated contact email address</span>
+                                }
+                            </a>
+                        </li>
+                    </ul>
+                }
+            </dd>
+        </div>
+        @if (Model.DisplayAddress)
+        {
+            <div class="govuk-summary-list__row">
+                <dt id="point-contact-summary-address-lbl" class="govuk-summary-list__key">
+                    @Localizer["Address"]
+                </dt>
+                <dd id="point-contact-summary-address" class="govuk-summary-list__value">
+                    @Model.CommunicationAddress.AddressLine1<br>
+                    @if (Model.CommunicationAddress.HasAddressLine2)
+                    {
+                        @Model.CommunicationAddress.AddressLine2<br>
+                    }
+                    @if (Model.CommunicationAddress.HasTownCity)
+                    {
+                        @Model.CommunicationAddress.TownCity<br>
+                    }
+                    @if (Model.CommunicationAddress.HasCounty)
+                    {
+                        @Model.CommunicationAddress.County<br>
+                    }
+                    @Model.CommunicationAddress.Postcode
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                    @if (!isEnded)
+                    {
+                        <ul class="govuk-list">
+                            <li>
+                                <a id="point-contact-summary-chng-address"
+                                   class="govuk-link govuk-body"
+                                   asp-controller="BreathingSpace"
+                                   asp-action="DebtorPointContactAddress"
+                                   asp-route-addId="@Model.CommunicationAddress.AddressId"
+                                   asp-route-edit="true"
+                                   asp-route-addressChange="true"
+                                   asp-route-returnAction="@returnAction"
+                                   asp-route-inputFocus="ContactConfirmationMethod"
+                                   asp-route-journeyKey="@Guid.NewGuid()"
+                                   asp-route-parentJourneyKey="@ViewData["JourneyKey"].ToString()">
+                                    @Localizer["Change"]<span class="govuk-visually-hidden"> nominated contact address</span>
+                                </a>
+                            </li>
+                        </ul>
+                    }
+                </dd>
+            </div>
+        }
+    </dl>
+}
+
+

@@ -1,0 +1,31 @@
+﻿@model Insolvency.Portal.Models.ViewModels.DebtorTransferViewModel;
+
+@{
+    ViewData["Title"] = "Transfer Debtor Review Confirmation";
+}
+
+<div class="govuk-grid-column-full">
+    <a id="back-link" href="javascript: history.go(-1)" class="govuk-back-link"> @Localizer["Back"]</a>
+</div>
+<div class="govuk-grid-column-three-quarters" id="content">
+    <form method="post"
+          asp-action="DebtorTransferReviewConfirmation"
+          asp-controller="BreathingSpace"
+          asp-route-journeyKey="@ViewData["JourneyKey"].ToString()"
+          asp-route-parentJourneyKey="@ViewData["ParentJourneyKey"].ToString()">
+        <h1 id="debtor-transfer-review-heading" class="govuk-heading-l">
+            Confirm you're transferring this Breathing Space to @Model.RequestingMoneyAdviceOrganisation
+        </h1>
+        <partial name="_DebtorTransferDetailsPartial" model="Model" />
+        <div class="govuk-warning-text">
+            <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+            <strong id="debtor-transfer-review-confirmation-warning" class="govuk-warning-text__text">
+                <span id="debtor-transfer-review-confirmation-warning-assist" class="govuk-warning-text__assistive">Warning</span>
+                You are transferring this Breathing Space to @Model.RequestingMoneyAdviceOrganisation, once you have confirmed this you will not be able to make any updates or changes
+            </strong>
+        </div>
+        <button id="continue-button" class="govuk-button" value="Confirm and continue" data-module="govuk-button" type="submit">
+            Confirm and continue
+        </button>
+    </form>
+</div>

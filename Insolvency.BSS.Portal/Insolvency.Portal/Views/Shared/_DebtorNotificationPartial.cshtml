@@ -1,0 +1,59 @@
+﻿@using Insolvency.Common.Enums
+@model Insolvency.Portal.Models.ViewModels.DebtorNotificationPartialViewModel;
+
+@{
+    var returnAction = ViewData["return-action"] as string;
+    var isEnded = ViewData.ContainsKey("IsBreathingSpaceEnded") ? (bool)ViewData["IsBreathingSpaceEnded"] : false;
+}
+
+<dl class="govuk-summary-list">
+    <div class="govuk-summary-list__row">
+        <dt id="debtor-details-notification-method-header" class="govuk-summary-list__key">
+            @Localizer["Method"]
+        </dt>
+        <dd id="debtor-summary-notification-method-preference" class="govuk-summary-list__value">
+            @Model.PreferenceTypeLabel
+        </dd>
+        <dd class="govuk-summary-list__actions">
+            @if (!isEnded)
+            {
+                <a class="govuk-link govuk-body"
+                   id="debtor-details-notification-preference-chng"
+                   asp-controller="BreathingSpace"
+                   asp-action="DebtorContactPreference"
+                   asp-route-edit="true"
+                   asp-route-returnAction="@returnAction"
+                   asp-route-journeyKey="@Guid.NewGuid()"
+                   asp-route-parentJourneyKey="@ViewData["JourneyKey"]?.ToString()">
+                    @Localizer["Change"] <span class="govuk-visually-hidden"> contact preference</span>
+                </a>
+            }
+        </dd>
+    </div>
+    @if (Model.PreferenceType == ContactPreferenceType.Email)
+    {
+        <div class="govuk-summary-list__row">
+            <dt id="debtor-details-notification-email-header" class="govuk-summary-list__key">
+                @Localizer["Email Address"]
+            </dt>
+            <dd id="debtor-summary-notification-method-email" class="govuk-summary-list__value">
+                @Model.EmailAddress
+            </dd>
+            <dd class="govuk-summary-list__actions">
+                @if (!isEnded)
+                {
+                    <a id="debtor-details-notification-email-chng"
+                       class="govuk-link govuk-body"
+                       asp-controller="BreathingSpace"
+                       asp-action="DebtorContactPreference"
+                       asp-route-edit="true"
+                       asp-route-returnAction="@returnAction"
+                       asp-route-journeyKey="@Guid.NewGuid()"
+                       asp-route-parentJourneyKey="@ViewData["JourneyKey"]?.ToString()">
+                        @Localizer["Change"] <span class="govuk-visually-hidden"> contact preference</span>
+                    </a>
+                }
+            </dd>
+        </div>
+    }
+</dl>

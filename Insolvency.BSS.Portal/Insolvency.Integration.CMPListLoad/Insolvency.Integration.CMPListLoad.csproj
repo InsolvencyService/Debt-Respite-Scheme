@@ -1,0 +1,35 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <AzureFunctionsVersion>v3</AzureFunctionsVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <Content Include="appsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Azure.Functions.Extensions" Version="1.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Caching.Abstractions" Version="3.1.10" />
+    <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="3.0.10" />
+	<PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="3.1.10" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Insolvency.Integration.Gateways\Insolvency.Integration.Gateways.csproj" />
+    <ProjectReference Include="..\Insolvency.Integration.Interfaces\Insolvency.Integration.Interfaces.csproj" />
+    <ProjectReference Include="..\Insolvency.Integration.Models\Insolvency.Integration.Models.csproj" />
+    <ProjectReference Include="..\Insolvency.Interfaces\Insolvency.Interfaces.csproj" />
+    <ProjectReference Include="..\Insolvency.RestClient\Insolvency.RestClient.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="host.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="local.settings.json">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        <CopyToPublishDirectory>Never</CopyToPublishDirectory>
+    </None>
+  </ItemGroup>
+</Project>

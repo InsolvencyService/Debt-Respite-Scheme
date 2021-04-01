@@ -1,0 +1,18 @@
+{
+  "IsEncrypted": false,
+	"Values": {
+		"AzureWebJobsStorage": "UseDevelopmentStorage=true",
+		"AzureWebJobsDashboard": "UseDevelopmentStorage=true",
+		"AzureWebJobsSecretStorageType": "files",
+		"FUNCTIONS_WORKER_RUNTIME": "dotnet",
+		"CronPattern": "0 * * * *",
+		"redisServerUrl": "localhost:6379,ConnectTimeout=5000",
+		"DynamicsUrl": "",
+		"AuthorityUrl": "",
+		"ClientId": "",
+		"ClientSecret": "",
+		"ClientResource": "",
+		"DynamicsGateway:GovermentCreditorId": "f9784857-aee0-ea11-a813-002248006c8d",
+		"CMPListCacheLifeTimeInDays": "1"
+	}
+}

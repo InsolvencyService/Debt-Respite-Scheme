@@ -1,0 +1,37 @@
+﻿@model Insolvency.Portal.Models.ViewModels.DebtorTransferViewModel;
+
+@{
+    ViewData["Title"] = "Transfer Debtor Review Confirmation";
+}
+
+<div class="govuk-grid-column-two-thirds" id="content">
+    <div class="govuk-panel govuk-panel--confirmation">
+        <h1 id="debtor-transfer-review-confirmation-heading" class="govuk-panel__title">
+            @Localizer["Confirmation"]
+        </h1>
+        <div id="debtor-transfer-review-confirmation-body" class="govuk-panel__body">
+            @Localizer["You've transferred your client's Breathing Space"]
+        </div>
+    </div>
+    <h2 id="debtor-transfer-review-confirmation-next" class="govuk-heading-m">@Localizer["What happens next"]</h2>
+    <p id="debtor-transfer-review-confirmation-next-step" class="govuk-body">
+        We'll tell @Model.RequestingMoneyAdviceOrganisation you have transferred the Breathing Space to them
+    </p>
+    <ul class="govuk-list">
+        <li>
+            <a id="debtor-transfer-review-confirmation-client-details"
+               asp-action="DebtorAccountDetails"
+               asp-controller="BreathingSpace"
+               asp-route-journeyKey="@ViewData["ParentJourneyKey"].ToString()">
+                @Localizer["Return to client page"]
+            </a>
+        </li>
+        <li>
+            <a id="debtor-transfer-review-confirmation-index"
+               asp-action="Index"
+               asp-controller="BreathingSpace">
+                @Localizer["Return to service homepage"]
+            </a>
+        </li>
+    </ul>
+</div>

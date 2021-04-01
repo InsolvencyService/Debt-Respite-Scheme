@@ -1,0 +1,36 @@
+﻿@model Insolvency.Portal.Models.ViewModels.DebtorEligibilityReviewSummaryViewModel;
+
+@{ ViewData["Title"] = "Client Eligibility Review"; }
+
+<div class="govuk-grid-column-full">
+    <a id="back-link" href="javascript: history.go(-1)" class="govuk-back-link">
+        @Localizer["Back"]
+    </a>
+    <h1 id="heading" class="govuk-heading-l">
+        Confirm and add client eligibility review task
+    </h1>
+</div>
+<div class="govuk-grid-column-two-thirds" id="content">
+    <h2 id="creditor-name" class="govuk-heading-m">
+        @Model.DebtDetailViewModel.Creditor.Name asked for a review
+    </h2>
+    <h3 id="reason" class="govuk-label govuk-!-font-weight-bold"><strong>Creditor’s reason for the review:</strong></h3>
+    <h3 id="detail" class="govuk-label govuk-!-font-weight-bold"><strong>Details provided by the creditor:</strong></h3>
+    <p id="reason-text" class="govuk-body">
+        @Model.ReasonLabel
+    </p>
+    <p id="detail-text" class="govuk-body break-word">
+        @Model.CreditorNotes
+    </p>
+    <a asp-action="DebtorEligibilityReviewTaskSubmission"
+       asp-route-journeyKey="@ViewData["JourneyKey"].ToString()"
+       asp-controller="BreathingSpace"
+       asp-route-parentJourneyKey="@ViewData["ParentJourneyKey"].ToString()"
+       class="govuk-button"
+       id="submit-button"
+       value="submit"
+       data-module="govuk-button"
+       type="submit">
+        Confirm and submit
+    </a>
+</div>

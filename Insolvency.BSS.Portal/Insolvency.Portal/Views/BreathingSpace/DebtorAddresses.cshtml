@@ -1,0 +1,50 @@
+﻿@model Insolvency.Portal.Models.ViewModels.DebtorAddressViewModel;
+
+@{
+    ViewData["Title"] = @Localizer["Debtor Addresses"];
+    ViewData["return-action"] = "DebtorAddresses";
+}
+
+
+<div class="govuk-grid-column-full" id="content">
+    <a id="back-link"
+       href="javascript: history.go(-1)"
+       class="govuk-back-link govuk-body">
+        @Localizer["Back"]
+    </a>
+    <h1 class="govuk-heading-xl">
+        @Localizer["Client Addresses"]
+    </h1>
+    <dl class="govuk-summary-list">
+        <partial name="_DebtorAddressDetailsPartial"
+                 model="Model" />
+    </dl>
+    <h2 id="debtor-addresses-add-client-msg" class="govuk-heading-m">
+        @Localizer["Add client's previous addresses in the last 3 years"]
+    </h2>
+    <p id="debtor-addresses-helper-msg" class="govuk-body">
+        @Localizer["Previous addresses will help your client’s creditors to find their debts and apply the Breathing Space protections correctly."]
+    </p>
+    <p>
+        <a id="debtor-addresses-add-prev-address"
+           class="govuk-button govuk-button--secondary"
+           asp-controller="BreathingSpace"
+           asp-action="DebtorPreviousAddress"
+           asp-route-clear="true"
+           asp-route-journeyKey="@Guid.NewGuid()"
+           asp-route-parentJourneyKey="@ViewData["JourneyKey"].ToString()"
+           asp-route-returnAction="@Model.ReturnAction">
+            @Localizer["Add previous address"]
+        </a>
+    </p>
+    <p>
+        <a class="govuk-button"
+           id="debtor-address-summary-save"
+           data-module="govuk-button"
+           asp-controller="BreathingSpace"
+           asp-route-journeyKey="@ViewData["JourneyKey"].ToString()"
+           asp-action="DebtorContactPreference">
+            @Localizer["Save and continue"]
+        </a>
+    </p>
+</div>

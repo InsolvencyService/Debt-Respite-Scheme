@@ -1,0 +1,142 @@
+﻿@model List<Insolvency.Portal.Models.ViewModels.DebtDetailViewModel>;
+
+@if (Model != null && Model.Any())
+{
+    var isEnded = ViewData.ContainsKey("IsBreathingSpaceEnded") ? (bool)ViewData["IsBreathingSpaceEnded"] : false;
+
+    <h2 class="govuk-heading-l govuk-!-margin-bottom-2" id="ma-debts-header">Debts</h2>
+    <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
+    var debts = Model.Where(debt => debt.DisplayDebt).ToArray();
+    @for (var i = 0; i < debts.Length; i++)
+    {
+        var debtDetail = debts[i];
+        var hasReview = debtDetail.HasDebtReview;
+
+        <div class="govuk-grid-row">
+            <partial name="_DebtDetailInsideTabBodyPartial"
+                     model="debtDetail"
+                     view-data='@new ViewDataDictionary(ViewData) { { "id-value", i.ToString() } }' />
+            @if (!isEnded)
+            {
+                <div class="govuk-grid-column-one-third">
+                    <ul class="govuk-list govuk-!-font-size-16">
+                        @if (hasReview && debtDetail.DebtEligibilityReview.RequiredDebtReview)
+                        {
+                            <li>
+                                <a id="ma-debt-review-action-@(i)"
+                                   asp-action="DebtEligibilityReview"
+                                   asp-controller="BreathingSpace"
+                                   asp-route-debtId="@debtDetail.Debt.Id"
+                                   asp-route-journeyKey="@Guid.NewGuid()"
+                                   asp-route-parentJourneyKey="@ViewData["JourneyKey"].ToString()"
+                                   class="govuk-body govuk-link">
+                                    Review the debt
+                                </a>
+                            </li>
+                        }
+                        else if (hasReview && debtDetail.DebtEligibilityReview.DebtReviewCompleted)
+                        {
+                            <li>
+                                <a id="ma-debt-view-review-detail-@(i)"
+                                   href="#"
+                                   class="govuk-body govuk-link">
+                                    View debt review details
+                                </a>
+                            </li>
+                        }
+                        @if (debtDetail.ClientEligibilityReviewRequested)
+                        {
+                            <li>
+                                <a id="ma-debts-client-review-action-@(i)"
+                                   asp-action="DebtorEligibilityReview"
+                                   asp-controller="BreathingSpace"
+                                   asp-route-creditorId="@debtDetail.DebtorClientEligibilityReview.CreditorId"
+                                   asp-route-journeyKey="@Guid.NewGuid()"
+                                   asp-route-parentJourneyKey="@ViewData["JourneyKey"].ToString()"
+                                   class="govuk-body govuk-link">
+                                    Review the client
+                                </a>
+                            </li>
+                        }
+                        @if (debtDetail.ClientEligibleAfterAdviserReview)
+                        {
+                            <li>
+                                <a id="ma-debts-client-reviewed-view-details-action-@(i)"
+                                   href="#"
+                                   class="govuk-body govuk-link">
+                                    View client review details
+                                </a>
+                            </li>
+                        }
+                        @if (debtDetail.IsDebtSold)
+                        {
+                            <li>
+                                <a id="ma-debts-debt-sold-action-@(i)"
+                                   asp-action="DebtorTransferDebt"
+                                   asp-controller="BreathingSpace"
+                                   asp-route-debtId="@debtDetail.Debt.Id"
+                                   asp-route-journeyKey="@Guid.NewGuid()"
+                                   asp-route-parentJourneyKey="@ViewData["JourneyKey"].ToString()"
+                                   class="govuk-body govuk-link">
+                                    Transfer this debt to the new creditor
+                                </a>
+                            </li>
+                        }
+                        @if (debtDetail.DisplayCreateLinks)
+                        {                            
+                            <li>
+                                <a id="ma-debts-debt-remove-@(i)"
+                                   asp-action="DebtorRemoveDebt"
+                                   asp-controller="BreathingSpace"
+                                   asp-route-debtId="@debtDetail.Debt.Id"
+                                   asp-route-journeyKey="@Guid.NewGuid()"
+                                   asp-route-parentJourneyKey="@ViewData["JourneyKey"].ToString()"
+                                   class="govuk-body govuk-link">
+                                    Remove this debt
+                                </a>
+                            </li>
+
+                            <li>
+                                <a asp-controller="BreathingSpace"
+                                   asp-action="DebtorDebtSoldSearch"
+                                   asp-route-debtId="@debtDetail.Debt.Id"
+                                   asp-route-journeyKey="@Guid.NewGuid()"
+                                   asp-route-parentJourneyKey="@ViewData["JourneyKey"].ToString()"
+                                   id="ma-debts-debt-sold-action-@(i)"
+                                   class="govuk-body govuk-link">
+                                    Creditor has sold this debt
+                                </a>
+                            </li>
+                            <li>
+                                <a asp-controller="BreathingSpace"
+                                   asp-action="DebtEligibilityReviewTask"
+                                   asp-route-debtId="@debtDetail.Debt.Id"
+                                   asp-route-journeyKey="@Guid.NewGuid()"
+                                   asp-route-parentJourneyKey="@ViewData["JourneyKey"].ToString()"
+                                   id="ma-debts-debt-review-task-@(i)"
+                                   class="govuk-body govuk-link">
+                                    Add debt eligibility review task
+                                </a>
+                            </li>
+                            <li>
+                                <a id="ma-debts-client-review-task-@(i)"
+                                   asp-action="DebtorEligibilityReviewTask"
+                                   asp-controller="BreathingSpace" class="govuk-body govuk-link"
+                                   asp-route-debtId="@debtDetail.Debt.Id"
+                                   asp-route-journeyKey="@Guid.NewGuid()"
+                                   asp-route-parentJourneyKey="@ViewData["JourneyKey"].ToString()">
+                                    Add client eligibility review task
+                                </a>
+                            </li>                            
+                        }
+                    </ul>
+                </div>
+            }
+
+        </div>
+        @if (i != (debts.Length - 1))
+        {
+            <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
+        }
+    }
+}

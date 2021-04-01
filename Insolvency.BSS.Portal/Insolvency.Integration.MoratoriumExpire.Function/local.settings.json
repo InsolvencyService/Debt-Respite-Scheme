@@ -1,0 +1,15 @@
+{
+  "IsEncrypted": false,
+  "Values": {
+    "AzureWebJobsStorage": "UseDevelopmentStorage=true",
+    "FUNCTIONS_WORKER_RUNTIME": "dotnet",
+    "CronPattern": "0 */5 * * * *",
+    "redisServerUrl": "localhost:6379,ConnectTimeout=5000",
+    "DynamicsUrl": "",
+    "AuthorityUrl": "",
+    "ClientId": "",
+    "ClientSecret": "",
+    "ClientResource": "",
+    "CacheLifeTimeInDays": 1
+  }
+}

@@ -1,0 +1,27 @@
+﻿@model Insolvency.Portal.Models.ViewModels.Creditor.CreditorDebtStoppedAllActionViewModel;
+
+@{
+    ViewData["Title"] = "Debt Eligibility Review";
+    ViewData["Index"] = 0;
+}
+
+<div class="govuk-grid-column-full">
+    <a id="back-link" class="govuk-back-link" href="javascript: history.go(-1)">Back</a>
+</div>
+<div class="govuk-grid-column-three-quarters" id="content">
+    <h1 id="heading" class="govuk-heading-l">Confirm you’ve stopped all action against this debt</h1>
+    <div class="govuk-inset-text">
+        <p id="banner-text" class="govuk-body">You confirm this once you have stopped actions on this debt. You do this on your own systems or complete any other processes required outside this service</p>
+    </div>
+
+    <h2 id="debt-heading" class="govuk-heading-m">Debt</h2>
+    <partial name="Partials/_DebtDetailsListItem" model="Model.Debt" view-data="ViewData" />
+
+    <form method="post" asp-action="DebtStoppedAllAction" asp-controller="Creditor" asp-route-journeyKey="@ViewData["JourneyKey"].ToString()">
+        <input asp-for="DebtId" type="hidden" value="@Model.Debt.Id" />
+        <input asp-for="Debt" type="hidden" value="@Model.Debt"/>
+        <button id="submit-button" class="govuk-button" value="submit" data-module="govuk-button" type="submit">
+            Confirm and submit
+        </button>
+    </form>
+</div>

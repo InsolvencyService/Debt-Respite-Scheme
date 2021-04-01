@@ -1,0 +1,32 @@
+﻿@model Insolvency.Portal.Models.ViewModels.DebtorAccountSummaryViewModel;
+@if (Model.DebtorDetail.PersonalDetail.IsEnded)
+{
+    <div class="blue-border-panel govuk-body-m" id="breathing-space-ended-panel">
+        <h1 class="govuk-heading-m govuk-!-margin-bottom-4" id="breathing-space-ended-panel-header">
+            This @Model.DebtorDetail.PersonalDetail.CapitalizedMoratoriumType Breathing Space has ended
+        </h1>
+        <div class="govuk-!-margin-bottom-1" id="breathing-space-ended-panel-time-difference">
+            It ran for @Model.DebtorDetail.PersonalDetail.RanFor
+        </div>
+        <div class="govuk-!-margin-bottom-1" id="breathing-space-ended-panel-started">
+            Started: @Model.DebtorDetail.PersonalDetail.FormattedActiveMoratoriumStartDate
+        </div>
+        <div class="govuk-!-margin-bottom-6" id="breathing-space-ended-panel-ended">
+            Ended: @Model.DebtorDetail.PersonalDetail.FormattedActiveMoratoriumEndDate
+        </div>
+
+            <h2 class="govuk-heading-s govuk-!-margin-bottom-2" id="breathing-space-ended-panel-subheader">
+                Reason it ended early
+            </h2>
+            <div class="govuk-!-margin-bottom-4" id="breathing-space-ended-panel-reason">
+                @Model.DebtorDetail.PersonalDetail.CancellationReason
+            </div>
+
+        <div class="govuk-!-margin-bottom-4" id="breathing-space-ended-panel-notice">
+            A person can only have one @Model.DebtorDetail.PersonalDetail.MoratoriumType Breathing Space in any 12 month period. If a person is receiving mental health crisis treatment they might be eligible to be entered into a mental health Breathing Space
+        </div>
+        <div id="breathing-space-ended-panel-new-breathing-space">
+            If you’re happy that your client’s eligible for another Breathing Space, you must <a id="breathing-space-ended-panel-create-account" asp-action="Index" asp-controller="BreathingSpace" class="govuk-link">create a new one</a>.
+        </div>
+    </div>
+}

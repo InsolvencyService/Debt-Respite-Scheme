@@ -1,0 +1,116 @@
+﻿@model Insolvency.Portal.Models.ViewModels.DebtorAddressViewModel;
+
+@{
+    var returnAction = ViewData["return-action"] as string;
+    var isEnded = ViewData.ContainsKey("IsBreathingSpaceEnded") ? (bool)ViewData["IsBreathingSpaceEnded"] : false;
+}
+
+<div class="govuk-summary-list govuk-!-margin-bottom-2">
+    <div class="govuk-summary-list__row">
+        <dt id="debtor-details-address--header" class="govuk-summary-list__key">
+            @Localizer["Address"]
+        </dt>
+        @if (Model.CurrentAddress != null)
+        {
+            <dd class="govuk-summary-list__value">
+                <partial name="_AddressHiddenPartial"
+                         model="Model.AddressHidden"
+                         view-data='@new ViewDataDictionary(ViewData) { { "id-value", "0" } }' />
+                <span>
+                    <span id="debtor-summary-curr-address1" class="govuk-!-display-block">@Model.CurrentAddress.AddressLine1</span>
+                    <span id="debtor-summary-curr-address2" class="govuk-!-display-block">@Model.CurrentAddress.AddressLine2</span>
+                    <span id="debtor-summary-curr-towncity" class="govuk-!-display-block">@Model.CurrentAddress.TownCity</span>
+                    <span id="debtor-summary-curr-county" class="govuk-!-display-block">@Model.CurrentAddress.County</span>
+                    <span id="debtor-summary-curr-postcode" class="govuk-!-display-block">@Model.CurrentAddress.Postcode</span>
+                </span>
+            </dd>
+            <dd class="govuk-summary-list__actions">
+                @if (!isEnded)
+                {
+                    <ul class="govuk-list">
+                        <li>
+                            <a id="debtor-summary-chng-curr-add" class="govuk-link govuk-body"
+                               asp-controller="BreathingSpace"
+                               asp-action="DebtorPostcode"
+                               asp-route-clear="true"
+                               asp-route-addId="@Model.CurrentAddress.AddressId"
+                               asp-route-returnAction="@returnAction"
+                               asp-route-journeyKey="@Guid.NewGuid()"
+                               asp-route-parentJourneyKey="@ViewData["JourneyKey"]?.ToString()">
+                                @Localizer["Change"] <span class="govuk-visually-hidden"> address</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a id="debtor-summary-hide-curr-add"
+                               class="govuk-link govuk-body"
+                               asp-controller="BreathingSpace"
+                               asp-action="DebtorHideAddress"
+                               asp-route-returnAction="@returnAction"
+                               asp-route-journeyKey="@Guid.NewGuid()"
+                               asp-route-parentJourneyKey="@ViewData["JourneyKey"]?.ToString()">
+                                @if (Model.AddressHidden)
+                                {
+                                    @Localizer["Update address hidden"]
+                                }
+                                else
+                                {
+                                    @Localizer["Hide address"]
+                                }
+                            </a>
+                        </li>
+                    </ul>
+                }
+            </dd>
+        }
+    </div>
+    @if (Model.PreviousAddresses.Any())
+    {
+        int i = 0;
+        @foreach (var address in Model.PreviousAddresses)
+        {
+            i++;
+            <div class="govuk-summary-list__row">
+                <dt id="debtor-details-prev-add-header-@(i)" class="govuk-summary-list__key">
+                    @Localizer["Previous address"]
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    <p>
+                        <span id="debtor-summary-prev-address1-@(i)" class="govuk-!-display-block">@address.AddressLine1</span>
+                        <span id="debtor-summary-prev-address2-@(i)" class="govuk-!-display-block">@address.AddressLine2</span>
+                        <span id="debtor-summary-prev-towncity-@(i)" class="govuk-!-display-block">@address.TownCity</span>
+                        <span id="debtor-summary-prev-county-@(i)" class="govuk-!-display-block">@address.County</span>
+                        <span id="debtor-summary-prev-postcode-@(i)" class="govuk-!-display-block">@address.Postcode</span>
+                    </p>
+                    <p>
+                        <span id="debtor-address-move-in-txt">@Localizer["Moved in"] @address.FormattedDateFrom</span><br />
+                        <span id="debtor-address-move-out-txt">@Localizer["Moved out"]  @address.FormattedDateTo</span>
+                    </p>
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                    @if (!isEnded)
+                    {
+                        <ul class="govuk-list">
+                            <li>
+                                <a id="debtor-summary-chng-prev-add-@(i)" class="govuk-link govuk-body"
+                                   asp-controller="BreathingSpace"
+                                   asp-action="DebtorPreviousAddress"
+                                   asp-route-clear="true"
+                                   asp-route-addId="@address.AddressId"
+                                   asp-route-returnAction="@returnAction"
+                                   asp-route-journeyKey="@Guid.NewGuid()"
+                                   asp-route-parentJourneyKey="@ViewData["JourneyKey"]?.ToString()">
+                                    @Localizer["Change"] <span class="govuk-visually-hidden"> address</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a id="debtor-summary-del-prev-add-@(i)" class="govuk-link govuk-body" href="#">
+                                    @Localizer["Delete"] <span class="govuk-visually-hidden"> address</span>
+                                </a>
+                            </li>
+                        </ul>
+                    }
+                </dd>
+            </div>
+        }
+    }
+</div>

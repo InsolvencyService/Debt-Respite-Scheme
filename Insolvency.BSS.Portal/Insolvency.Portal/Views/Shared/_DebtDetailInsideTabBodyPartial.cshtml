@@ -1,0 +1,88 @@
+﻿@model Insolvency.Portal.Models.ViewModels.DebtDetailViewModel;
+
+@{
+    var idValue = ViewData["id-value"] as string;
+}
+
+<div class="govuk-grid-column-two-thirds">
+    <ul class="govuk-list">
+        @if (Model.IsDebtTransferred)
+        {
+            <li>
+                <strong id="ma-debt-sold-msg-@(idValue)" class="govuk-tag govuk-!-margin-bottom-2">
+                    Money Adviser has transferred this sold debt
+                </strong>
+            </li>
+        }
+        @if (Model.HasDebtReview && Model.DebtEligibilityReview.RequiredDebtReview)
+        {
+            <li>
+                <strong id="ma-debt-review-required-msg-@(idValue)" class="govuk-tag govuk-tag--blue govuk-!-margin-bottom-2">Creditor has asked us to review this debt</strong>
+            </li>
+        }
+        else if (Model.HasDebtReview && Model.DebtEligibilityReview.DebtReviewCompleted)
+        {
+            <li>
+                <strong id="ma-debt-review-completed-msg-@(idValue)" class="govuk-tag govuk-!-margin-bottom-2">
+                    @if (Model.DebtEligibilityReview.DebtRemovedAfterReview)
+                    {
+                        @Html.Raw("Money Adviser Reviewed")
+                    }
+                    else
+                    {
+                        @Html.Raw("Money Adviser reviewed the debt")
+                    }
+                </strong>
+            </li>
+        }
+        @if (Model.ClientEligibilityReviewRequested)
+        {
+            <li>
+                <strong id="ma-debts-client-review-requested-tag-@(idValue)" class="govuk-tag govuk-tag--blue govuk-!-margin-bottom-2">Creditor asked for a client review</strong>
+            </li>
+        }
+        @if (Model.ClientEligibleAfterAdviserReview)
+        {
+            <li>
+                <strong id="ma-debts-client-eligible-after-eligibility-review-tag-@(idValue)" class="govuk-tag govuk-!-margin-bottom-2">Money Adviser Reviewed The Client</strong>
+            </li>
+        }
+        @if (Model.IsDebtSold)
+        {
+            <li>
+                <strong id="ma-debts-debt-sold-tag-@(idValue)" class="govuk-tag govuk-tag--blue govuk-!-margin-bottom-2">Creditor Has Sold This Debt</strong>
+            </li>
+        }
+        @if (Model.Debt.HasDebtTypeName)
+        {
+            <li>
+                <h2 id="ma-debt-review-debt-type-@(idValue)" class="govuk-heading-s">Debt: @Model.Debt.SelectedDebtTypeName</h2>
+            </li>
+        }
+        @if (Model.Creditor.HasCreditorName)
+        {
+            <li id="ma-debt-review-creditor-name-@(idValue)">Creditor: @Model.Creditor.Name</li>
+        }
+        @if (Model.IsDebtSold && Model.Debt.HasProposedCreditor)
+        {
+            <li id="ma-debt-proposed-new-creditor-name-@(idValue)">Proposed new creditor: @Model.Debt.SoldToCreditorName</li>
+        }
+        @if (Model.Debt.HasDebtAmount)
+        {
+            <li id="ma-debt-review-debt-amount-@(idValue)">Amount: £@Model.Debt.DebtAmount</li>
+        }
+        @if (Model.Debt.HasReference)
+        {
+            <li class="break-word" id="ma-debt-review-ref-@(idValue)">Reference: @Model.Debt.Reference</li>
+        }
+        @if (Model.Debt.HasNi)
+        {
+            <li id="ma-debt-review-ni-@(idValue)">National Insurance Number: @Model.Debt.NINO</li>
+        }
+        <li id="ma-debt-review-date-@(idValue)">Debt was entered on @Model.Debt.FormattedCommencementDateOrdinal</li>
+        @if (Model.HasDebtBeenRemoved)
+        {
+            <li id="ma-debt-removed-on-@(idValue)">Debt was removed on @Model.Debt.FormattedRemovedOnOrdinal</li>
+        }
+    </ul>
+</div>

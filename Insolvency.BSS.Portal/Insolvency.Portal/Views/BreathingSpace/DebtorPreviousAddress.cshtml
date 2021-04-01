@@ -1,0 +1,128 @@
+﻿@using Insolvency.Portal.Models.ViewModels
+@model Insolvency.Portal.Models.ViewModels.DebtorPreviousAddressViewModel;
+
+@{
+    var IdOverwrite = new Dictionary<string, string> {
+        {"MoveInDate","moveInDate-month-input"},
+        {"MoveOutDate","moveOutDate-month-input"},
+        {"SelectedAddress","SelectedAddress"},
+    };
+    ViewData["Title"] = @Localizer["Previous Address"];
+
+    ViewData["AddressSearchMetadata"] = new AddressSearchMetadata
+    {
+        ChangeControllerName = "BreathingSpace",
+        ChangeActionName = "DebtorPreviousAddress"
+    };
+
+    var isPostcodeValid = true;
+
+    if (ViewData.ModelState.TryGetValue("Postcode", out var postcode))
+        isPostcodeValid = postcode.Errors.Count == 0;
+
+    var inputMode = !Model?.Addresses?.Any() ?? true;
+}
+
+<div class="govuk-grid-column-full @(!ViewData.ModelState.IsValid ? "govuk-error-summary" : "display-none") " id="debtor-prev-add-error-summary">
+    <h2 class="govuk-error-summary__title">
+        @Localizer["There is a problem"]
+    </h2>
+    <div id="debtor-prev-add-error-list" bss-error-summary="All" id-overwrite="IdOverwrite" class="govuk-error-summary__body"></div>
+</div>
+
+<div class="govuk-grid-column-full" id="content">
+    <form class="form" method="post">
+        <input asp-for="@Model.AddressId" type="hidden" />
+        <input asp-for="@Model.ReturnAction" type="hidden" />
+        <a id="back-link" href="javascript: history.go(-1)" class="govuk-back-link"> @Localizer["Back"]</a>
+        <fieldset class="govuk-fieldset" name="client">
+            <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
+                <h1 class="govuk-fieldset__heading">
+                    @if (inputMode)
+                    {
+                        @Localizer["Add client's previous address"]
+                    }
+                    else
+                    {
+                        @Localizer["Choose your client's previous address and dates they lived there"]
+                    }
+                </h1>
+            </legend>
+            <partial name="_AddressSearchPartial" model="Model" />
+        </fieldset>
+        @if (inputMode)
+        {
+            <button asp-controller="BreathingSpace"
+                asp-action="DebtorPreviousAddress"
+                asp-route-journeyKey="@ViewData["JourneyKey"].ToString()"
+                asp-route-parentJourneyKey="@ViewData["ParentJourneyKey"]?.ToString()"
+                id="debtor-prev-add-search"
+                class="govuk-button"
+                data-module="govuk-button"
+                type="submit">
+                @Localizer["Find Address"]
+            </button>
+        }
+        else
+        {
+            <div class="govuk-form-group">
+                <fieldset class="govuk-fieldset" role="group" aria-describedby="movedInhint">
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
+                        <label class="govuk-fieldset__heading">
+                            @Localizer["What date did your client move in to this address"]
+                        </label>
+                    </legend>
+                    <span id="movedInhint" class="govuk-hint">
+                        @Localizer["For example, 11 2017"]
+                    </span>
+                    <div class="govuk-date-input" id="moved-in">
+                        <bss-input-month-year month-expression="MonthFrom"
+                                          year-expression="YearFrom"
+                                          month="@Model.MonthFrom"
+                                          year="@Model.YearFrom"
+                                          validation-message=@Localizer["The move into date must include a valid month and year"].Value
+                                          id="moveInDate" />
+                    </div>
+                </fieldset>
+            </div>
+            <div class="govuk-form-group">
+                <fieldset class="govuk-fieldset" role="group" aria-describedby="movedInhint">
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
+                        <label class="govuk-fieldset__heading">
+                            @Localizer["What date did your client move out of this address"]
+                        </label>
+                    </legend>
+                    <span id="movedOuthint" class="govuk-hint">
+                        @Localizer["For example, 11 2017"]
+                    </span>
+                    <div class="govuk-date-input" id="movedOut">
+                        <bss-input-month-year month-expression="MonthTo"
+                                          year-expression="YearTo"
+                                          month="@Model.MonthTo"
+                                          year="@Model.YearTo"
+                                          validation-message=@Localizer["The move out date must include a valid month and year"].Value
+                                          id="moveOutDate" />
+                    </div>
+                </fieldset>
+            </div>
+            <button asp-controller="BreathingSpace"
+                asp-action="DebtorPreviousAddressSubmit"
+                asp-route-journeyKey="@ViewData["JourneyKey"].ToString()"
+                asp-route-parentJourneyKey="@ViewData["ParentJourneyKey"]?.ToString()"
+                id="debtor-prev-add-save"
+                class="govuk-button"
+                data-module="govuk-button"
+                type="submit">
+                @Localizer["Save and continue"]
+            </button>
+        }
+    </form>
+    <a asp-controller="BreathingSpace"
+       asp-action="DebtorPreviousAddressManual"
+       asp-route-addId="@(Model?.AddressId ?? default)"
+       asp-route-returnAction="@Model.ReturnAction"
+       asp-route-journeyKey="@ViewData["JourneyKey"].ToString()"
+       asp-route-parentJourneyKey="@ViewData["ParentJourneyKey"]?.ToString()"
+       id="debtor-prev-add-manual"
+       class="govuk-link govuk-body"> @Localizer["Enter address manually"]</a>
+</div>

@@ -1,0 +1,32 @@
+﻿@model Insolvency.Portal.Models.ViewModels.DebtDetailViewModel;
+
+@{   
+    ViewData["Title"] = @Localizer["Breathing Space"];    
+}
+
+<div class="govuk-grid-column-full">
+    <a id="back-link" href="javascript: history.go(-1)" class="govuk-back-link"> @Localizer["Back"]</a>
+</div>
+
+<main class="govuk-main-wrapper">
+    <div class="govuk-grid-column-two-thirds" id="content">
+        <div class="govuk-form-group">
+            <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                <h1 class="govuk-fieldset__heading" id="page-heading">Delete debt</h1>
+            </legend>
+            <h2 id="remove-debt-subtitle" class="govuk-heading-s govuk-!-margin-bottom-4">Debt@(Model.Debt.HasDebtTypeName ? $": {Model.Debt.SelectedDebtTypeName}": null)</h2>
+            <partial name="_DebtDetailPartial" model="Model" />
+        </div>
+        <form id="remove-debt-form"
+              class="form"
+              asp-action="DebtorRemovePresubmissionDebtConfirmation"
+              asp-route-journeyKey="@ViewData["JourneyKey"]?.ToString()"
+              asp-route-parentJourneyKey="@ViewData["ParentJourneyKey"]?.ToString()"
+              method="post">           
+            <input type="hidden" name="DebtId" value="@Model.Debt.Id" />
+            <button id="save-button" class="govuk-button" data-module="govuk-button" type="submit">
+                @Localizer["Delete debt"]
+            </button>
+        </form>
+    </div>    
+</main>

@@ -1,0 +1,57 @@
+﻿@using Insolvency.Portal.Models.ViewModels
+@model Insolvency.Portal.Models.ViewModels.AddressSearchViewModel;
+
+@{
+    var isPostcodeValid = true;
+
+    if (ViewData.ModelState.TryGetValue("Postcode", out var postcode))
+        isPostcodeValid = postcode.Errors.Count == 0;
+
+    var inputMode = !Model?.Addresses?.Any() ?? true;
+
+    var isSelectedAddressValid = true;
+
+    if (ViewData.ModelState.TryGetValue("SelectedAddress", out var selectedAddress))
+        isSelectedAddressValid = selectedAddress.Errors.Count == 0;
+
+    var viewMetadata = ViewData["AddressSearchMetadata"] as AddressSearchMetadata;
+}
+
+
+@if (inputMode)
+{
+    <div class="govuk-form-group @(!ViewData.ModelState.IsValid ? "govuk-form-group--error" : string.Empty)">
+        <bss-input asp-for="Postcode" input-class="govuk-input--width-10" label-class="govuk-!-font-weight-bold"></bss-input>
+    </div>
+}
+else
+{
+    <div class="govuk-form-group">
+        <h2 id="address-search-sub-heading" class="govuk-body govuk-!-font-weight-bold"><strong>@Localizer["Postcode"]</strong></h2>
+        <p id="address-search-selected-postcode" class="govuk-body">
+            @Model.Postcode
+            <a id="address-search-change-postcode" class="govuk-link" 
+               asp-controller="@(viewMetadata.ChangeControllerName)"
+               asp-action="@(viewMetadata.ChangeActionName)" 
+               asp-route-clear="true"
+               asp-route-journeyKey="@ViewData["JourneyKey"].ToString()"
+               asp-route-parentJourneyKey="@ViewData["ParentJourneyKey"]?.ToString()"
+               asp-route-businessId="@Model.BusinessId"
+               asp-route-addId="@Model.AddressId"
+               asp-route-debtId="@Model.DebtId"
+               asp-route-returnAction="@Model.ReturnAction">
+                @Localizer["Change"] <span class="govuk-visually-hidden"> address</span>
+            </a>
+        </p>
+        <input asp-for="Postcode" type="hidden" />
+        <input asp-for="Addresses" type="hidden" />
+    </div>
+    <div class="govuk-form-group @(!isPostcodeValid || !isSelectedAddressValid ? "govuk-form-group--error" : string.Empty)">
+        <strong><label class="govuk-label govuk-!-font-weight-bold" asp-for="SelectedAddress" id="selected-address-label"></label></strong>
+        <span asp-validation-for="SelectedAddress" class="govuk-error-message" id="selected-address-validation-errors"></span>
+        <select class="govuk-select govuk-input--width-10 @(!isSelectedAddressValid ? "govuk-select--error" : string.Empty)"
+                asp-for="SelectedAddress"
+                asp-items="Model.Addresses">
+        </select>
+    </div>
+}

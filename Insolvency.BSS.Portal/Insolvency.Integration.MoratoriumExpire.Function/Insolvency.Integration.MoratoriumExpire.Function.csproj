@@ -1,0 +1,34 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <AzureFunctionsVersion>v3</AzureFunctionsVersion>
+    <UserSecretsId>ee384675-508d-4db9-966c-3257fc52c34d</UserSecretsId>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Remove="Properties\PublishProfiles\**" />
+    <EmbeddedResource Remove="Properties\PublishProfiles\**" />
+    <None Remove="Properties\PublishProfiles\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Azure.Functions.Extensions" Version="1.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="3.1.10" />
+    <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="3.0.11" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Insolvency.Integration.Gateways\Insolvency.Integration.Gateways.csproj" />
+    <ProjectReference Include="..\Insolvency.Integration.Interfaces\Insolvency.Integration.Interfaces.csproj" />
+    <ProjectReference Include="..\Insolvency.RestClient\Insolvency.RestClient.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="host.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="local.settings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>Never</CopyToPublishDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\ServiceDependencies\" />
+  </ItemGroup>
+</Project>

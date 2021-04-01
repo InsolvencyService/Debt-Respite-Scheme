@@ -1,0 +1,69 @@
+﻿@using Insolvency.Portal.Models.ViewModels
+@model Insolvency.Portal.Models.ViewModels.DebtorBreathingSpaceTypeViewModel;
+
+@{
+    var IdOverwrite = new Dictionary<string, string> {
+        {"SubmitOption","submit-standard"}
+    };
+    ViewData["Title"] = @Localizer["Breathing Space"]; }
+
+<div class="govuk-grid-column-two-thirds @(!ViewData.ModelState.IsValid ? "govuk-error-summary" : "display-none")" id="error-summary">
+    <h2 class="govuk-error-summary__title bss-font-size-s--all">
+        @Localizer["There is a problem"]
+    </h2>
+    <div id="error-list" bss-error-summary="All" id-overwrite="IdOverwrite" class="govuk-error-summary__body bss-font-size-s--all">
+    </div>
+</div>
+
+<div class="govuk-grid-column-two-thirds" id="content">
+    <a id="back-link" href="javascript: history.go(-1)" class="govuk-back-link"> @Localizer["Back"]</a>
+    <form method="post"
+          asp-action="DebtorBreathingSpaceType"
+          asp-controller="BreathingSpace"
+          asp-route-journeyKey="@ViewData["JourneyKey"].ToString()">
+        <div class="govuk-form-group @(!ViewData.ModelState.IsValid ? "govuk-form-group--error" : string.Empty)">
+            <fieldset class="govuk-fieldset">
+                <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
+                    <h1 class="govuk-fieldset__heading">
+                        @Localizer["Which Breathing Space does your client need?"]
+                    </h1>
+                </legend>
+                <span id="errors" class="govuk-error-message field-validation-valid"
+                      asp-validation-for="SubmitOption">
+                </span>
+                <div class="govuk-radios">
+                    <div class="govuk-radios__item">
+                        <input class="govuk-radios__input condition"
+                               id="submit-standard"
+                               asp-for="SubmitOption"
+                               type="radio"
+                               value="@BreathingSpaceType.Standard">
+                        <label class="govuk-label govuk-radios__label govuk-!-font-weight-bold" for="submit-standard">
+                            <strong>@Localizer["Standard Breathing Space"]</strong>
+                            <span id="submit-yes-hint" class="govuk-hint govuk-radios__hint">
+                                @Localizer["Clients are only eligible for this once in a 12 month period"]
+                            </span>
+                        </label>
+                    </div>
+                    <div class="govuk-radios__item">
+                        <input class="govuk-radios__input"
+                               id="submit-mental-health"
+                               asp-for="SubmitOption"
+                               type="radio"
+                               value="@BreathingSpaceType.MentalHealth">
+                        <label class="govuk-label govuk-radios__label govuk-!-font-weight-bold" for="submit-mental-health">
+                            <strong>@Localizer["Mental Health Breathing Space"]</strong>
+                            <span id="submit-no-hint" class="govuk-hint govuk-radios__hint">
+                                @Localizer["Your client must be receiving mental health crisis treatment"]
+                            </span>
+                        </label>
+
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+        <button id="save-button" class="govuk-button" value="Save and continue" data-module="govuk-button" type="submit">
+            @Localizer["Save and continue"]
+        </button>
+    </form>
+</div>

@@ -1,0 +1,36 @@
+﻿@model Insolvency.Portal.Models.ViewModels.DebtorAccountEndReasonConfirmationViewModel;
+
+@{ ViewData["Title"] = @Localizer["Breathing Space"]; }
+
+<div class="govuk-grid-column-three-quarters" id="content">
+    <a id="back-link" href="javascript: history.go(-1)" class="govuk-back-link"> @Localizer["Back"]</a>
+    <form method="post"
+          asp-action="DebtorEndBreathingSpace"
+          asp-controller="BreathingSpace"
+          asp-route-journeyKey="@ViewData["JourneyKey"].ToString()"
+          asp-route-parentJourneyKey="@ViewData["ParentJourneyKey"].ToString()">
+        <h1 id="end-breathing-space-main-heading" class="govuk-heading-l">
+            @Localizer["Confirm you are ending your client's Breathing Space"]
+        </h1>
+        <h2 id="end-breathing-space-secondary-heading" class="govuk-heading-m">
+            @Localizer["We will inform all creditors when the client's Breathing Space has ended"]
+        </h2>
+        <p id="end-breathing-space-reason" class="govuk-body-m">
+            <label id="end-breathing-space-reason-label" class="govuk-label govuk-label--s">
+                @Localizer["Reason"]
+            </label>
+            @Model.ReasonMessage
+        </p>
+        <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+        <div class="govuk-warning-text">
+            <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+            <strong id="end-breathing-space-warning-message" class="govuk-warning-text__text">
+                <span class="govuk-warning-text__assistive">@Localizer["Warning"]</span>
+                @Localizer["By ending Breathing Space, all creditor protections will be removed."]
+            </strong>
+        </div>
+        <button id="confirm-button" class="govuk-button" value="Confirm and end Breathing Space" data-module="govuk-button" type="submit">
+            @Localizer["Confirm and end Breathing Space"]
+        </button>
+    </form>
+</div>

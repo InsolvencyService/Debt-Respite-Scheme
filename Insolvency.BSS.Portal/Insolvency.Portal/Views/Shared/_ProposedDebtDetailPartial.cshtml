@@ -1,0 +1,21 @@
+﻿@model Insolvency.Portal.Models.ViewModels.DebtDetailViewModel;
+
+<h2 id="ma-debtor-prop-debt-type" class="govuk-heading-s govuk-!-margin-bottom-5">Debt: @(Model.Debt.HasDebtTypeName ? Model.Debt.SelectedDebtTypeName : "Debt")</h2>
+<ul class="govuk-list">
+    @if (Model.Creditor.HasCreditorName)
+    {
+        <li id="ma-debtor-prop-debt-creditor">Creditor: @Model.Creditor.Name</li>
+    }
+    @if (Model.Debt.HasDebtAmount)
+    {
+        <li id="ma-debtor-prop-debt-amount">Amount: £@Model.Debt.DebtAmount</li>
+    }
+    @if (Model.Debt.HasReference)
+    {
+        <li id="ma-debtor-prop-debt-ref" class="break-word">Reference: @Model.Debt.Reference</li>
+    }
+    @if (Model.Debt.HasNi)
+    {
+        <li id="ma-debtor-prop-debt-nino">National insurance number: @Model.Debt.NINO</li>
+    }
+</ul>

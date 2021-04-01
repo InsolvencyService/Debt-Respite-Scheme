@@ -1,0 +1,14 @@
+﻿@model bool;
+@{
+    var idValue = ViewData["id-value"] as string;
+}
+
+@if (Model)
+{
+    <p>
+        <strong id="debtor-address-hide-lbl-@(idValue)" class="govuk-tag govuk-tag--blue">
+            @Localizer["Address Hidden"]
+        </strong>
+    </p>
+    <p id="debtor-address-hide-msg-@(idValue)" class="govuk-body govuk-!-font-weight-bold"><strong>@Localizer["This address will not be shared with any of your client's creditors"]</strong></p>
+}

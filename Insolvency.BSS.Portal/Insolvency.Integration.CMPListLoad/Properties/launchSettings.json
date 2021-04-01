@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Insolvency.Integration.CMPListLoad": {
+      "commandName": "Project",
+      "commandLineArgs": "host start -p 7073 --csharp"
+    }
+  }
+}

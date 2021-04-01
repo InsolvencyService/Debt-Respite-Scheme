@@ -1,0 +1,26 @@
+﻿@model Insolvency.Portal.Models.ViewModels.DebtorNominatedContactSummaryViewModel;
+
+@{
+    ViewData["Title"] = @Localizer["Point of Contact Summary"];
+    ViewData["return-action"] = "DebtorPointContactSummary";
+}
+
+<div class="govuk-grid-column-full" id="content">
+    <a id="back-link" href="javascript: history.go(-1)" class="govuk-back-link">
+        @Localizer["Back"]
+    </a>
+    <h1 id="point-contact-summary-heading" class="govuk-heading-xl">
+        @Localizer["Check point of contact details"]
+    </h1>
+    <partial name="_DebtorPointContactSummaryPartial" model="Model" />
+    <p>
+        <a asp-controller="BreathingSpace"
+           asp-action="DebtorDeclaration"
+           asp-route-journeyKey="@ViewData["JourneyKey"].ToString()"
+           id="point-contact-summary-save"
+           class="govuk-button"
+           data-module="govuk-button">
+            @Localizer["Save and continue"]
+        </a>
+    </p>
+</div>

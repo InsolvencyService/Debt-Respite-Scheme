@@ -1,0 +1,34 @@
+﻿@model Insolvency.Portal.Models.ViewModels.DebtElgibilityReviewTaskSummaryViewModel;
+
+@{
+    ViewData["Title"] = "Debt Eligibility Review";
+}
+
+<div class="govuk-grid-column-full">
+    <a id="back-link" href="javascript: history.go(-1)" class="govuk-back-link"> @Localizer["Back"]</a>
+    <h1 id="heading" class="govuk-heading-l">Confirm and add debt eligibility review task</h1>
+</div>
+<div class="govuk-grid-column-two-thirds" id="content">
+    <h2 id="lead-line" class="govuk-heading-m">
+        @Model.DebtDetailViewModel.Creditor.Name asked for a review of this debt
+    </h2>
+    @if (Model.DebtDetailViewModel.Debt.HasDebtTypeName)
+    {
+        <h2 id="debt-review-title" class="govuk-heading-s">Debt: @Model.DebtDetailViewModel.Debt.SelectedDebtTypeName</h2>
+    }
+    <partial name="_DebtDetailPartial" model="Model.DebtDetailViewModel" />
+    <h3 id="reason" class="govuk-label govuk-!-font-weight-bold"><strong>Creditor’s reason for the review</strong></h3>
+    <p id="reason-text" class="govuk-body">@Model.ReasonLabel</p>
+    <h3 id="detail" class="govuk-label govuk-!-font-weight-bold"><strong>Details provided by the creditor</strong></h3>
+    <p id="detail-text" class="govuk-body break-word">@Model.CreditorNotes</p>
+    <a asp-controller="BreathingSpace"
+       asp-action="DebtEligibilityReviewTaskSubmission"
+       asp-route-journeyKey="@ViewData["JourneyKey"].ToString()"
+       asp-route-parentJourneyKey="@ViewData["ParentJourneyKey"].ToString()"
+       id="submit-button"
+       class="govuk-button"
+       value="submit"
+       data-module="govuk-button">
+        Confirm and continue
+    </a>
+</div>

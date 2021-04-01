@@ -1,0 +1,36 @@
+﻿@model Insolvency.Portal.Models.ViewModels.CreditorSearchResultsViewModel;
+
+@{
+    ViewData["Title"] = @Localizer["Breathing Space"];
+}
+
+<div class="govuk-grid-column-two-thirds @(!ViewData.ModelState.IsValid ? "govuk-error-summary" : "display-none") " id="error-summary">
+    <h2 class="govuk-error-summary__title">
+        @Localizer["There is a problem"]
+    </h2>
+    <div id="error-list" bss-error-summary="All" class="govuk-error-summary__body"></div>
+</div>
+
+<div class="govuk-grid-column-two-thirds" id="content">
+    <form class="form" asp-controller="BreathingSpace" asp-action="CreditorSearchResults" asp-route-journeyKey="@ViewData["JourneyKey"].ToString()" asp-route-parentJourneyKey="@ViewData["ParentJourneyKey"]?.ToString()" method="post">
+        <a id="back-link" href="javascript: history.go(-1)" class="govuk-back-link"> @Localizer["Back"]</a>
+        <fieldset class="govuk-fieldset" name="client">
+            <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
+                <h1 class="govuk-fieldset__heading">
+                    <span class="govuk-caption-xl"> @Localizer["Step 1 of 2"]</span>
+                    @Localizer["Add a debt"]
+                </h1>
+            </legend>
+            <div class="govuk-form-group @(!ViewData.ModelState.IsValid ? "govuk-form-group--error" : string.Empty)">
+                <label class="govuk-label" asp-for="SelectedCreditor"></label>
+                <span asp-validation-for="SelectedCreditor" class="govuk-error-message"></span>
+                <select class="govuk-select govuk-input--width-10 @(!ViewData.ModelState.IsValid ? "govuk-select--error" : string.Empty)"
+                        asp-for="SelectedCreditor"
+                        asp-items="Model.Creditors"></select>
+            </div>
+        </fieldset>
+        <button id="save-button" class="govuk-button" data-module="govuk-button" type="submit">
+            @Localizer["Save and continue"]
+        </button>
+    </form>
+</div>

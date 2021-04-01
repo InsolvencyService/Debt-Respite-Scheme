@@ -1,0 +1,13 @@
+﻿@model Insolvency.Portal.Models.AddressWithValidation
+<bss-input asp-for="AddressLine1" id="Address1" />
+<bss-input asp-for="AddressLine2" id="Address2" label-class="govuk-visually-hidden" />
+<bss-input asp-for="TownCity" input-class="govuk-!-width-two-thirds" />
+<bss-input asp-for="County" input-class="govuk-!-width-two-thirds" />
+<bss-input asp-for="Postcode" input-class="govuk-input--width-10" />
+<div class="govuk-form-group" id="country_container">
+    <label class="govuk-label" asp-for="@Model.Country"></label>
+    <select class="govuk-select govuk-input--width-10"
+            asp-for="@Model.Country"
+            asp-items="ViewBag.CountryList">
+    </select>
+</div>

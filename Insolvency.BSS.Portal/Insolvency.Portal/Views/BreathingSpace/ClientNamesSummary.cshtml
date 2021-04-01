@@ -1,0 +1,109 @@
+﻿@model Insolvency.Portal.Models.ViewModels.ClientNamesSummaryViewModel
+@{
+    ViewData["Title"] = @Localizer["Client Names Summary"];
+}
+
+<div class="govuk-grid-column-full" id="content">
+    <a id="back-link" href="javascript: history.go(-1)" class="govuk-back-link govuk-body">@Localizer["Back"]</a>
+    <h1 class="govuk-heading-xl">
+        @Localizer["Client names"]
+    </h1>
+    <dl class="govuk-summary-list govuk-!-margin-bottom-2">
+        <div class="govuk-summary-list__row">
+            <dt id="debtor-previous-name-item-heading" class="govuk-summary-list__key">
+                @Localizer["Name"]
+            </dt>
+            @if (!string.IsNullOrWhiteSpace(Model.CurrentNameDisplay))
+            {
+                <dd class="govuk-summary-list__value">
+                    <span>
+                        <span id="client-name-summary-curr-name" class="govuk-!-display-block">@Model.CurrentNameDisplay</span>
+                    </span>
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                    <ul class="govuk-list">
+                        <li>
+                            <a id="client-name-summary-chng-curr-name"
+                                class="govuk-link govuk-body"
+                                asp-controller="BreathingSpace"
+                                asp-action="ClientDetails"
+                                asp-route-edit="true"
+                                asp-route-autoFocus="FirstName"
+                                asp-route-journeyKey="@Guid.NewGuid()"
+                                asp-route-parentJourneyKey="@ViewData["JourneyKey"].ToString()"
+                                asp-route-returnAction="ClientNamesSummary">
+                                @Localizer["Change"] <span class="govuk-visually-hidden"> current names</span>
+                            </a>
+                        </li>
+                    </ul>
+                </dd>
+            }
+        </div>
+
+        @if (Model.PreviousNames != null && Model.PreviousNames.Any())
+        {
+            var i = 0;
+            @foreach (var previousName in Model.PreviousNames)
+            {
+                i++;
+                <div class="govuk-summary-list__row">
+                    <dt id="debtor-previous-name-title-@(i)" class="govuk-summary-list__key">
+                        @Localizer["Previous name"]
+                    </dt>
+                    <dd class="govuk-summary-list__value">
+                        <p>
+                            <span id="client-name-summary-prev-name-@(i)" class="govuk-!-display-block">@previousName.GetFullName()</span>
+                        </p>
+                    </dd>
+                    <dd class="govuk-summary-list__actions">
+                        <ul class="govuk-list">
+                            <li>
+                                <a id="client-name-summary-chng-prev-name-@(i)"
+                           class="govuk-link govuk-body"
+                           asp-controller="BreathingSpace"
+                           asp-route-journeyKey="@Guid.NewGuid()"
+                           asp-route-parentJourneyKey="@ViewData["JourneyKey"].ToString()"
+                           asp-action="ClientAddPreviousName"
+                           asp-route-nameId="@previousName.NameId"
+                           asp-route-returnAction="ClientNamesSummary">
+                                    @Localizer["Change"] <span class="govuk-visually-hidden"> previous names</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a id="client-name-summary-del-prev-name-@(i)" class="govuk-link govuk-body" href="#">
+                                    @Localizer["Delete"] <span class="govuk-visually-hidden"> previous names</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </dd>
+                </div>
+            }
+        }
+    </dl>
+
+    <h2 id="client-names-add-name-msg" class="govuk-heading-m">@Localizer["Add client's previous names"]</h2>
+    <p id="client-names-helper-msg-1" class="govuk-body">@Localizer["If your client has had any other names. For example, a maiden name."]</p>
+    <p id="client-names-helper-msg-2" class="govuk-body">@Localizer["Giving previous names will help your client’s creditors to find their debts and apply the Breathing Space protections correctly."]</p>
+    <p>
+        <a id="client-names-add-prev-name"
+           class="govuk-button govuk-button--secondary"
+           asp-controller="BreathingSpace"
+           asp-action="ClientAddPreviousName"
+           asp-route-journeyKey="@Guid.NewGuid()"
+           asp-route-parentJourneyKey="@ViewData["JourneyKey"].ToString()">
+            @Localizer["Add previous names"]
+        </a>
+    </p>
+    <p>
+        <a id="client-names-save-continue"
+           class="govuk-button"
+           data-module="govuk-button"
+           asp-controller="BreathingSpace"
+           asp-action="DebtorPostcode"
+           asp-route-clear="true"
+           asp-route-journeyKey="@ViewData["JourneyKey"].ToString()"
+           asp-route-parentJourneyKey="@ViewData["ParentJourneyKey"]?.ToString()">
+            @Localizer["Save and continue"]
+        </a>
+    </p>
+</div>

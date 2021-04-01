@@ -1,0 +1,67 @@
+﻿@model Insolvency.Portal.Models.ViewModels.DebtorAccountSummaryViewModel;
+@{ 
+    var isNotOwningOrEnded = Model.DebtorDetail.PersonalDetail.IsEnded || !Model.IsOwningOrganization;
+}
+<div class="govuk-grid-row keydetails  govuk-!-margin-top-5">
+    <div class="govuk-grid-column-one-half" id="account-name-and-status">
+        <h1 class="govuk-heading-l govuk-!-margin-bottom-3">
+            <span class="govuk-caption-m" id="breathing-space-for-label">
+                <strong id="account-header-status" class="@(Model.DebtorDetail.PersonalDetail.IsActive ? "govuk-tag" : "govuk-tag govuk-tag--grey")">
+                    @Model.DebtorDetail.PersonalDetail.MoratoriumStatus
+                </strong>
+                <strong>
+                    @Model.DebtorDetail.PersonalDetail.CapitalizedMoratoriumType
+                </strong>
+                Breathing Space
+            </span>
+            <span id="account-header-name">@Model.DebtorDetail.PersonalDetail.FullName</span>
+
+            <span class="govuk-caption-m" id="breathing-space-for-label">
+                Reference: @Model.DebtorDetail.PersonalDetail.ReferenceNumber
+            </span>
+        </h1>
+    </div>
+    @if (Model.DebtorDetail.PersonalDetail.DisplayBreathingSpaceDates)
+    {
+        <div class="govuk-grid-column-one-half" id="account-header-dates">
+            @if (Model.DebtorDetail.PersonalDetail.IsEnded)
+            {
+                <p class="header_highlight_info govuk-body">
+                    <span class="govuk-!-margin-bottom-1" id="account-time-difference">
+                        <strong>
+                            Breathing Space ran for @Model.DebtorDetail.PersonalDetail.RanFor
+                        </strong>
+                    </span>
+                    <span class="govuk-body-s" id="account-header-start-and-end">
+                        <span>Started: @Model.DebtorDetail.PersonalDetail.FormattedActiveMoratoriumStartDate</span>
+                        <span>Ended: @Model.DebtorDetail.PersonalDetail.FormattedActiveMoratoriumEndDate</span>
+                    </span>
+                </p>
+            }
+            else
+            {
+                <p class="header_highlight_info govuk-body">
+                    <span class="govuk-!-margin-bottom-1" id="account-time-difference">
+                        <strong>
+                            Breathing Space day @Model.DebtorDetail.PersonalDetail.MoratoriumCurrentDay()
+                            @if (Model.DebtorDetail.PersonalDetail.DisplayExpiryDate)
+                            {
+                                <span>of @Model.DebtorDetail.PersonalDetail.MoratoriumLength</span>
+                            }
+                        </strong>
+                    </span>
+                    <span class="govuk-body-s" id="account-header-start-and-end">
+                        <span>Started: @Model.DebtorDetail.PersonalDetail.FormattedActiveMoratoriumStartDate</span>
+                        @if (Model.DebtorDetail.PersonalDetail.DisplayExpiryDate)
+                        {
+                            <span>Ends: @Model.DebtorDetail.PersonalDetail.FormattedActiveMoratoriumEndDate</span>
+                        }
+                    </span>
+                </p>
+            }
+        </div>
+    }
+    <div class="govuk-grid-column-full">
+        <hr class="govuk-section-break govuk-section-break--visible keydetails">
+    </div>
+</div>

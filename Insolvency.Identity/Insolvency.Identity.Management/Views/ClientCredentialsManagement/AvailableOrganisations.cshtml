@@ -1,0 +1,18 @@
+﻿@model Insolvency.Management.Models.ViewModels.ClientCredentials.AvailableOrganisationsViewModel
+<div class="row">
+    <div class="col-md-12 order-md-1">
+        <h4 class="mb-3">Select Organisations</h4>
+        <form method="post" asp-action="AvailableOrganisations" asp-controller="ClientCredentialsManagement">
+            <hr class="mb-4">
+            @foreach (var org in Model.SelectableOrganisation)
+            {
+                <div class="custom-control custom-checkbox">
+                    <input type="checkbox" class="custom-control-input" id="@org.Name" name="SelectedOrganisationIds" value="@org.Id">
+                    <label class="custom-control-label" for="@org.Name">@org.Name</label>
+                </div>
+            }
+            <hr class="mb-4">
+            <button class="btn btn-primary btn-lg btn-block" type="submit">Submit</button>
+        </form>
+    </div>
+</div>

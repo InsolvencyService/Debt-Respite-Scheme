@@ -1,0 +1,64 @@
+﻿@using Insolvency.Common
+@model Insolvency.Portal.Models.ViewModels.DebtorEligibilityReviewDecisionViewModel
+@{
+    ViewData["Title"] = @Localizer["Breathing Space"];
+    var endBreathingSpace = Model.EndBreathingSpace.IsTrue();
+}
+
+<div class="govuk-grid-column-full">
+    <a id="back-link" href="javascript: history.go(-1)" class="govuk-back-link"> @Localizer["Back"]</a>
+</div>
+
+<div class="govuk-grid-column-three-quarters" id="content">
+    <form method="post"
+          asp-action="DebtorConfirmEligibilityReview"
+          asp-controller="BreathingSpace"
+          asp-route-journeyKey="@ViewData["JourneyKey"].ToString()"
+          asp-route-parentJourneyKey="@ViewData["ParentJourneyKey"].ToString()">
+        <div class="govuk-body-m">
+            <h1 class="govuk-heading-l" id="client-eligibility-review-confirmation-header">
+                @Model.ConfirmationTitle
+            </h1>
+            @{ if (endBreathingSpace)
+                {
+                    <h2 class="govuk-heading-m" id="client-eligibility-review-confirmation-end-breathing-space-header">
+                        @Localizer["We’ll tell all creditors that the client’s Breathing Space has ended"]
+                    </h2>
+                    <p>
+                        <label class="govuk-label govuk-label--s" id="client-eligibility-review-confirmation-not-eligible-label">
+                            @Localizer["Why the client is not eligible"]
+                        </label>
+                        @Model.Reason
+                    </p>
+                }
+            }
+            <p class="break-word">
+                <label class="govuk-label govuk-label--s" id="client-eligibility-review-confirmation-details-to-support-decision-label">
+                    @Localizer["Details to support the decision"]
+                </label>
+                @Model.MoneyAdviserNotes
+            </p>
+            <p>
+                <label class="govuk-label govuk-label--s" id="client-eligibility-review-confirmation-reviewed-by-label">
+                    @Localizer["Reviewed by"]
+                </label>
+                @Model.ReviewedBy
+            </p>
+        </div>
+        @{ if (endBreathingSpace)
+            {
+                <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+                <div class="govuk-warning-text">
+                    <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+                    <strong class="govuk-warning-text__text">
+                        <span class="govuk-warning-text__assistive" id="client-eligibility-review-confirmation-warning">@Localizer["Warning"]</span>
+                        @Localizer["By ending Breathing Space, all creditor protections will be removed."]
+                    </strong>
+                </div>
+            }
+        }
+        <button id="confirm-button" class="govuk-button" value="@Model.ConfirmationButtonText" data-module="govuk-button" type="submit">
+            @Model.ConfirmationButtonText
+        </button>
+    </form>
+</div>

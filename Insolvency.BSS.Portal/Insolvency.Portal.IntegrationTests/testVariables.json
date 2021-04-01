@@ -1,0 +1,29 @@
+{
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft": "Warning",
+      "Microsoft.Hosting.Lifetime": "Information"
+    }
+  },
+  "IntegrationAPIUrl": "https://localhost:5001/",
+  "ExperianToken": "",
+  "ManagingMoneyOrganisationId": "6c06cd31-ddf7-ea11-a816-000d3a0ba99a",
+  "isLocalMachine": "true",
+  "Authentication": {
+    "MoneyAdviser": {
+      "ClientId": "",
+      "ClientSecret": "",
+      "ClientUrl": "",
+      "ClientResource": "",
+      "Scope": "bss.moneyadviser.api"
+    },
+    "Creditor": {
+      "ClientId": "",
+      "ClientSecret": "",
+      "ClientUrl": "",
+      "ClientResource": "",
+      "Scope": "bss.creditor.api"
+    }
+  }
+}

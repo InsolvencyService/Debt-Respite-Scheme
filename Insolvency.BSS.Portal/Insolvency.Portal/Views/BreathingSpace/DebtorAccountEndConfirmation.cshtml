@@ -1,0 +1,27 @@
+﻿<div class="govuk-grid-column-two-thirds" id="content">
+    <div class="govuk-panel govuk-panel--confirmation">
+        <h1 id="debtor-account-end-heading" class="govuk-panel__title">
+            @Localizer["Confirmation"]
+        </h1>
+        <div id="debtor-account-end-body" class="govuk-panel__body">
+            @Localizer["You have ended your client’s Breathing Space"]
+        </div>
+    </div>
+    <h2 id="debtor-account-end-next" class="govuk-heading-m">@Localizer["What happens next"]</h2>
+    <p id="debtor-account-end-next-step" class="govuk-body">
+        @Localizer["We’ll tell all the creditors the date that the Breathing Space ends"]
+    </p>
+    <ul class="govuk-list">
+        <li>
+            <a id="debtor-account-end-client"
+               asp-action="DebtorAccountDetails"
+               asp-controller="BreathingSpace"
+               asp-route-journeyKey="@ViewData["ParentJourneyKey"].ToString()">
+                @Localizer["Return to client page"]
+            </a>
+        </li>
+        <li>
+            <a id="debtor-account-end-index" asp-action="Index" asp-controller="BreathingSpace">@Localizer["Return to service homepage"]</a>
+        </li>
+    </ul>
+</div>

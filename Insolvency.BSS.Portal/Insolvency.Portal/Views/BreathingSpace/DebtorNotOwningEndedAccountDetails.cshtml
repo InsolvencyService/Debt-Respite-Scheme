@@ -1,0 +1,12 @@
+﻿@model Insolvency.Portal.Models.ViewModels.DebtorAccountSummaryViewModel;
+@{ ViewData["Title"] = @Localizer["Account Summary"]; }
+
+@section navigation
+{
+    <partial name="_HomeNavigation" model="@null" />
+}
+<div class="govuk-width-container" id="content">
+    <partial name="_DebtorAccountHeaderMoneyAdvisor" model="Model" />
+    <partial name="_AccountDetailsBreathingSpaceEndedPanel" model="Model" />
+    <partial name="_NotOwningAccountDetails" model="Model" />
+</div>

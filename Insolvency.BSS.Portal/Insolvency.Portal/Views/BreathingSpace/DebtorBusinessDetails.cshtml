@@ -1,0 +1,43 @@
+﻿@model Insolvency.Portal.Models.ViewModels.DebtorBusinessDetailViewModel;
+
+@{
+    var IdOverwrite = new Dictionary<string, string> {
+        {"SubmitOption","submit-yes"}
+    };
+    ViewData["Title"] = @Localizer["Debtor Business Details"];
+}
+
+<div class="govuk-grid-column-two-thirds @(!ViewData.ModelState.IsValid ? "govuk-error-summary" : "display-none")" id="error-summary">
+    <h2 class="govuk-error-summary__title">
+        @Localizer["There is a problem"]
+    </h2>
+    <div id="error-list" bss-error-summary="All" id-overwrite="IdOverwrite" class="govuk-error-summary__body"></div>
+</div>
+
+<div class="govuk-grid-column-two-thirds" id="content">
+    <form class="form"
+          asp-action="DebtorBusinessDetails"
+          asp-controller="BreathingSpace"
+          asp-route-journeyKey="@ViewData["JourneyKey"].ToString()"
+          method="post">
+        <input asp-for="ReturnAction" type="hidden" />
+        <a href="javascript: history.go(-1)" id="back-link" class="govuk-back-link">
+            @Localizer["Back"]
+        </a>
+
+        <div class="govuk-form-group @(!ViewData.ModelState.IsValid ? "govuk-form-group--error" : string.Empty)">
+            <fieldset class="govuk-fieldset">
+                <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
+                    <h1 class="govuk-fieldset__heading">
+                        @Localizer["Does your client have any businesses with debts that are eligible for Breathing Space?"]
+                    </h1>
+                </legend>
+                <partial name="_RadioYesNoPartial" model="Model" />
+                <input asp-for="IsRadioInline" type="hidden" value="true" />
+            </fieldset>
+        </div>
+        <button id="debtor-business-save" class="govuk-button" data-module="govuk-button" type="submit">
+            @Localizer["Save and continue"]
+        </button>
+    </form>
+</div>

@@ -1,0 +1,17 @@
+﻿@model Insolvency.Portal.Models.ViewModels.DebtorPersonalDetailViewModel;
+<p class="govuk-body">@Localizer["By submitting this application, you agree that:"]</p>
+<ul class="govuk-list govuk-list--bullet">
+    <li>@Localizer["You've explained the breathing space moratorium to your client"]</li>
+    <li>
+        <strong id="debtor-declaration-name-1">@Model.FullName</strong>@Localizer[" has told you to put them into Breathing Space"]
+    </li>
+    <li>@Localizer["The information you've provided is complete and correct to the best of your knowledge"]</li>
+    <li>@Localizer["Your client meets the required conditions and eligibility criteria"]</li>
+</ul>
+<p class="govuk-body">@Localizer["You also agree that "]<strong id="debtor-declaration-name-2">@Model.FullName</strong>@Localizer[" has agreed they will:"]</p>
+<ul class="govuk-list govuk-list--bullet">
+    <li>@Localizer["Continue to engage with a debt adviser"]</li>
+    <li>@Localizer["Participate in a midway review with their debt adviser"]</li>
+    <li>@Localizer["Inform their debt adviser of any change in circumstances"]</li>
+    <li>@Localizer["Not apply for any credit over £500 at any one time during the Breathing Space. This includes credit obtained with other people."]</li>
+</ul>

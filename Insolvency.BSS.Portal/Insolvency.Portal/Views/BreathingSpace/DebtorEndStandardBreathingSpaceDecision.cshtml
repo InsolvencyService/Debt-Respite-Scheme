@@ -1,0 +1,286 @@
+﻿@using Insolvency.Common.Enums
+@model Insolvency.Portal.Models.ViewModels.DebtorAccountEndReasonViewModel;
+
+@{
+    var IdOverwrite = new Dictionary<string, string> {
+        {"SubmitOption","submit-client-no-longer-eligible"},
+        {"NoLongerEligibleReason","submit-client-does-not-live-in-england-or-wales"},
+        {"IsPartOfThirtyDayReviewNotCompliedWithObligation","submit-not-complied-with-obligation-is-decision-part-of-midway-review-yes" },
+        {"IsPartOfThirtyDayReviewUnableToContactClient","submit-unable-to-contact-client-is-decision-part-of-midway-review-yes" },
+        {"IsPartOfThirtyDayReviewUsingDebtManagement","submit-using-debt-management-is-decision-part-of-midway-review-yes"}
+    };
+
+    ViewData["Title"] = @Localizer["Breathing Space"]; }
+
+<div class="govuk-grid-column-two-thirds @(!ViewData.ModelState.IsValid ? "govuk-error-summary" : "display-none")" id="error-summary">
+    <h2 class="govuk-error-summary__title bss-font-size-s--all">
+        @Localizer["There is a problem"]
+    </h2>
+    <div id="error-list" bss-error-summary="All" id-overwrite="IdOverwrite" class="govuk-error-summary__body bss-font-size-s--all">
+    </div>
+</div>
+
+<div class="govuk-grid-column-two-thirds" id="content">
+    <a id="back-link" href="javascript: history.go(-1)" class="govuk-back-link"> @Localizer["Back"]</a>
+    <form method="post"
+          asp-action="DebtorEndStandardBreathingSpaceDecision"
+          asp-controller="BreathingSpace"
+          asp-route-journeyKey="@ViewData["JourneyKey"].ToString()"
+          asp-route-parentJourneyKey="@ViewData["ParentJourneyKey"].ToString()">
+        <input type="hidden" asp-for="IsInMentalHealthMoratorium" />
+        <div class="govuk-form-group @(!ViewData.ModelState.IsValid ? "govuk-form-group--error" : string.Empty)">
+            <fieldset class="govuk-fieldset">
+                <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
+                    <h1 class="govuk-fieldset__heading">
+                        @Localizer["Why are you ending your client's Breathing Space?"]
+                    </h1>
+                </legend>
+                <span id="errors"
+                      class="govuk-error-message field-validation-valid"
+                      asp-validation-for="SubmitOption">
+                </span>
+                <div class="govuk-radios">
+                    <div class="govuk-radios__item">
+                        <input class="govuk-radios__input condition"
+                               id="submit-client-no-longer-eligible"
+                               asp-for="SubmitOption"
+                               type="radio"
+                               value="@(BreathingSpaceEndReasonType.NoLongerEligible)">
+                        <label class="govuk-label govuk-radios__label" for="submit-client-no-longer-eligible">
+                            @Localizer["The client is not eligible anymore"]
+                        </label>
+
+                        <div id="submit-client-no-longer-eligible-form" class="govuk-radios__conditional">
+                            <span class="govuk-error-message field-validation-valid"
+                                  asp-validation-for="NoLongerEligibleReason"
+                                  id="submit-client-no-longer-eligible-form-error">
+                            </span>
+                            <label class="govuk-label govuk-label--s">
+                                @Localizer["Why is the client not eligible?"]
+                            </label>
+                            <div class="govuk-radios__item">
+                                <input class="govuk-radios__input"
+                                       id="submit-client-does-not-live-in-england-or-wales"
+                                       asp-for="NoLongerEligibleReason"
+                                       type="radio"
+                                       value="@(BreathingSpaceEndReasonNoLongerEligibleReasonType.NotInEnglandOrWales)">
+                                <label class="govuk-label govuk-radios__label" for="submit-client-does-not-live-in-england-or-wales">
+                                    @Localizer["The client does not live or usually reside in England or Wales"]
+                                </label>
+                            </div>
+
+                            <div class="govuk-radios__item">
+                                <input class="govuk-radios__input"
+                                       id="submit-client-has-a-debt-relief-order"
+                                       asp-for="NoLongerEligibleReason"
+                                       type="radio"
+                                       value="@(BreathingSpaceEndReasonNoLongerEligibleReasonType.DebtReliefOrder)">
+                                <label class="govuk-label govuk-radios__label" for="submit-client-has-a-debt-relief-order">
+                                    @Localizer["The client has a Debt Relief Order"]
+                                </label>
+                            </div>
+
+                            <div class="govuk-radios__item">
+                                <input class="govuk-radios__input"
+                                       id="submit-client-has-interim-order-or-individual-voluntary-arrangement"
+                                       asp-for="NoLongerEligibleReason"
+                                       type="radio"
+                                       value="@(BreathingSpaceEndReasonNoLongerEligibleReasonType.InterimOrderOrIndividualVoluntaryArrangement)">
+                                <label class="govuk-label govuk-radios__label" for="submit-client-has-interim-order-or-individual-voluntary-arrangement">
+                                    @Localizer["The client has an interim order or Individual Voluntary Arrangement"]
+                                </label>
+                            </div>
+
+                            <div class="govuk-radios__item">
+                                <input class="govuk-radios__input"
+                                       id="submit-is-an-undischarged-bankrupt"
+                                       asp-for="NoLongerEligibleReason"
+                                       type="radio"
+                                       value="@(BreathingSpaceEndReasonNoLongerEligibleReasonType.UndischargedBankrupt)">
+                                <label class="govuk-label govuk-radios__label" for="submit-is-an-undischarged-bankrupt">
+                                    @Localizer["The client is an undischarged bankrupt"]
+                                </label>
+                            </div>
+
+                            <div class="govuk-radios__item">
+                                <input class="govuk-radios__input"
+                                       id="submit-had-another-breathing-space-in-last-twelve-months"
+                                       asp-for="NoLongerEligibleReason"
+                                       type="radio"
+                                       value="@(BreathingSpaceEndReasonNoLongerEligibleReasonType.HasHadAnotherBreathingSpaceWithinTwelveMonths)">
+                                <label class="govuk-label govuk-radios__label" for="submit-had-another-breathing-space-in-last-twelve-months">
+                                    @Localizer["The client has had another Breathing Space in the last 12 months"]
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="govuk-radios__item">
+                        <input class="govuk-radios__input"
+                               id="submit-client-not-complied-with-obligations"
+                               asp-for="SubmitOption"
+                               type="radio"
+                               value="@(BreathingSpaceEndReasonType.NotCompliedWithObligations)">
+                        <label class="govuk-label govuk-radios__label" for="submit-client-not-complied-with-obligations">
+                            @Localizer["The client has not met their Breathing Space obligations"]
+                        </label>
+
+                        <div id="submit-client-not-complied-with-obligations-form" class="govuk-radios__conditional govuk-radios--inline">
+                            <span class="govuk-error-message field-validation-valid"
+                                  asp-validation-for="IsPartOfThirtyDayReviewNotCompliedWithObligation"
+                                  id="submit-client-not-complied-with-obligations-form-error">
+                            </span>
+                            <label class="govuk-label govuk-label--s">
+                                @Localizer["Has this decision been made as part of a midway review?"]
+                            </label>
+                            <div class="govuk-radios__item">
+                                <input class="govuk-radios__input"
+                                       id="submit-not-complied-with-obligation-is-decision-part-of-midway-review-yes"
+                                       asp-for="IsPartOfThirtyDayReviewNotCompliedWithObligation"
+                                       type="radio"
+                                       value="@(true)">
+                                <label class="govuk-label govuk-radios__label" for="submit-not-complied-with-obligation-is-decision-part-of-midway-review-yes">
+                                    @Localizer["Yes"]
+                                </label>
+                            </div>
+
+                            <div class="govuk-radios__item">
+                                <input class="govuk-radios__input"
+                                       id="submit-not-complied-with-obligation-is-decision-part-of-midway-review-no"
+                                       asp-for="IsPartOfThirtyDayReviewNotCompliedWithObligation"
+                                       type="radio"
+                                       value="@(false)">
+                                <label class="govuk-label govuk-radios__label" for="submit-not-complied-with-obligation-is-decision-part-of-midway-review-no">
+                                    @Localizer["No"]
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="govuk-radios__item">
+                        <input class="govuk-radios__input"
+                               id="submit-unable-to-consult-client"
+                               asp-for="SubmitOption"
+                               type="radio"
+                               value="@(BreathingSpaceEndReasonType.UnableToContactClient)">
+                        <label class="govuk-label govuk-radios__label" for="submit-unable-to-consult-client">
+                            @Localizer["We have not been able to consult the client"]
+                        </label>
+
+                        <div id="submit-unable-to-consult-client-form" class="govuk-radios__conditional govuk-radios--inline">
+                            <span class="govuk-error-message field-validation-valid"
+                                  asp-validation-for="IsPartOfThirtyDayReviewUnableToContactClient"
+                                  id="submit-unable-to-consult-client-form-error">
+                            </span>
+                            <label class="govuk-label govuk-label--s">
+                                @Localizer["Has this decision been made as part of a midway review?"]
+                            </label>
+                            <div class="govuk-radios__item">
+                                <input class="govuk-radios__input"
+                                       id="submit-unable-to-contact-client-is-decision-part-of-midway-review-yes"
+                                       asp-for="IsPartOfThirtyDayReviewUnableToContactClient"
+                                       type="radio"
+                                       value="@(true)">
+                                <label class="govuk-label govuk-radios__label" for="submit-unable-to-contact-client-is-decision-part-of-midway-review-yes">
+                                    @Localizer["Yes"]
+                                </label>
+                            </div>
+
+                            <div class="govuk-radios__item">
+                                <input class="govuk-radios__input"
+                                       id="submit-unable-to-contact-client-is-decision-part-of-midway-review-no"
+                                       asp-for="IsPartOfThirtyDayReviewUnableToContactClient"
+                                       type="radio"
+                                       value="@(false)">
+                                <label class="govuk-label govuk-radios__label" for="submit-unable-to-contact-client-is-decision-part-of-midway-review-no">
+                                    @Localizer["No"]
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="govuk-radios__item">
+                        <input class="govuk-radios__input"
+                               id="submit-client-using-debt-management-solution"
+                               asp-for="SubmitOption"
+                               type="radio"
+                               value="@(BreathingSpaceEndReasonType.DebtManagementSolution)">
+                        <label class="govuk-label govuk-radios__label" for="submit-client-using-debt-management-solution">
+                            @Localizer["The client is now using a debt management solution"]
+                        </label>
+
+                        <div id="submit-client-using-debt-management-solution-form" class="govuk-radios__conditional govuk-radios--inline">
+                            <span class="govuk-error-message field-validation-valid"
+                                  asp-validation-for="IsPartOfThirtyDayReviewUsingDebtManagement"
+                                  id="submit-client-using-debt-management-solution-form-error">
+                            </span>
+                            <label class="govuk-label govuk-label--s">
+                                @Localizer["Has this decision been made as part of a midway review?"]
+                            </label>
+                            <div class="govuk-radios__item">
+                                <input class="govuk-radios__input"
+                                       id="submit-using-debt-management-is-decision-part-of-midway-review-yes"
+                                       asp-for="IsPartOfThirtyDayReviewUsingDebtManagement"
+                                       type="radio"
+                                       value="@(true)">
+                                <label class="govuk-label govuk-radios__label" for="submit-using-debt-management-is-decision-part-of-midway-review-yes">
+                                    @Localizer["Yes"]
+                                </label>
+                            </div>
+
+                            <div class="govuk-radios__item">
+                                <input class="govuk-radios__input"
+                                       id="submit-using-debt-management-is-decision-part-of-midway-review-no"
+                                       asp-for="IsPartOfThirtyDayReviewUsingDebtManagement"
+                                       type="radio"
+                                       value="@(false)">
+                                <label class="govuk-label govuk-radios__label" for="submit-using-debt-management-is-decision-part-of-midway-review-no">
+                                    @Localizer["No"]
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="govuk-radios__item">
+                        <input class="govuk-radios__input"
+                               id="submit-client-is-able-to-pay-their-debts"
+                               asp-for="SubmitOption"
+                               type="radio"
+                               value="@(BreathingSpaceEndReasonType.AbleToPayDebts)">
+                        <label class="govuk-label govuk-radios__label" for="submit-client-is-able-to-pay-their-debts">
+                            @Localizer["The client is now able to pay their debts"]
+                        </label>
+                    </div>
+
+                    <div class="govuk-radios__item">
+                        <input class="govuk-radios__input"
+                               id="submit-client-is-deceased"
+                               asp-for="SubmitOption"
+                               type="radio"
+                               value="@(BreathingSpaceEndReasonType.Deceased)">
+                        <label class="govuk-label govuk-radios__label" for="submit-client-is-deceased">
+                            @Localizer["The client has died"]
+                        </label>
+
+                        <div id="submit-client-is-deceased-form" class="govuk-radios__conditional">
+                            <div id="date-of-death-error-list" asp-validation-summary="All" class="govuk-error-summary__body bss-font-size-s--all">
+                            </div>
+                            <span class="govuk-label govuk-label--s">
+                                @Localizer["What was the date of death?"]
+                            </span>
+                            <bss-input-date day="DeathDay"
+                                            month="DeathMonth"
+                                            year="DeathYear"
+                                            is-valid-date-of-birth="IsValidDateOfDeath"
+                                            id="deathOfDeath"
+                                            hint=" For example, 12 11 2020"></bss-input-date>
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+        <button id="save-button" class="govuk-button" value="Save and continue" data-module="govuk-button" type="submit">
+            @Localizer["Save and continue"]
+        </button>
+    </form>
+</div>

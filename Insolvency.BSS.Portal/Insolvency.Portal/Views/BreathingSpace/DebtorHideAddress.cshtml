@@ -1,0 +1,52 @@
+﻿@model Insolvency.Portal.Models.ViewModels.DebtorHideAddressViewModel;
+
+@{
+    var IdOverwrite = new Dictionary<string, string> {
+        {"SubmitOption","submit-yes"}
+    };
+    ViewData["Title"] = @Localizer["Debtor Hide Address"]; }
+
+<div class="govuk-grid-column-two-thirds @(!ViewData.ModelState.IsValid ? "govuk-error-summary" : "display-none")" id="error-summary">
+    <h2 class="govuk-error-summary__title">
+        @Localizer["There is a problem"]
+    </h2>
+    <div id="error-list" bss-error-summary="All" id-overwrite="IdOverwrite" class="govuk-error-summary__body"></div>
+</div>
+
+<div class="govuk-grid-column-two-thirds" id="content">
+    <form class="form"
+          method="post"
+          asp-controller="BreathingSpace"
+          asp-action="DebtorHideAddress"
+          asp-route-journeyKey="@ViewData["JourneyKey"].ToString()"
+          asp-route-parentJourneyKey="@ViewData["ParentJourneyKey"].ToString()">
+        <input asp-for="ReturnAction" type="hidden" />
+        <a href="javascript: history.go(-1)" id="back-link" class="govuk-back-link">@Localizer["Back"]</a>
+        <h1 class="govuk-heading-xl">
+            @Localizer["Hide address"]
+        </h1>
+        <div class="govuk-warning-text">
+            <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+            <strong class="govuk-warning-text__text">
+                <span class="govuk-warning-text__assistive">@Localizer["Warning"]</span>
+                @Localizer["If you hide your client’s address from their creditors, it might be more difficult for creditors to find the debt(s). This could lead to a delay in creditors applying any Breathing Space protections."]
+            </strong>
+        </div>
+        <div class="govuk-form-group @(!ViewData.ModelState.IsValid ? "govuk-form-group--error" : string.Empty)">
+            <fieldset class="govuk-fieldset" aria-describedby="parv-hint">
+                <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                    <span class="govuk-fieldset__heading">
+                        @Localizer["Have you agreed with your client to hide their current address from their creditors?"]
+                    </span>
+                </legend>
+                <span id="parv-hint" class="govuk-hint">
+                    @Localizer["For example, your client is at risk of domestic violence"]
+                </span>
+                <partial name="_RadioYesNoPartial" model="Model" />
+            </fieldset>
+        </div>
+        <button id="debtor-hide-add-save" class="govuk-button" data-module="govuk-button" type="submit">
+            @Localizer["Save and continue"]
+        </button>
+    </form>
+</div>

@@ -1,0 +1,25 @@
+﻿@model Insolvency.Portal.Models.ViewModels.Creditor.CreditorClientEligibilityReviewConfirmViewModel;
+
+@{
+    ViewData["Title"] = "Client Eligibility Review";
+}
+
+<div class="govuk-grid-column-full">
+    <a id="back-link" class="govuk-back-link" href="javascript: history.go(-1)">@Localizer["Back"]</a>
+</div>
+<div class="govuk-grid-column-two-thirds" id="content">
+    <h1 id="heading" class="govuk-heading-l">Confirm review details</h1>
+    <h2 id="lead-line" class="govuk-heading-m">You are requesting that <span id="ma-name">Advice UК</span> review client eligibility</h2>
+    <h3 id="reason" class="govuk-label govuk-!-font-weight-bold"><strong>Reason:</strong></h3>
+    <p id="reason-text" class="govuk-body">@Model.ReasonLabel</p>
+    <h3 id="detail" class="govuk-label govuk-!-font-weight-bold"><strong>More Detail:</strong></h3>
+    <p id="detail-text" class="govuk-body break-word">@Model.CreditorNotes</p>
+    <form method="post" asp-action="ClientEligibilityReviewConfirmPost" asp-controller="Creditor" asp-route-journeyKey="@ViewData["JourneyKey"].ToString()">
+        <input asp-for="CreditorNotes" type="hidden" />
+        <input asp-for="EndResaon" type="hidden" />
+        <input asp-for="NoLongerEligibleReason" type="hidden" />
+        <button id="submit-button" class="govuk-button" value="submit" data-module="govuk-button" type="submit">
+            Confirm and submit
+        </button>
+    </form>
+</div>

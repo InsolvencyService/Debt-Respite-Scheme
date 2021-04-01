@@ -1,0 +1,59 @@
+﻿@model Insolvency.Portal.Models.ViewModels.DebtorEligibilityViewModel;
+@{
+    ViewData["Title"] = "Debtor Eligibility Confirmation";
+}
+
+<div class="govuk-grid-column-three-quarters" id="content">
+    <form class="form"
+          asp-controller="BreathingSpace"
+          asp-action="DebtorEligibilityConfirmation"
+          asp-route-journeyKey="@ViewData["JourneyKey"].ToString()"
+          method="post">
+        <a id="back-link" href="javascript: history.go(-1)" class="govuk-back-link">@Localizer["Back"]</a>
+        <div class="govuk-form-group">
+            <fieldset class="govuk-fieldset" aria-describedby="debtor-eligibility-hint">
+                <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                    <h1 class="govuk-fieldset__heading">
+                        @Localizer["Eligibility confirmation"]
+                    </h1>
+                </legend>
+                <div id="debtor-eligibility-hint" class="govuk-hint">
+                    <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-4 govuk-!-margin-bottom-5">
+                        <li>@Localizer["You must have seen evidence from an approved mental health practitioner that your client is in receipt of mental health crisis treatment"]</li>
+                        <li>@Localizer["You must have carried out a credit check on your client"]</li>
+                    </ul>
+                </div>
+                <div class="govuk-checkboxes">
+                    <div class="govuk-checkboxes__item">
+                        <input class="govuk-checkboxes__input facet" autocomplete="off" asp-for="IsEligible" type="checkbox" onclick="toggleEligibilitySave();" />
+                        <label class="govuk-label govuk-checkboxes__label facet" for="IsEligible">
+                            @Localizer["I confirm I have seen the evidence "]<strong>@Localizer["and"]</strong>@Localizer[" have carried out a credit check on my client"]
+                        </label>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+        <button id="debtor-eligibility-save" type="submit" class="govuk-button" data-module="govuk-button">
+            @Localizer["Save and continue"]
+        </button>
+    </form>
+</div>
+
+<script>
+    var eligibilitySaveBtn = document.getElementById('debtor-eligibility-save');
+    eligibilitySaveBtn.classList.add('govuk-button--disabled');
+
+    function toggleEligibilitySave() {
+        var confirmCheckbox = document.getElementById('IsEligible');
+
+        if (confirmCheckbox.checked) {
+            eligibilitySaveBtn.removeAttribute("disabled");
+            eligibilitySaveBtn.classList.remove('govuk-button--disabled');
+        } else {
+            eligibilitySaveBtn.setAttribute("disabled", "disabled");
+            eligibilitySaveBtn.classList.add('govuk-button--disabled');
+        }
+    }
+
+    toggleEligibilitySave();
+</script>

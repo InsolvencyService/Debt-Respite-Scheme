@@ -1,0 +1,43 @@
+﻿@model Insolvency.Management.Models.ViewModels.RoleManagement.OrganisationRoleUsersViewModel
+<div class="row">
+    <div class="col-sm-8">
+        <h2>Organisation @(Model.OrganisationName)s Users</h2>
+    </div>
+    <div class="col-sm-4">
+        <div class="btn-toolbar">
+            <div class="btn-group mr-2">
+                <a class="btn btn-primary float-right" href="@Url.Action("AddAdministratorRoleUser", new { organisationId = Model.OrganisationId })" role="button">Add Administrator</a>
+            </div>
+            <div class="btn-group">
+                <a class="btn btn-primary float-right" href="@Url.Action("AddDeveloperRoleUser", new { organisationId = Model.OrganisationId })" role="button">Add Developer</a>
+            </div>
+        </div>
+
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-4 col-border"><strong>Email</strong></div>
+    <div class="col-sm-2 col-border"><strong>Role</strong></div>
+    <div class="col-sm-4 col-border"><strong>Scopes</strong></div>
+    <div class="col-sm-2 col-border"></div>
+</div>
+@foreach (var roleUser in Model.RoleUsers)
+{
+    <div class="row">
+        <div class="col-sm-4 col-border">@roleUser.Email</div>
+        <div class="col-sm-2 col-border">@roleUser.Role</div>
+        <div class="col-sm-4 col-border">@roleUser.Scopes</div>
+        <div class="col-sm-2 col-border">
+            <div class="btn-group">
+                <a class="btn btn-sm btn-link" href="@Url.Action("EditRoleUser", new { id = roleUser.Id })" role="button">Edit</a>
+                @if (!roleUser.DisableDelete)
+                {
+                    <form method="post" asp-action="DeleteRoleUser" asp-controller="RoleManagement">
+                        @Html.Hidden("id", roleUser.Id)
+                        <button class="btn btn-sm btn-link float-right" type="submit" role="button">Delete</button>
+                    </form>
+                }
+            </div>
+        </div>
+    </div>
+}

@@ -1,0 +1,173 @@
+﻿@using Insolvency.Common.Enums
+@model Insolvency.Portal.Models.ViewModels.DebtorEligibilityReviewSummaryViewModel;
+
+@{
+    var IdOverwrite = new Dictionary<string, string> {
+        {"EndResaon","review-option-failed-criteria"},
+        {"NoLongerEligibleReason","review-option-criteria-england-wales" }
+    };
+    ViewData["Title"] = "Client Eligibility Review";
+    var isReviewOptionValid = true;
+    if (ViewContext.ViewData.ModelState.TryGetValue(nameof(Model.EndResaon), out var revOptions))
+    {
+        isReviewOptionValid = revOptions.Errors.Count == 0;
+    }
+    var isCriteriaValid = true;
+    if (ViewContext.ViewData.ModelState.TryGetValue(nameof(Model.NoLongerEligibleReason), out var criteriaOptions))
+    {
+        isCriteriaValid = criteriaOptions.Errors.Count == 0;
+    }
+    var isNotesValid = true;
+    if (ViewContext.ViewData.ModelState.TryGetValue(nameof(Model.CreditorNotes), out var notes))
+    {
+        isNotesValid = notes.Errors.Count == 0;
+    }
+}
+
+<div class="govuk-grid-column-full">
+    <a id="back-link" href="javascript: history.go(-1)" class="govuk-back-link"> @Localizer["Back"]</a>
+</div>
+<div class="govuk-grid-column-two-thirds @(!ViewData.ModelState.IsValid ? "govuk-error-summary" : "display-none")" id="error-summary">
+    <h2 class="govuk-error-summary__title bss-font-size-s--all">
+        There is a problem
+    </h2>
+    <div id="error-list" bss-error-summary="All" id-overwrite="IdOverwrite" class="govuk-error-summary__body bss-font-size-s--all">
+    </div>
+</div>
+<div class="govuk-grid-column-two-thirds" id="content">
+    <form method="post"
+          asp-action="DebtorEligibilityReviewTask"
+          asp-controller="BreathingSpace"
+          asp-route-journeyKey="@ViewData["JourneyKey"].ToString()"
+          asp-route-parentJourneyKey="@ViewData["ParentJourneyKey"].ToString()">
+        <h1 id="heading-title" class="govuk-heading-l">
+            Add client eligibility review task
+        </h1>
+        <h2 id="heading-creditor-name" class="govuk-heading-m">
+            @Model.DebtDetailViewModel.Creditor.Name asked for a review
+        </h2>
+        <div class="govuk-form-group @(!isReviewOptionValid||!isCriteriaValid ? "govuk-form-group--error" : string.Empty)">
+            <fieldset class="govuk-fieldset">
+                <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
+                    <label id="ma-debtor-eligibility-not-eligible-text" class="govuk-label govuk-!-font-weight-bold">
+                        <strong>Why does the creditor think their client is not eligible?</strong>
+                    </label>
+                </legend>
+                <span class="govuk-error-message field-validation-valid"
+                      asp-validation-for="EndResaon">
+                </span>
+                <div class="govuk-radios">
+                    <div class="govuk-radios__item">
+                        <input class="govuk-radios__input condition"
+                               id="review-option-failed-criteria"
+                               asp-for="EndResaon"
+                               type="radio"
+                               value="@(BreathingSpaceClientEndReasonType.NoLongerEligible)">
+                        <label class="govuk-label govuk-radios__label" for="review-option-failed-criteria" id="review-option-failed-criteria-label">
+                            The client does not meet the eligibility criteria
+                        </label>
+                        <div class="govuk-radios__conditional condition-body">
+                            <span class="govuk-error-message field-validation-valid"
+                                  asp-validation-for="NoLongerEligibleReason">
+                            </span>
+                            <fieldset class="govuk-fieldset">
+                                <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
+                                    <h2 id="ma-debtor-eligibility-criteria-eligible-text" class="govuk-fieldset__heading">
+                                        Why is does the client not meet the eligibility criteria?
+                                    </h2>
+                                </legend>
+                            </fieldset>
+                            <div class="govuk-radios__item">
+                                <input class="govuk-radios__input"
+                                       id="review-option-criteria-england-wales"
+                                       asp-for="NoLongerEligibleReason"
+                                       type="radio"
+                                       value="@(BreathingSpaceEndReasonNoLongerEligibleReasonType.NotInEnglandOrWales)" />
+                                <label class="govuk-label govuk-radios__label" for="review-option-criteria-england-wales" id="review-option-criteria-england-wales-label">
+                                    The client does not live or usually reside in England or Wales
+                                </label>
+                            </div>
+                            <div class="govuk-radios__item">
+                                <input class="govuk-radios__input"
+                                       id="review-option-criteria-has-dro"
+                                       asp-for="NoLongerEligibleReason"
+                                       type="radio"
+                                       value="@(BreathingSpaceEndReasonNoLongerEligibleReasonType.DebtReliefOrder)" />
+                                <label class="govuk-label govuk-radios__label" for="review-option-criteria-has-dro" id="review-option-criteria-has-dro-label">
+                                    The client has a Debt Relief Order
+                                </label>
+                            </div>
+                            <div class="govuk-radios__item">
+                                <input class="govuk-radios__input"
+                                       id="review-option-criteria-has-iva"
+                                       asp-for="NoLongerEligibleReason"
+                                       type="radio"
+                                       value="@(BreathingSpaceEndReasonNoLongerEligibleReasonType.InterimOrderOrIndividualVoluntaryArrangement)" />
+                                <label class="govuk-label govuk-radios__label" for="review-option-criteria-has-iva" id="review-option-criteria-has-iva">
+                                    The client has an interim order or Individual Voluntary Arrangement
+                                </label>
+                            </div>
+                            <div class="govuk-radios__item">
+                                <input class="govuk-radios__input"
+                                       id="review-option-criteria-bankrupt"
+                                       asp-for="NoLongerEligibleReason"
+                                       type="radio"
+                                       value="@(BreathingSpaceEndReasonNoLongerEligibleReasonType.UndischargedBankrupt)" />
+                                <label class="govuk-label govuk-radios__label" for="review-option-criteria-bankrupt" id="review-option-criteria-bankrupt">
+                                    The client is an undischarged bankrupt
+                                </label>
+                            </div>
+                            <div class="govuk-radios__item">
+                                <input class="govuk-radios__input"
+                                       id="review-option-criteria-has-had-bss"
+                                       asp-for="NoLongerEligibleReason"
+                                       type="radio"
+                                       value="@(BreathingSpaceEndReasonNoLongerEligibleReasonType.HasHadAnotherBreathingSpaceWithinTwelveMonths)" />
+                                <label class="govuk-label govuk-radios__label" for="review-option-criteria-has-had-bss" id="review-option-criteria-has-had-bss">
+                                    The client has had another Breathing Space in the last 12 months
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="govuk-radios__item">
+                        <input class="govuk-radios__input"
+                               id="review-option-has-funds"
+                               asp-for="EndResaon"
+                               type="radio"
+                               value="@(BreathingSpaceClientEndReasonType.AbleToPayDebts)">
+                        <label class="govuk-label govuk-radios__label" for="review-option-has-funds" id="review-option-has-funds">
+                            The client has sufficient funds to discharge their debt
+                        </label>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+        <div class="govuk-form-group @(!isNotesValid ? "govuk-form-group--error" : string.Empty)">
+            <h2 class="govuk-label-wrapper">
+                <label id="ma-debtor-eligibility-provide-details-text" class="govuk-label govuk-label--m" asp-for="CreditorNotes">
+                    Please give any details provided by the creditor
+                </label>
+            </h2>
+            <span class="govuk-error-message field-validation-valid"
+                  asp-validation-for="CreditorNotes">
+            </span>
+            <textarea class="govuk-textarea" asp-for="CreditorNotes" id="CreditorNotes-input" rows="5"></textarea>
+        </div>
+        <button id="save-button" class="govuk-button" value="Save and continue" data-module="govuk-button" type="submit">
+            Save and continue
+        </button>
+    </form>
+</div>
+<div id="sidebar" class="govuk-grid-column-one-third">
+    <p class="govuk-body-s sidebar-links">
+        <h3 id="sidebar-heading" class="govuk-heading-s">Related Content</h3>
+        <a id="sidebar-link"
+           href="https://www.gov.uk/government/publications/debt-respite-scheme-breathing-space-guidance/debt-respite-scheme-breathing-space-guidance-for-money-advisers#before-a-breathing-space-starts"
+           class="govuk-link govuk-body-m"
+           target="_blank"
+           rel="noreferrer noopener"
+           role="link">
+            See client eligibility on GOV.UK (opens in a new tab)
+        </a>
+    </p>
+</div>

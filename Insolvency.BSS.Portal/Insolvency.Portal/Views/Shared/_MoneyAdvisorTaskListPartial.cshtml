@@ -1,0 +1,279 @@
+﻿@model Insolvency.Portal.Models.ViewModels.DebtorAccountSummaryViewModel;
+
+@{
+    var debtDetails = Model.DebtDetails;
+    var hasAcceptedProposedDebt = Model.HasAcceptedProposedDebt;
+    var hasDebtDetails = debtDetails != null && debtDetails.Any();
+}
+
+@if (hasDebtDetails || Model.IsCurrentlyTransferring)
+{
+    <h3 class="govuk-heading-l" id="ma-tasks-header">Tasks</h3>
+    <ol class="app-task-list">
+        <li>
+            <ul class="app-task-list__items govuk-!-margin-bottom-1">
+                @if (Model.IsCurrentlyTransferring)
+                {
+                    <li class="app-task-list__item">
+                        @if (Model.HasTransferCompleted)
+                        {
+                            <strong class="govuk-tag app-task-list__tag" id="ma-task-completed-debtor-transfer">Complete</strong>
+                        }
+                        else
+                        {
+                            <strong class="govuk-tag govuk-tag--grey app-task-list__tag" id="ma-task-todo-debtor-transfer">To do</strong>
+                        }
+
+                        @if (Model.HasTransferRequested)
+                        {
+                            <h3 class="govuk-heading-s govuk-!-margin-bottom-1" id="ma-task-review-transfer-debtor-heading">
+                                @Model.DebtorTransfer.RequestingMoneyAdviceOrganisation have asked us to transfer this Breathing Space
+                            </h3>
+                        }
+                        else
+                        {
+                            <h3 class="govuk-heading-s govuk-!-margin-bottom-1" id="ma-task-heading-debtor-transfer">
+                                @Model.DebtorTransfer.TransferringMoneyAdviserOrganisation transferred this Breathing Space to @Model.DebtorTransfer.RequestingMoneyAdviceOrganisation
+                            </h3>
+                        }
+
+                        @if (Model.HasTransferCompleted)
+                        {
+                            <a id="ma-task-completed-debtor-transfer-link"
+                               data-module="govuk-button"
+                               asp-action="DebtorTransferCompleteDetails"
+                               asp-controller="BreathingSpace"
+                               asp-route-journeyKey="@Guid.NewGuid()"
+                               asp-route-parentJourneyKey="@ViewData["JourneyKey"].ToString()"
+                               class="govuk-body govuk-link">View transfer details</a>
+                        }
+                        else if (Model.HasTransferRequested)
+                        {
+                            <span class="app-task-list__task-name">
+                                <a class="govuk-button govuk-button--secondary govuk-!-margin-bottom-2 govuk-!-margin-top-1"
+                                   data-module="govuk-button"
+                                   asp-action="DebtorTransferReview"
+                                   asp-controller="BreathingSpace"
+                                   asp-route-journeyKey="@Guid.NewGuid()"
+                                   asp-route-parentJourneyKey="@ViewData["JourneyKey"].ToString()"
+                                   id="ma-task-review-transfer-debtor-call-to-action">
+                                    Transfer this Breathing Space
+                                </a>
+                            </span>
+                        }
+                        else if (Model.HasTransferred)
+                        {
+                            <span class="app-task-list__task-name">
+                                <a class="govuk-button govuk-button--secondary govuk-!-margin-bottom-2 govuk-!-margin-top-1"
+                                   data-module="govuk-button"
+                                   asp-action="DebtorTransferAcknowledge"
+                                   asp-controller="BreathingSpace"
+                                   asp-route-journeyKey="@Guid.NewGuid()"
+                                   asp-route-parentJourneyKey="@ViewData["JourneyKey"].ToString()"
+                                   id="ma-task-action-debtor-transfer">
+                                    Acknowledge and remove from your to do list
+                                </a>
+                            </span>
+                        }
+                    </li>
+                }
+                @if (hasDebtDetails)
+                {
+                    var i = 1;
+                    @foreach (var debtDetail in debtDetails)
+                    {
+                        var hasDebtReview = debtDetail.HasDebtReview;
+                        var reviewRequired = debtDetail.HasDebtReview && debtDetail.DebtEligibilityReview.RequiredDebtReview;
+                        var reviewCompleted = debtDetail.HasDebtReview && debtDetail.DebtEligibilityReview.DebtReviewCompleted;
+                        var debtRemoved = debtDetail.HasDebtReview && debtDetail.DebtEligibilityReview.DebtRemovedAfterReview;
+                        var isAcceptedDebt = hasAcceptedProposedDebt && debtDetail.Debt.Id.Equals(Model.AcceptedProposedDebtId.Value);
+                        var hasClientEligibilityReview = debtDetail.ClientHasEligibilityReview;
+                        var isDebtSold = debtDetail.IsDebtSold;
+                        var isProposedDebt = debtDetail.IsProposedDebt;
+                        var isRejectedProposedDebt = debtDetail.IsRejectedProposedDebt;
+                        var shouldIncreaseCount = hasDebtReview || debtRemoved || isAcceptedDebt || hasClientEligibilityReview || isDebtSold || isProposedDebt || isRejectedProposedDebt;
+
+                        if (hasDebtReview)
+                        {
+                            <li class="app-task-list__item">
+                                @if (reviewRequired)
+                                {
+                                    <strong class="govuk-tag govuk-tag--grey app-task-list__tag" id="ma-task-status-@(i)">To do</strong>
+                                }
+                                else if (reviewCompleted)
+                                {
+                                    <strong class="govuk-tag app-task-list__tag" id="ma-task-status-@(i)">Complete</strong>
+                                }
+                                <h3 class="govuk-heading-s govuk-!-margin-bottom-1" id="ma-task-heading-@(i)">
+                                    @debtDetail.Creditor.Name @(reviewRequired ? "have asked us to review this debt" : string.Empty)
+                                </h3>
+                                <p class="govuk-body govuk-!-margin-bottom-1">Debt type: @debtDetail.Debt.SelectedDebtTypeName</p>
+                                @if (reviewRequired)
+                                {
+                                    <span class="app-task-list__task-name">
+                                        <a class="govuk-button govuk-button--secondary govuk-!-margin-bottom-2 govuk-!-margin-top-1"
+                                           data-module="govuk-button"
+                                           asp-action="DebtEligibilityReview"
+                                           asp-controller="BreathingSpace"
+                                           asp-route-debtId="@debtDetail.Debt.Id"
+                                           asp-route-journeyKey="@Guid.NewGuid()"
+                                           asp-route-parentJourneyKey="@ViewData["JourneyKey"].ToString()"
+                                           id="ma-task-action-debt-eligibility-review-@(i)">
+                                            Review the debt
+                                        </a>
+                                    </span>
+                                }
+                                else if (reviewCompleted)
+                                {
+                                    <h4 id="debt-review-outcome-title" class="govuk-heading-s govuk-!-margin-bottom-1">Outcome</h4>
+                                    <p id="debt-review-outcome-msg" class="govuk-body govuk-!-margin-bottom-2">
+                                        Debt @(!debtRemoved ? "not" : string.Empty) removed after review
+                                    </p>
+                                    <span class="app-task-list__task-name">
+                                        <a id="debt-review-outcome" href="#">
+                                            View review details
+                                        </a>
+                                    </span>
+                                }
+                            </li>
+                        }
+                        if (hasClientEligibilityReview)
+                        {
+                            <li class="app-task-list__item">
+                                @if (debtDetail.ClientEligibilityReviewRequested)
+                                {
+                                    <strong class="govuk-tag govuk-tag--grey app-task-list__tag" id="ma-task-todo-client-eligibility-review-@(i)">To do</strong>
+                                }
+                                else if (debtDetail.ClientEligibleAfterAdviserReview)
+                                {
+                                    <strong class="govuk-tag app-task-list__tag" id="ma-task-completed-client-eligible-after-review-@(i)">Complete</strong>
+                                }
+                                <h3 class="govuk-heading-s govuk-!-margin-bottom-1" id="ma-task-heading-client-eligibility-review-@(i)">
+                                    @debtDetail.Creditor.Name have asked us to review the client's eligibility
+                                </h3>
+                                @if (debtDetail.ClientEligibilityReviewRequested)
+                                {
+                                    <span class="app-task-list__task-name">
+                                        <a class="govuk-button govuk-button--secondary govuk-!-margin-bottom-2 govuk-!-margin-top-1"
+                                           data-module="govuk-button"
+                                           asp-action="DebtorEligibilityReview"
+                                           asp-controller="BreathingSpace"
+                                           asp-route-creditorId="@debtDetail.DebtorClientEligibilityReview.CreditorId"
+                                           asp-route-journeyKey="@Guid.NewGuid()"
+                                           asp-route-parentJourneyKey="@ViewData["JourneyKey"].ToString()"
+                                           id="ma-task-action-client-eligibility-review-@(i)">
+                                            Review client eligibility
+                                        </a>
+                                    </span>
+                                }
+                                else if (debtDetail.ClientEligibleAfterAdviserReview)
+                                {
+                                    <h3 class="govuk-heading-s govuk-!-margin-bottom-1 govuk-!-margin-top-4" id="ma-task-heading-outcome-client-eligibility-review-@(i)">
+                                        Outcome
+                                    </h3>
+                                    <p class="govuk-body govuk-!-margin-bottom-1">
+                                        You have not removed the client from Breathing Space
+                                    </p>
+                                    <a id="ma-tasks-client-reviewed-view-details-action-@(i)"
+                                       href="#"
+                                       class="govuk-body govuk-link">View client review details</a>
+
+                                }
+                            </li>
+                        }
+                        if (isDebtSold)
+                        {
+                            <li class="app-task-list__item">
+                                <strong class="govuk-tag govuk-tag--grey app-task-list__tag" id="ma-task-debt-sold-status-@(i)">To do</strong>
+                                <h3 class="govuk-heading-s govuk-!-margin-bottom-1" id="ma-task-debt-sold-heading-@(i)">
+                                    @debtDetail.Creditor.Name have sold the debt
+                                </h3>
+                                <p class="govuk-body govuk-!-margin-bottom-1" id="ma-task-debt-sold-debt-type-@(i)">Debt type: @debtDetail.Debt.SelectedDebtTypeName</p>
+                                <span class="app-task-list__task-name">
+                                    <a class="govuk-button govuk-button--secondary govuk-!-margin-bottom-2 govuk-!-margin-top-1"
+                                       data-module="govuk-button"
+                                       asp-action="DebtorTransferDebt"
+                                       asp-controller="BreathingSpace"
+                                       asp-route-debtId="@debtDetail.Debt.Id"
+                                       asp-route-journeyKey="@Guid.NewGuid()"
+                                       asp-route-parentJourneyKey="@ViewData["JourneyKey"].ToString()"
+                                       id="ma-task-action-debt-sold-@(i)">
+                                        Transfer this debt to the new creditor
+                                    </a>
+                                </span>
+                            </li>
+                        }
+                        if (isProposedDebt)
+                        {
+                            <li class="app-task-list__item">
+                                <strong class="govuk-tag govuk-tag--grey app-task-list__tag" id="ma-task-proposed-debt-status-@(i)">To do</strong>
+                                <h3 class="govuk-heading-s govuk-!-margin-bottom-1" id="ma-task-proposed-debt-heading-@(i)">
+                                    @debtDetail.Creditor.Name have proposed a new debt
+                                </h3>
+                                <p class="govuk-body govuk-!-margin-bottom-1" id="ma-task-proposed-debt-debt-type-@(i)">Debt type: @debtDetail.Debt.SelectedDebtTypeName</p>
+                                <span class="app-task-list__task-name">
+                                    <a class="govuk-button govuk-button--secondary govuk-!-margin-bottom-2 govuk-!-margin-top-1"
+                                       data-module="govuk-button"
+                                       asp-action="DebtorProposedDebt"
+                                       asp-controller="BreathingSpace"
+                                       asp-route-debtId="@debtDetail.Debt.Id"
+                                       asp-route-journeyKey="@Guid.NewGuid()"
+                                       asp-route-parentJourneyKey="@ViewData["JourneyKey"].ToString()"
+                                       id="ma-task-review-proposed-debt-@(i)">
+                                        Accept or reject proposed debt
+                                    </a>
+                                </span>
+                            </li>
+                        }
+                        if (isAcceptedDebt)
+                        {
+                            <li class="app-task-list__item">
+                                <strong class="govuk-tag app-task-list__tag" id="ma-task-completed-accepted-proposed-debt-@(i)">Complete</strong>
+                                <h3 class="govuk-heading-s govuk-!-margin-bottom-1" id="ma-task-completed-accepted-proposed-debt-heading-@(i)">
+                                    @debtDetail.Creditor.Name have proposed a new debt
+                                </h3>
+                                <p class="govuk-body govuk-!-margin-bottom-1" id="ma-task-completed-accepted-proposed-debt-debt-type-@(i)">Debt type: @debtDetail.Debt.SelectedDebtTypeName</p>
+                                <h3 class="govuk-heading-s govuk-!-margin-bottom-1 govuk-!-margin-top-4" id="ma-task-completed-accepted-proposed-debt-outcome-heading-@(i)">
+                                    Outcome
+                                </h3>
+                                <p class="govuk-body govuk-!-margin-bottom-1" id="ma-task-completed-accepted-proposed-debt-outcome-description-@(i)">
+                                    Debt added
+                                </p>
+                                <a id="ma-task-completed-accepted-proposed-debt-action-@(i)"
+                                   href="#"
+                                   class="govuk-body govuk-link">Proposed debt accepted details</a>
+                            </li>
+                        }
+                        if (isRejectedProposedDebt)
+                        {
+                            <li class="app-task-list__item">
+                                <strong class="govuk-tag app-task-list__tag" id="ma-task-completed-rejected-proposed-debt-@(i)">Complete</strong>
+                                <h3 class="govuk-heading-s govuk-!-margin-bottom-1" id="ma-task-completed-rejected-proposed-debt-heading-@(i)">
+                                    @debtDetail.Creditor.Name have proposed a new debt
+                                </h3>
+                                <p class="govuk-body govuk-!-margin-bottom-1" id="ma-task-completed-rejected-proposed-debt-debt-type-@(i)">Debt type: @debtDetail.Debt.SelectedDebtTypeName</p>
+                                <h3 class="govuk-heading-s govuk-!-margin-bottom-1 govuk-!-margin-top-4" id="ma-task-completed-rejected-proposed-debt-outcome-heading-@(i)">
+                                    Outcome
+                                </h3>
+                                <p class="govuk-body govuk-!-margin-bottom-1" id="ma-task-completed-rejected-proposed-debt-outcome-description-@(i)">
+                                    Debt not added
+                                </p>
+                                <a id="ma-task-completed-rejected-proposed-debt-action-@(i)"
+                                   href="#"
+                                   class="govuk-body govuk-link">View <span class="govuk-visually-hidden"> debt </span>details</a>
+                            </li>
+                        }
+                        if (shouldIncreaseCount)
+                        {
+                            i++;
+                        }
+                    }
+                }
+            </ul>
+        </li>
+    </ol>
+}
+else
+{
+    <span id="ma-task-empty-msg" class="govuk-body">No tasks available</span>
+}

@@ -1,0 +1,32 @@
+﻿@model Insolvency.Portal.Models.ViewModels.DebtorProposedDebtViewModel;
+
+@{
+    ViewData["Title"] = @Localizer["Debtor Proposed Debt Confirm"];
+    var debtAccepted = Model.AcceptProposedDebt.Value;
+}
+<form id="content"
+      method="post"
+      asp-action="DebtorConfirmProposedDebt"
+      asp-route-journeyKey="@ViewData["JourneyKey"].ToString()"
+      asp-route-parentJourneyKey="@ViewData["ParentJourneyKey"]?.ToString()"
+      asp-controller="BreathingSpace">
+    <div class="govuk-grid-column-two-thirds" id="content-wrapper">
+        <a href="javascript: history.go(-1)" id="back-link" class="govuk-back-link">Back</a>
+        <h1 id="ma-debtor-prop-debt-confirm-header" class="govuk-heading-l">
+            Confirm you're @( debtAccepted ?  "accepting" :"rejecting") this proposed debt
+        </h1>
+        <partial name="_ProposedDebtDetailPartial" model="Model.DebtDetailViewModel" />
+        @if (!debtAccepted)
+        {
+            <h2 id="ma-debtor-prop-debt-confirm-why-reject-debt-heading" class="govuk-heading-s govuk-!-margin-bottom-0">
+                Why we rejected it
+            </h2>
+            <div class="govuk-body govuk-!-margin-top-0 break-word">
+                @Model.RemovalReason
+            </div>
+        }
+        <button id="ma-debtor-prop-debt-confirm-save" class="govuk-button" data-module="govuk-button">
+            Confirm and continue
+        </button>
+    </div>
+</form>

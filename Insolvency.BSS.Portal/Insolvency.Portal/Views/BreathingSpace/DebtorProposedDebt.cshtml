@@ -1,0 +1,105 @@
+﻿@model Insolvency.Portal.Models.ViewModels.DebtorProposedDebtViewModel;
+
+@{
+    var IdOverwrite = new Dictionary<string, string>
+{
+        {"AcceptProposedDebt","ma-debtor-prop-debt-accept"},
+        {"RemovalReason","ma-debtor-prop-debt-reject-reason" },
+    };
+    var shouldDisplayTextarea = Model.ConditionalFlag;
+
+    var isOptionSelected = true;
+    if (ViewContext.ViewData.ModelState.TryGetValue(nameof(Model.AcceptProposedDebt), out var optionSelected))
+    {
+        isOptionSelected = optionSelected.Errors.Count == 0;
+    }
+    var isReasonValid = true;
+    if (ViewContext.ViewData.ModelState.TryGetValue(nameof(Model.RemovalReason), out var reason))
+    {
+        isReasonValid = reason.Errors.Count == 0;
+    }
+    ViewData["Title"] = @Localizer["Debtor Proposed Debt"];
+}
+
+<div class="govuk-grid-column-two-thirds @(!ViewData.ModelState.IsValid ? "govuk-error-summary" : "display-none")" id="error-summary">
+    <h2 class="govuk-error-summary__title bss-font-size-s--all" id="errors-header">
+        @Localizer["There is a problem"]
+    </h2>
+    <div id="error-list" bss-error-summary="All" id-overwrite="IdOverwrite" class="govuk-error-summary__body bss-font-size-s--all">
+    </div>
+</div>
+
+<form class="form"
+      method="post"
+      id="content"
+      asp-action="DebtorProposedDebt"
+      asp-route-journeyKey="@ViewData["JourneyKey"].ToString()"
+      asp-route-parentJourneyKey="@ViewData["ParentJourneyKey"]?.ToString()"
+      asp-controller="BreathingSpace">
+    <div class="govuk-grid-column-three-quarters">
+        <a href="javascript: history.go(-1)" id="back-link" class="govuk-back-link">Back</a>
+        <h1 id="ma-debtor-prop-debt-header" class="govuk-heading-l">
+            Creditor has proposed debt
+        </h1>
+        <partial name="_ProposedDebtDetailPartial" model="Model.DebtDetailViewModel" />
+    </div>
+    <div class="govuk-grid-column-three-quarters">
+        <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
+        <div class="govuk-form-group @(!isOptionSelected ? "govuk-form-group--error" : string.Empty)">
+            <fieldset class="govuk-fieldset" aria-describedby="ma-debtor-prop-debt-question">
+                <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                    <h2 id="ma-debtor-prop-debt-question" class="govuk-fieldset__heading">
+                        Do you want to accept this proposed debt?
+                    </h2>
+                </legend>
+                <span id="ma-debtor-prop-debt-errors"
+                      class="govuk-error-message field-validation-valid"
+                      asp-validation-for="AcceptProposedDebt">
+                </span>
+                <div class="govuk-radios govuk-radios--conditional" data-module="govuk-radios">
+                    <div class="govuk-radios__item">
+                        <input class="govuk-radios__input condition"
+                               id="ma-debtor-prop-debt-accept"
+                               asp-for="AcceptProposedDebt"
+                               type="radio"
+                               value="@true"
+                               checked="@Model.ConditionalFlag">
+                        <label class="govuk-label govuk-radios__label" for="ma-debtor-prop-debt-accept">
+                            Yes
+                        </label>
+                    </div>
+                    <div class="govuk-radios__item">
+                        <input class="govuk-radios__input"
+                               id="ma-debtor-prop-debt-reject"
+                               asp-for="AcceptProposedDebt"
+                               type="radio"
+                               value="@false"
+                               aria-controls="ma-debtor-prop-debt-reject-reason-conditional">
+                        <label class="govuk-label govuk-radios__label" for="ma-debtor-prop-debt-reject">
+                            No
+                        </label>
+                        <div class="@(!isReasonValid ? "govuk-form-group--error" : "govuk-radios__conditional")" id="ma-debtor-prop-debt-reject-reason-conditional">
+                            <div class="govuk-form-group ">
+                                <span id="ma-debtor-prop-debt-reject-reason-errors"
+                                      class="govuk-error-message field-validation-valid"
+                                      asp-validation-for="RemovalReason">
+                                </span>
+                                <label id="ma-debtor-prop-debt-reject" class="govuk-label" for="ma-debtor-prop-debt-reject-reason">
+                                    Why you're rejecting this debt
+                                </label>
+                                <textarea class="govuk-textarea"
+                                          id="ma-debtor-prop-debt-reject-reason"
+                                          rows="4"
+                                          aria-describedby="ma-debtor-prop-debt-reject-reason-conditional"
+                                          asp-for="RemovalReason"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+        <button id="ma-debtor-prop-debt-save" class="govuk-button" data-module="govuk-button">
+            Save and continue
+        </button>
+    </div>
+</form>

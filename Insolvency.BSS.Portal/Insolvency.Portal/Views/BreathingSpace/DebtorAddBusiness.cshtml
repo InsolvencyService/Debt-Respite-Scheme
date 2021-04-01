@@ -1,0 +1,83 @@
+﻿@using Insolvency.Portal.Models.ViewModels
+@model Insolvency.Portal.Models.ViewModels.DebtorAddBusinessViewModel;
+
+@{
+    var IdOverwrite = new Dictionary<string, string> {
+        {"IsAddressSameAsCurrent","submit-yes"}
+    };
+    ViewData["Title"] = @Localizer["Debtor Add Business"]; }
+
+<div class="govuk-grid-column-two-thirds @(!ViewData.ModelState.IsValid ? "govuk-error-summary" : "display-none") " id="error-summary">
+    <h2 class="govuk-error-summary__title">
+        @Localizer["There is a problem"]
+    </h2>
+    <div id="error-list" bss-error-summary="All" id-overwrite="IdOverwrite" class="govuk-error-summary__body"></div>
+</div>
+
+<div class="govuk-grid-column-two-thirds" id="content">
+    <form class="form"
+          asp-controller="BreathingSpace"
+          asp-action="DebtorAddBusiness"
+          asp-route-journeyKey="@ViewData["JourneyKey"].ToString()"
+          asp-route-parentJourneyKey="@ViewData["ParentJourneyKey"]?.ToString()"
+          method="post">
+        <input asp-for="BusinessId" type="hidden" />
+        <input asp-for="ReturnAction" type="hidden" />
+        <input asp-for="IsEdit" type="hidden" />
+        <a id="back-link" href="javascript: history.go(-1)" class="govuk-back-link">@Localizer["Back"]</a>
+        <h1 class="govuk-heading-xl">
+            @Localizer["Add client's business or trading name and address"]
+        </h1>
+        <div class="govuk-form-group">
+            <bss-input asp-for="BusinessName" label-class="govuk-!-font-weight-bold" />
+        </div>
+        <div class="govuk-form-group">
+            <fieldset class="govuk-fieldset">
+                <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
+                    <label class="govuk-fieldset__heading">
+                        @Localizer["Choose client's business or trading address"]
+                    </label>
+                </legend>
+                <span class="govuk-error-message field-validation-valid"
+                      asp-validation-for="IsAddressSameAsCurrent">
+                </span>
+                <div class="govuk-radios">
+                    <div class="govuk-radios__item">
+                        <input class="govuk-radios__input condition"
+                               id="submit-yes"
+                               asp-for="IsAddressSameAsCurrent"
+                               type="radio"
+                               value="@Option.Yes">
+                        <label id="debtor-add-business-curr-add" class="govuk-label govuk-radios__label" for="submit-yes">
+                            @if (Model.DisplayHideAddressLabel)
+                            {
+                                <strong class="govuk-tag govuk-tag--blue govuk-!-margin-bottom-2">@Localizer["Address hidden"]</strong>
+                                <br />
+                            }
+                            @Model.DebtorCurrentAddress.ToSingleLineString()
+                            @if (Model.DisplayHideAddressLabel)
+                            {
+                                <span id="submit-yes-hint" class="govuk-hint">
+                                    @Localizer["This address will not be shared with any of your client's creditors"]
+                                </span>
+                            }
+                        </label>
+                    </div>
+                    <div class="govuk-radios__item">
+                        <input class="govuk-radios__input"
+                               id="submit-no"
+                               asp-for="IsAddressSameAsCurrent"
+                               type="radio"
+                               value="@Option.No">
+                        <label id="debtor-add-business-new-add" class="govuk-label govuk-radios__label" for="submit-no">
+                            @Localizer["Another address"]
+                        </label>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+        <button id="debtor-add-business-save" class="govuk-button" data-module="govuk-button" type="submit">
+            @Localizer["Save and continue"]
+        </button>
+    </form>
+</div>

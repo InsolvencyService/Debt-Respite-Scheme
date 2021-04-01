@@ -1,0 +1,29 @@
+﻿@model Insolvency.Portal.Models.ViewModels.DebtorTransferViewModel;
+
+@{
+    ViewData["Title"] = "Transfer Debtor Review";
+}
+
+<div class="govuk-grid-column-full">
+    <a id="back-link" href="javascript: history.go(-1)" class="govuk-back-link"> @Localizer["Back"]</a>
+</div>
+<div class="govuk-grid-column-three-quarters" id="content">
+    <form method="post"
+          asp-action="DebtorTransferReview"
+          asp-controller="BreathingSpace"
+          asp-route-journeyKey="@ViewData["JourneyKey"].ToString()"
+          asp-route-parentJourneyKey="@ViewData["ParentJourneyKey"].ToString()">
+        <h1 id="debtor-transfer-review-heading" class="govuk-heading-l">
+            Transfer this Breathing Space
+        </h1>
+        <p id="debtor-transfer-review-description" class="govuk-body-l">
+            @Model.RequestingMoneyAdviceOrganisation have asked us to transfer this Breathing Space to them
+        </p>
+        <partial name="_DebtorTransferDetailsPartial"
+                 model="Model"
+                 view-data='@new ViewDataDictionary(ViewData) { { "display-reason", true }, { "display-requested-by", true }  }' />
+        <button id="transfer-button" class="govuk-button" value="Transfer Breathing Space" data-module="govuk-button" type="submit">
+            Transfer Breathing Space
+        </button>
+    </form>
+</div>

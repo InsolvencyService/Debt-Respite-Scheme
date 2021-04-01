@@ -1,0 +1,41 @@
+﻿@model Insolvency.Portal.Models.ViewModels.DebtTransferConfirmationViewModel;
+
+@{
+    ViewData["Title"] = @Localizer["Transfer Debt"];
+}
+
+<div class="govuk-grid-column-two-thirds" id="content">
+    <a id="back-link" href="javascript: history.go(-1)" class="govuk-back-link">Back</a>
+    <h1 id="transfer-debt-heading" class="govuk-heading-l">
+        Creditor has sold this debt
+    </h1>
+    <h2 id="transfer-debt-subtitle" class="govuk-heading-s govuk-!-margin-bottom-4">Debt@(Model.DebtDetail.Debt.HasDebtTypeName ? $": {Model.DebtDetail.Debt.SelectedDebtTypeName}": null)</h2>
+    <ul class="govuk-list">
+        <li id="transfer-debt-creditor">Creditor: @Model.DebtDetail.Creditor.Name</li>
+        @if (Model.DebtDetail.Debt.HasDebtAmount)
+        {
+            <li id="transfer-debt-debt-amount">Amount: £@Model.DebtDetail.Debt.DebtAmount</li>
+        }
+        @if (Model.DebtDetail.Debt.HasReference)
+        {
+            <li id="transfer-debt-debt-ref">Reference: @Model.DebtDetail.Debt.Reference</li>
+        }
+        @if (Model.DebtDetail.Debt.HasNi)
+        {
+            <li id="transfer-debt-nino">National Insurance Number: @Model.DebtDetail.Debt.NINO</li>
+        }
+        <li id="transfer-debt-entered-on">Debt was entered on @Model.DebtDetail.Debt.FormattedCommencementDate</li>
+    </ul>
+    <p id="transfer-debt-message" class="govuk-body break-word govuk-!-margin-bottom-6 govuk-!-font-size-24">
+        @Model.DebtDetail.Creditor.Name told us they have sold the debt to <strong>@Model.DebtDetail.Debt.SoldToCreditorName</strong>
+    </p>
+    <a id="transfer-debt-transfer-this-debt-to-the-new-creditor"
+       asp-action="DebtorTransferDebtConfirmation"
+       asp-controller="BreathingSpace"
+       asp-route-journeyKey="@ViewData["JourneyKey"].ToString()"
+       asp-route-parentJourneyKey="@ViewData["ParentJourneyKey"].ToString()"
+       class="govuk-button"
+       data-module="govuk-button">
+        Transfer this debt to the new creditor
+    </a>
+</div>

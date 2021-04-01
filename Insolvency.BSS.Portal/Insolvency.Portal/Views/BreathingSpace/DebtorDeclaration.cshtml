@@ -1,0 +1,28 @@
+﻿@model Insolvency.Portal.Models.ViewModels.DebtorPersonalDetailViewModel;
+
+@{ ViewData["Title"] = @Localizer["Debtor Declaration"]; }
+
+<div class="govuk-grid-column-three-quarters" id="content">
+    <form class="form">
+        <a href="javascript: history.go(-1)" id="back-link" class="govuk-back-link">@Localizer["Back"]</a>
+        <h1 class="govuk-heading-xl">
+            @Localizer["Declaration"]
+        </h1>
+        @if (Model.IsInMentalHealthMoratorium)
+        {
+            <partial name="_DebtorDeclarationMentalHealth" model="Model" />
+        }
+        else
+        {
+            <partial name="_DebtorDeclarationStandard" model="Model" />
+        }
+        <a asp-controller="BreathingSpace"
+           asp-action="DebtorAccountConfirmation"
+           asp-route-journeyKey="@ViewData["JourneyKey"].ToString()" s
+           id="debtor-declaration-agree-btn"
+           class="govuk-button"
+           data-module="govuk-button">
+            @Localizer["Agree and submit to Breathing Space"]
+        </a>
+    </form>
+</div>

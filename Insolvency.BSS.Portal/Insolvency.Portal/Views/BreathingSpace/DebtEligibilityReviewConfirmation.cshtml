@@ -1,0 +1,41 @@
+﻿@model Insolvency.Portal.Models.ViewModels.DebtEligibilityReviewSummaryViewModel;
+
+@{
+    ViewData["Title"] = @Localizer["Debt Eligibility Confirmation"];
+
+    var isRemoveDebt = Model.SubmitNow;
+}
+
+<div class="govuk-grid-column-full" id="content">
+    <a id="back-link" href="javascript: history.go(-1)" class="govuk-back-link">Back</a>
+    <h1 id="debt-eligibility-confirmation-heading" class="govuk-heading-l">
+        Confirm you are @(!isRemoveDebt ? "not" : string.Empty) removing this debt
+    </h1>
+    <partial name="_DebtReviewDetailPartial" model="Model.DebtDetailViewModel" />
+    @if (isRemoveDebt)
+    {
+        <h3 id="debt-eligibility-confirmation-reason-title" class="govuk-heading-s govuk-!-margin-bottom-1">Reason for removing the debt</h3>
+        <p id="debt-eligibility-confirmation-reason" class="govuk-body">@Model.DebtDetailViewModel.DebtEligibilityReview.ReviewReason</p>
+    }
+    <h3 id="debt-eligibility-confirmation-decision-title" class="govuk-heading-s govuk-!-margin-bottom-1">Details to support the decision</h3>
+    <p id="debt-eligibility-confirmation-decision" class="govuk-body break-word">@Model.ReviewSupportingDetail</p>
+    @if (isRemoveDebt)
+    {
+        <div class="govuk-warning-text">
+            <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+            <strong id="debt-eligibility-confirmation-warning" class="govuk-warning-text__text">
+                <span id="debt-eligibility-confirmation-warning-assist" class="govuk-warning-text__assistive">Warning</span>
+                By removing this debt from Breathing Space, creditor protections will be removed.
+            </strong>
+        </div>
+    }
+    <a id="debt-eligibility-confirmation-save"
+       asp-action="DebtEligibilityReviewSubmission"
+       asp-controller="BreathingSpace"
+       asp-route-journeyKey="@ViewData["JourneyKey"].ToString()"
+       asp-route-parentJourneyKey="@ViewData["ParentJourneyKey"]?.ToString()"
+       class="govuk-button"
+       data-module="govuk-button">
+        Confirm and remove
+    </a>
+</div>

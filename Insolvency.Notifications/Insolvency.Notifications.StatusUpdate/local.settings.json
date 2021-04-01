@@ -1,0 +1,13 @@
+{
+  "IsEncrypted": false,
+  "Values": {
+    "AzureWebJobsStorage": "UseDevelopmentStorage=true",
+    "AzureWebJobsSecretStorageType": "files",
+    "FUNCTIONS_WORKER_RUNTIME": "dotnet",
+    "PostgresConnection": "",
+    "SubscriptionConnection": "",
+    "Topic": "",
+    "GovNotifyAPIKEY": "",
+    "CronPattern": "0 */5 * * * *"
+  }
+}

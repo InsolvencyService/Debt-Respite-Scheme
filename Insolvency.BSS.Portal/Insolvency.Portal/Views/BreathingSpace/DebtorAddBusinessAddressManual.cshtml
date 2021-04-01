@@ -1,0 +1,56 @@
+﻿@model Insolvency.Portal.Models.ViewModels.DebtorAddBusinessAddressManualViewModel;
+
+@{
+    var IdOverwrite = new Dictionary<string, string> {
+        {"AddressLine1","Address1-input"},
+        {"AddressLine2","Address2-input"}
+    };
+    ViewData["Title"] = @Localizer["Debtor Add Business Address"];
+}
+
+<div class="govuk-grid-column-two-thirds @(!ViewData.ModelState.IsValid ? "govuk-error-summary" : "display-none") " id="error-summary">
+    <h2 class="govuk-error-summary__title">
+        @Localizer["There is a problem"]
+    </h2>
+    <div id="error-list" bss-error-summary="All" id-overwrite="IdOverwrite" class="govuk-error-summary__body"></div>
+</div>
+
+<div class="govuk-grid-column-two-thirds" id="content">
+    <form class="form"
+          asp-controller="BreathingSpace"
+          asp-action="DebtorAddBusinessAddressManual"
+          method="post"
+          asp-route-journeyKey="@ViewData["JourneyKey"].ToString()"
+          asp-route-parentJourneyKey="@ViewData["ParentJourneyKey"]?.ToString()">
+        <input asp-for="BusinessId" type="hidden" />
+        <input asp-for="AddressId" type="hidden" />
+        <input asp-for="ReturnAction" type="hidden" />
+        <a id="back-link" href="javascript: history.go(-1)" class="govuk-back-link"> @Localizer["Back"]</a>
+        <fieldset class="govuk-fieldset" name="client">
+            <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
+                <h1 class="govuk-fieldset__heading">
+                    @Localizer["Add business address"]
+                </h1>
+            </legend>
+            <h2 class="govuk-heading-s">@Localizer["Business"]</h2>
+            <p class="govuk-body">
+                @Model.BusinessName
+                <a asp-controller="BreathingSpace"
+                   asp-action="DebtorAddBusiness"
+                   asp-route-businessId="@Model.BusinessId"
+                   asp-route-returnAction="@Model.ReturnAction"
+                   asp-route-journeyKey="@ViewData["JourneyKey"].ToString()"
+                   asp-route-parentJourneyKey="@ViewData["ParentJourneyKey"]?.ToString()"
+                   id="debtor-manuanl-business-change"
+                   class="govuk-link">@Localizer["Change"] <span class="govuk-visually-hidden"> address</span></a>
+            </p>
+            <h2 id="debtor-add-business-address-heading" class="govuk-heading-s">Client business address</h2>
+            <input asp-for="BusinessName" type="hidden" />
+            <partial name="_AddressWithValidationPartial" model="Model" />
+
+        </fieldset>
+        <button id="save-button" class="govuk-button" data-module="govuk-button" type="submit">
+            @Localizer["Save and continue"]
+        </button>
+    </form>
+</div>

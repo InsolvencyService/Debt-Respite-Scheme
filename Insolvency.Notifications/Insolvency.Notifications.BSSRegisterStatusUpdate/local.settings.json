@@ -1,0 +1,16 @@
+{
+  "IsEncrypted": false,
+  "Values": {
+    "AzureWebJobsStorage": "UseDevelopmentStorage=true",
+    "AzureWebJobsSecretStorageType": "files",
+    "FUNCTIONS_WORKER_RUNTIME": "dotnet",
+    "SubscriptionConnection": "",
+    "Topic": "",
+    "Subscription": "",
+    "AuthorityUrl": "",
+    "ClientId": "",
+    "ClientSecret": "",
+    "ClientResource": "",
+    "DynamicsUrl": ""
+  }
+}

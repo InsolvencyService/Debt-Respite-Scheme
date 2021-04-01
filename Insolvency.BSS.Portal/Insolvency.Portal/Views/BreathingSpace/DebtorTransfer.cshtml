@@ -1,0 +1,51 @@
+﻿@model Insolvency.Portal.Models.ViewModels.DebtorTransferViewModel;
+
+@{
+    ViewData["Title"] = "Transfer Debtor";
+
+    var IdOverwrite = new Dictionary<string, string> {
+        {"TransferReason","debtor-transfer-reason"}
+    };
+    var isReasonValid = true;
+    if (ViewContext.ViewData.ModelState.TryGetValue(nameof(Model.TransferReason), out var reason))
+    {
+        isReasonValid = reason.Errors.Count == 0;
+    }
+}
+
+<div class="govuk-grid-column-full">
+    <a id="back-link" href="javascript: history.go(-1)" class="govuk-back-link"> @Localizer["Back"]</a>
+</div>
+<div class="govuk-grid-column-three-quarters @(!ViewData.ModelState.IsValid ? "govuk-error-summary" : "display-none")" id="error-summary">
+    <h2 class="govuk-error-summary__title bss-font-size-s--all">
+        There is a problem
+    </h2>
+    <div id="error-list" bss-error-summary="All" id-overwrite="IdOverwrite" class="govuk-error-summary__body bss-font-size-s--all">
+    </div>
+</div>
+<div class="govuk-grid-column-three-quarters" id="content">
+    <form method="post"
+          asp-action="DebtorTransfer"
+          asp-controller="BreathingSpace"
+          asp-route-journeyKey="@ViewData["JourneyKey"].ToString()"
+          asp-route-parentJourneyKey="@ViewData["ParentJourneyKey"].ToString()">
+        <h1 id="debtor-transfer-heading" class="govuk-heading-l">
+            Ask for a transfer
+        </h1>
+        <partial name="_NonOwningDebtorTransferDetailsPartial" model="Model" />
+        <div class="govuk-form-group @(!isReasonValid ? "govuk-form-group--error" : string.Empty)">
+            <h2 class="govuk-label-wrapper" id="debtor-transfer-reason-label-wrapper">
+                <label id="debtor-transfer-reason-label" class="govuk-label govuk-label--s" for="debtor-transfer-reason">
+                    Why are you asking to transfer this Breathing Space to your organisation?
+                </label>
+            </h2>
+            <span id="debtor-transfer-reason-error" class="govuk-error-message field-validation-valid"
+                  asp-validation-for="TransferReason">
+            </span>
+            <textarea class="govuk-textarea" asp-for="TransferReason" id="debtor-transfer-reason" rows="5" aria-describedby="debtor-transfer-reason-label"></textarea>
+        </div>
+        <button id="continue-button" class="govuk-button" value="Confirm and continue" data-module="govuk-button" type="submit">
+            Confirm and continue
+        </button>
+    </form>
+</div>

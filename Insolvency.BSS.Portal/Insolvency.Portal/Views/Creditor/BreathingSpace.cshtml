@@ -1,0 +1,93 @@
+﻿@model Insolvency.Portal.Models.ViewModels.Creditor.CreditorBreathingSpaceViewModel;
+
+@{
+    ViewData["Title"] = @Localizer["Account Summary"];
+    var ClientIsReviewed = Model.EligibilityReviews != null && Model.EligibilityReviews.Any();
+    ViewData["EligbleForReview"] = Model.DebtorDetail.PersonalDetail.EligibleForReview;
+}
+
+<div class="govuk-width-container ">
+    <partial name="Partials/_AuthenticatedCreditorHeader" />
+</div>
+<div class="govuk-width-container" id="content">
+    <a id="back-link" href="javascript: history.go(-1)" class="govuk-back-link">
+        Back to Self assessment
+    </a>
+    <partial name="Partials/_ClientAccountHeaderCreditor" model="Model.DebtorDetail.PersonalDetail" />
+    @if (Model.BannerText != null && Model.BannerHeading != null)
+    {
+        <div class="govuk-inset-text govuk-tag--green govuk-!-margin-bottom-4 govuk-!-margin-top-0">
+            <h2 id="banner-heading" class="govuk-heading-m">@Model.BannerHeading</h2>
+            <p id="banner-text" class="govuk-body">@Model.BannerText</p>
+        </div>
+    }
+    <details class="govuk-details" data-module="govuk-details">
+        <summary class="govuk-details__summary">
+            <span class="govuk-details__summary-text">
+                Breathing Space is a goverment scheme to help people deal with their debts
+            </span>
+        </summary>
+        <div class="govuk-details__text">
+            While @Model.DebtorDetail.PersonalDetail.FullName is in Breathing Space,
+            you cannot chase them for any listed Breathing Space debts they owe you.
+            If you are taking any enforcement action or have an agent recovering these debts,
+            you must stop this until @Model.DebtorDetail.PersonalDetail.FullName Breathing Space has finished.
+        </div>
+    </details>
+    <p class="govuk-body-l">
+        <strong id="ma-org-name-lead">Advice UK</strong> has entered your client into Breathing Space
+    </p>
+    <ol class="app-task-list">
+        <li>
+            <h2 class="govuk-heading-m" id="creditor-tasks">
+                Tasks
+            </h2>
+            <ul class="app-task-list__items govuk-!-margin-bottom-5">
+                @for (int i = 0; i < Model.Debts.Count; i++)
+                {
+                    var debt = Model.Debts[i];
+                    ViewData["Index"] = i;
+                    <li class="app-task-list__item" id="debt-task-@i">
+                        <partial name="Partials/_DebTaskWithActions" model="debt" view-data="ViewData" />
+                    </li>
+                }
+                @if (ClientIsReviewed)
+                {
+                    <li class="app-task-list__item" id="client-eligibility-review">
+                        <strong class="govuk-tag govuk-tag--blue app-task-list__tag" id="read-declaration-status">Sent to Money Adviser</strong>
+                        <h3 id="client-eligibility-review-header" class="govuk-heading-s govuk-!-margin-bottom-1">
+                            Client eligibility review
+                        </h3>
+                        <ul class="govuk-list">
+                            <li><a id="client-eligibility-review-link" href="#" class="govuk-link">Review requested - view details</a></li>
+                        </ul>
+                    </li>
+                }
+            </ul>
+        </li>
+    </ol>
+    <h2 class="govuk-heading-m" id="creditor-other-actions">
+        Other actions
+    </h2>
+    <a href="#" id="add-debt" class="govuk-button govuk-button--secondary govuk-!-margin-right-2" data-module="govuk-button">
+        Add debts that should be included
+    </a>
+    @if (Model.DebtorDetail.PersonalDetail.EligibleForReview && !ClientIsReviewed)
+    {
+        <a asp-action="ClientEligibilityReview"
+           asp-route-journeyKey="@Guid.NewGuid()"
+           id="request-debtor-review"
+           class="govuk-button govuk-button--secondary govuk-!-margin-right-2"
+           data-module="govuk-button">
+            The client's not eligible, ask for a review
+        </a>
+    }
+    <partial name="Partials/_ClientPersonalDetailsPartial" model="Model.DebtorDetail" />
+    <h2 class="govuk-heading-m" id="creditor-ma-details">Money advice organisation details</h2>
+    <ul class="govuk-list">
+        <li>Name: Advice uk</li>
+        <li>Email: breathingspaceteam@adviceuk.org.uk</li>
+        <li>Telephone: 0151 490 1731</li>
+    </ul>
+</div>
+

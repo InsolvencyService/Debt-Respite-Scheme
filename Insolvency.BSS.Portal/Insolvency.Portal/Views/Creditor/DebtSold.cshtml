@@ -1,0 +1,32 @@
+﻿@model Insolvency.Portal.Models.ViewModels.Creditor.CreditorDebtSoldViewModel;
+
+@{
+    ViewData["Title"] = "Debt Eligibility Review";
+    ViewData["Index"] = 0;
+}
+
+<div class="govuk-grid-column-full">
+    <a id="back-link" class="govuk-back-link" href="javascript: history.go(-1)">Back</a>
+</div>
+<div class="govuk-grid-column-three-quarters" id="content">
+    <h1 id="heading" class="govuk-heading-l">Confirm you’ve sold this debt</h1>
+
+    <h2 id="debt-heading" class="govuk-heading-m">Debt</h2>
+    <partial name="Partials/_DebtDetailsListItem" model="Model.Debt" view-data="ViewData" />
+
+    @if (Model.IsAdHocCreditor)
+    {
+        <h2 id="debt-heading" class="govuk-heading-m">Creditor Address</h2>
+        <p id="detail-text" class="govuk-body break-word">@Model.Creditor.ToSingleLineString()</p>
+    }
+
+    <div class="govuk-body-l" id="debt-sold-to-body">You’re telling <span id="ma-org">Advice UK</span> you have sold the debt to <span id="creditor-org"><strong>@Model.Creditor.Name</strong></span></div>
+
+    <form method="post" asp-action="DebtSold" asp-controller="Creditor" asp-route-journeyKey="@ViewData["JourneyKey"].ToString()">
+        <input asp-for="DebtId" type="hidden" value="@Model.Debt.Id" />
+        <input asp-for="CreditorId" type="hidden" value="@Model.Creditor.Id" />
+        <button id="submit-button" class="govuk-button" value="submit" data-module="govuk-button" type="submit">
+            Confirm and submit
+        </button>
+    </form>
+</div>

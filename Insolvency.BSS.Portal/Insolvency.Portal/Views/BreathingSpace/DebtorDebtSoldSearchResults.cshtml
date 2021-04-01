@@ -1,0 +1,33 @@
+﻿@model Insolvency.Portal.Models.ViewModels.DebtorDebtSoldSearchResultsViewModel;
+
+@{
+    ViewData["Title"] = "Debt Has Been Sold";
+}
+
+<div class="govuk-grid-column-two-thirds @(!ViewData.ModelState.IsValid ? "govuk-error-summary" : "display-none") " id="error-summary">
+    <h2 class="govuk-error-summary__title">
+        @Localizer["There is a problem"]
+    </h2>
+    <div id="error-list" bss-error-summary="All" class="govuk-error-summary__body"></div>
+</div>
+<div class="govuk-grid-column-full">
+    <a id="back-link" href="javascript: history.go(-1)" class="govuk-back-link"> @Localizer["Back"]</a>
+</div>
+<div class="govuk-grid-column-two-thirds" id="content">
+    <h1 id="heading" class="govuk-heading-xl">Who have you sold the debt to?</h1>
+    <form class="form" asp-action="DebtorDebtSoldSearchResults" asp-route-journeyKey="@Guid.NewGuid()"
+          asp-route-parentJourneyKey="@ViewData["JourneyKey"].ToString()" method="post">
+        <div class="govuk-form-group @(!ViewData.ModelState.IsValid ? "govuk-form-group--error" : string.Empty)">
+            <strong>
+                <label class="govuk-label govuk-!-font-weight-bold" asp-for="SelectedCreditor"></label>
+            </strong>
+            <span asp-validation-for="SelectedCreditor" class="govuk-error-message"></span>
+            <select class="govuk-select govuk-input--width-10 @(!ViewData.ModelState.IsValid ? "govuk-select--error" : string.Empty)"
+                    asp-for="SelectedCreditor"
+                    asp-items="Model.Creditors"></select>
+        </div>
+        <button id="save-button" class="govuk-button" data-module="govuk-button" type="submit">
+            @Localizer["Transfer this debt to the new creditor"]
+        </button>
+    </form>
+</div>

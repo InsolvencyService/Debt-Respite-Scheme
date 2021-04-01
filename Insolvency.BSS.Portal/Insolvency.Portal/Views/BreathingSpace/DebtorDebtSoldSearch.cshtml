@@ -1,0 +1,64 @@
+﻿@model Insolvency.Portal.Models.ViewModels.DebtorDebtSoldSearchViewModel;
+
+@{
+    ViewData["Title"] = @Localizer["Breathing Space"];
+    var isCreditorNameValid = true;
+    if (ViewContext.ViewData.ModelState.TryGetValue(nameof(Model.CreditorName), out var creditorName))
+    {
+        isCreditorNameValid = creditorName.Errors.Count == 0;
+    }
+}
+
+<div class="govuk-grid-column-two-thirds @(!ViewData.ModelState.IsValid ? "govuk-error-summary" : "display-none") " id="error-summary">
+    <h2 class="govuk-error-summary__title">
+        @Localizer["There is a problem"]
+    </h2>
+    <div id="error-list" bss-error-summary="All" class="govuk-error-summary__body"></div>
+</div>
+
+<div class="govuk-grid-column-two-thirds" id="content">
+    <a id="back-link" href="javascript: history.go(-1)" class="govuk-back-link"> @Localizer["Back"]</a>
+    <h1 id="title" class="govuk-heading-xl">Creditor has sold this debt</h1>
+    <h2 id="transfer-debt-subtitle" class="govuk-heading-s govuk-!-margin-bottom-4">Debt@(Model.Debt.HasDebtTypeName ? $": {Model.Debt.SelectedDebtTypeName}": null)</h2>
+    <ul class="govuk-list">
+        <li id="transfer-debt-creditor">Creditor: @Model.Creditor.Name</li>
+        @if (Model.Debt.HasDebtAmount)
+        {
+            <li id="transfer-debt-debt-amount">Amount: £@Model.Debt.DebtAmount</li>
+        }
+        @if (Model.Debt.HasReference)
+        {
+            <li id="transfer-debt-debt-ref">Reference: @Model.Debt.Reference</li>
+        }
+        @if (Model.Debt.HasNi)
+        {
+            <li id="transfer-debt-nino">National Insurance Number: @Model.Debt.NINO</li>
+        }
+        <li id="transfer-debt-entered-on">Debt was entered on @Model.Debt.FormattedCommencementDate</li>
+    </ul>
+    <form id="creditorSearchForm" class="form" asp-action="DebtorDebtSoldSearch" asp-route-journeyKey="@ViewData["JourneyKey"].ToString()"
+          asp-route-parentJourneyKey="@ViewData["ParentJourneyKey"].ToString()" method="post">
+        <div class="govuk-form-group @(!isCreditorNameValid ? "govuk-form-group--error" : string.Empty)">
+            <div id='autocomplete' role='combobox' aria-expanded='false' aria-owns='autocomplete-results' aria-haspopup='listbox'>
+                <bss-input asp-for="CreditorName"
+                           label-class="govuk-!-font-weight-bold"
+                           input-class="govuk-!-width-two-third"
+                           input-hint="This can be the name of an organisation or an individual. For example, ABC Bank Ltd or Joe Johnson"
+                           aria-autocomplete="none"
+                           autocomplete="off"
+                           aria-controls="autocomplete-results">
+                </bss-input>
+            </div>
+            <ul id='autocomplete-results' class='hidden' role='listbox' aria-label='Search for a creditor ogranisation by name'></ul>
+        </div>
+        <input asp-for="Debt.Id" id="debt-id" type="hidden" />
+        <input id="journey-key" value="@ViewData["JourneyKey"].ToString()" type="hidden" />
+        <input id="parent-journey-key" value="@ViewData["ParentJourneyKey"]?.ToString()" type="hidden" />
+        <button id="save-button" class="govuk-button" data-module="govuk-button" type="submit">
+            @Localizer["Transfer this debt to the new creditor"]
+        </button>
+    </form>
+</div>
+<script src="~/js/jquery-3.5.1.min.js"></script>
+<script src="~/js/creditor-typeahead.js"></script>
+<script src="~/js/creditor-typeahead_debt-sold-debtor-overwrite.js"></script>

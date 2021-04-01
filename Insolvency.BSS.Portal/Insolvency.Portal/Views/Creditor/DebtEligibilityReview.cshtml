@@ -1,0 +1,103 @@
+﻿@using Insolvency.Common.Enums
+@model Insolvency.Portal.Models.ViewModels.Creditor.CreditorDebtEligibilityReviewViewModel;
+
+@{
+    var IdOverwrite = new Dictionary<string, string> {
+        {"Reason","reason-not-eligible"}
+    };
+    ViewData["Title"] = "Debt Eligibility Review";
+    ViewData["Index"] = 0;
+
+    var isNotesValid = true;
+    if (ViewContext.ViewData.ModelState.TryGetValue(nameof(Model.CreditorNotes), out var notes))
+    {
+        isNotesValid = notes.Errors.Count == 0;
+    }
+    var isReasonValid = true;
+    if (ViewContext.ViewData.ModelState.TryGetValue(nameof(Model.Reason), out var reason))
+    {
+        isReasonValid = reason.Errors.Count == 0;
+    }
+}
+
+<div class="govuk-grid-column-full">
+    <a id="back-link" class="govuk-back-link" href="javascript: history.go(-1)">Back</a>
+</div>
+<div class="govuk-grid-column-two-thirds @(!ViewData.ModelState.IsValid ? "govuk-error-summary" : "display-none")" id="error-summary">
+    <h2 class="govuk-error-summary__title bss-font-size-s--all">
+        There is a problem
+    </h2>
+    <div id="error-list" bss-error-summary="All" id-overwrite="IdOverwrite" class="govuk-error-summary__body bss-font-size-s--all">
+    </div>
+</div>
+
+<div class="govuk-grid-column-two-thirds" id="content">
+    <form method="post" asp-action="DebtEligibilityReview" asp-controller="Creditor" asp-route-journeyKey="@ViewData["JourneyKey"].ToString()">
+        <div class="govuk-form-group">
+            <fieldset class="govuk-fieldset">
+                <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                    <h1 class="govuk-fieldset__heading" id="page-heading">
+                        Ask the money adviser to review this debt
+                    </h1>
+                </legend>
+            </fieldset>
+            <h2 id="debt-heading" class="govuk-heading-s govuk-!-margin-bottom-0 govuk-!-margin-top-5">Debt</h2>
+            <partial name="Partials/_DebtDetailsListItem" model="Model.Debt" view-data="ViewData" />
+        </div>
+        <div class="govuk-form-group @(!isReasonValid ? "govuk-form-group--error" : string.Empty)">
+            <fieldset class="govuk-fieldset">
+                <legend class="govuk-fieldset__legend govuk-fieldset__legend--l govuk-!-margin-bottom-0">
+                    <span id="reason-heading" class="govuk-heading-s govuk-!-margin-bottom-0">Why does the debt need reviewing?</span>
+                </legend>
+                <span class="govuk-error-message field-validation-valid"
+                      asp-validation-for="Reason">
+                </span>
+                <div class="govuk-radios">
+                    <div class="govuk-radios__item">
+                        <input class="govuk-radios__input condition"
+                               id="reason-not-eligible"
+                               asp-for="Reason"
+                               type="radio"
+                               value="@(DebtEligibilityReviewReasons.NotEligible)">
+                        <label class="govuk-label govuk-radios__label" for="reason-not-eligible" id="review-option-failed-criteria-label">
+                            The debt is not eligible
+                        </label>
+                    </div>
+                    <div class="govuk-radios__item">
+                        <input class="govuk-radios__input"
+                               id="reason-unfair-prejudices"
+                               asp-for="Reason"
+                               type="radio"
+                               value="@(DebtEligibilityReviewReasons.UnfairPrejudices)">
+                        <label class="govuk-label govuk-radios__label" for="reason-unfair-prejudices" id="review-option-has-funds">
+                            The Breathing Space unfairly prejudices the interests of the creditor
+                            <div id="reason-unfair-prejudices-hint" class="govuk-hint govuk-radios__hint">
+                                For example, where you consider that there has been differential or discriminatory treatment in respect of you or your debt
+                            </div>
+                        </label>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+        <div class="govuk-form-group @(!isNotesValid ? "govuk-form-group--error" : string.Empty)">
+            <h2 class="govuk-label-wrapper">
+                <label class="govuk-label govuk-label--s" asp-for="CreditorNotes">
+                    Please provide details to support the review
+                </label>
+            </h2>
+            <span class="govuk-error-message field-validation-valid"
+                  asp-validation-for="CreditorNotes">
+            </span>
+            <textarea class="govuk-textarea" asp-for="CreditorNotes" rows="5"></textarea>
+        </div>
+        <button id="save-button" class="govuk-button" value="Save and continue" data-module="govuk-button" type="submit">
+            Save and continue
+        </button>
+    </form>
+</div>
+<div id="sidebar" class="govuk-grid-column-one-third">
+    <p class="govuk-body-s sidebar-links">
+        <h3 id="sidebar-heading" class="govuk-heading-s">Related Content</h3>
+        <a id="sidebar-link" href="#" class="govuk-link govuk-body-m">See guidance about debt eligibility on GOV.UK (opens in a new tab)</a>
+    </p>
+</div>

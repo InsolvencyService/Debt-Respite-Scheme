@@ -1,0 +1,82 @@
+﻿@model Insolvency.Portal.Models.ViewModels.DebtorAccountSummaryViewModel;
+@{
+    ViewData["Title"] = @Localizer["Account Summary"];
+    ViewData["return-action"] = "DebtorAccountDetails";
+}
+
+@section navigation
+{
+    <partial name="_HomeNavigation" model="@null" />
+}
+<div class="govuk-width-container" id="content">
+    <partial name="_DebtorAccountHeaderMoneyAdvisor" model="Model" />
+    <partial name="_ConfirmationBannerPartial" />
+
+    <a id="ma-add-debt"
+       asp-controller="BreathingSpace"
+       asp-action="CreditorSearch"
+       asp-route-fromCreateBreathingSpace="@false"
+       asp-route-journeyKey="@Guid.NewGuid()"
+       asp-route-parentJourneyKey="@ViewData["JourneyKey"]?.ToString()"
+       class="govuk-button govuk-button--secondary govuk-!-margin-right-2"
+       data-module="govuk-button">
+        Add a debt
+    </a>
+
+    <a id="ma-end-breathing-space"
+       class="govuk-button govuk-button--secondary govuk-!-margin-right-2"
+       data-module="govuk-button"
+       asp-controller="BreathingSpace"
+       asp-route-journeyKey="@Guid.NewGuid()"
+       asp-route-parentJourneyKey="@ViewData["JourneyKey"].ToString()"
+       asp-action="@( @Model.DebtorDetail.PersonalDetail.IsInMentalHealthMoratorium ?
+            "DebtorAccountMentalHealthEndReason" : "DebtorEndStandardBreathingSpaceDecision" )">
+        End Breathing Space
+    </a>
+
+    <div class="govuk-tabs" data-module="govuk-tabs">
+        <h2 id="ma-tabs-header" class="govuk-tabs__title">
+            Contents
+        </h2>
+        <ul class="govuk-tabs__list" role="tablist">
+            <li class="govuk-tabs__list-item govuk-tabs__list-item--selected" role="presentation">
+                <a class="govuk-tabs__tab" href="#tasks" id="tab-tasks" role="tab" aria-controls="actions" aria-selected="true" tabindex="0" style="">
+                    Tasks
+                </a>
+            </li>
+            <li class="govuk-tabs__list-item" role="presentation">
+                <a class="govuk-tabs__tab" href="#debts" id="tab-debts" role="tab" aria-controls="problem-debt" aria-selected="false" tabindex="-1" style="">
+                    Debts
+                </a>
+            </li>
+            @if (Model.HasRemovedDebts)
+            {
+                <li class="govuk-tabs__list-item" role="presentation">
+                    <a class="govuk-tabs__tab" href="#removed-debts" id="tab-removed-debts" role="tab" aria-controls="problem-removed-debts" aria-selected="false" tabindex="-1" style="">
+                        Removed debts
+                    </a>
+                </li>
+            }
+            <li class="govuk-tabs__list-item" role="presentation">
+                <a class="govuk-tabs__tab" href="#details" id="tab-details" role="tab" aria-controls="personal-details" aria-selected="false" tabindex="-1" style="">
+                    Client details
+                </a>
+            </li>
+        </ul>
+        <section class="govuk-tabs__panel" id="tasks" role="tabpanel" aria-labelledby="tab_actions">
+            <partial name="_MoneyAdvisorTaskListPartial" model="Model" />
+        </section>
+        <section class="govuk-tabs__panel govuk-tabs__panel--hidden" id="debts" role="tabpanel" aria-labelledby="tab_problem-debt">
+            <partial name="_MoneyAdvisorDebtsListPartial" model="Model.DebtDetails" />
+        </section>
+        @if (Model.HasRemovedDebts)
+        {
+            <section class="govuk-tabs__panel govuk-tabs__panel--hidden" id="removed-debts" role="tabpanel" aria-labelledby="tab_problem-removed-debts">
+                <partial name="_MoneyAdvisorRemovedDebtsListPartial" model="Model.DebtDetails" />
+            </section>
+        }
+        <section class="govuk-tabs__panel govuk-tabs__panel--hidden" id="details" role="tabpanel" aria-labelledby="tab_personal-details">
+            <partial name="_MoneyAdvisorDebtorDetailsPartial" model="Model.DebtorDetail" />
+        </section>
+    </div>
+</div>

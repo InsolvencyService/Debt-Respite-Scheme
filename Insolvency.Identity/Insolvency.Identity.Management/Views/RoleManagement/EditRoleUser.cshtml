@@ -1,0 +1,17 @@
+﻿@model Insolvency.Management.Models.ViewModels.RoleManagement.EditRoleUserViewModel
+<div class="row">
+    <div class="col-md-12 order-md-1">
+        <h4 class="mb-3">Edit Role User</h4>
+        <form method="post" asp-action="EditRoleUser" asp-controller="RoleManagement">
+            @Html.HiddenFor(x => x.Id)
+            @Html.HiddenFor(x => x.Role)
+            <div class="mb-3">
+                <label for="email">Email</label>
+                <input type="email" asp-for="Email" class="form-control" id="email" placeholder="you@example.com">
+                <span class="invalid-feedback" asp-validation-for="Email"></span>
+            </div>
+            <hr class="mb-4">
+            <button class="btn btn-primary btn-lg btn-block" type="submit">Submit</button>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,41 @@
+﻿@model Insolvency.Portal.Models.AddressWithValidation;
+
+@{
+    var IdOverwrite = new Dictionary<string, string> {
+        {"AddressLine1","Address1-input"},
+        {"AddressLine2","Address2-input"}
+    };
+    ViewData["Title"] = @Localizer["Breathing Space"];
+}
+
+<div class="govuk-grid-column-two-thirds @(!ViewData.ModelState.IsValid ? "govuk-error-summary" : "display-none")" id="error-summary">
+    <h2 class="govuk-error-summary__title">
+        @Localizer["There is a problem"]
+    </h2>
+    <div id="error-list" bss-error-summary="All" id-overwrite="IdOverwrite" class="govuk-error-summary__body"></div>
+</div>
+
+<div class="govuk-grid-column-two-thirds" id="content">
+    <form class="form" asp-controller="Creditor" asp-action="CreditorAddressSubmit" asp-route-journeyKey="@ViewData["JourneyKey"].ToString()" method="post">
+        <a id="back-link" asp-action="CreditorPostcode" asp-route-journeyKey="@ViewData["JourneyKey"].ToString()" class="govuk-back-link"> @Localizer["Back"]</a>
+        <fieldset class="govuk-fieldset" name="creditor">
+            <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
+                <h1 class="govuk-fieldset__heading">
+                    <span class="govuk-caption-xl">@Localizer["Add a debt : Step 2 of 3"]</span>
+                    @Localizer["Add creditor address"]
+                </h1>
+            </legend>
+            <span class="govuk-label govuk-!-font-weight-bold">
+                <strong>@Localizer["Creditor"]</strong>
+            </span>
+            <p class="govuk-body">@ViewBag.CreditorName    <a href="#" class="govuk-link">Change <span class="govuk-visually-hidden"> creditor</span></a></p>
+            <span class="govuk-label govuk-!-font-weight-bold">
+                <strong>@Localizer["Creditor Address"]</strong>
+            </span>
+            <partial name="_AddressWithValidationPartial" model="Model" />
+        </fieldset>
+        <button id="save-button" class="govuk-button" data-module="govuk-button" type="submit">
+            @Localizer["Save and continue"]
+        </button>
+    </form>
+</div>

@@ -1,0 +1,50 @@
+﻿@model Insolvency.Portal.Models.CreditorManualAddressSubmit;
+
+@{
+    var IdOverwrite = new Dictionary<string, string> {
+        {"AddressLine1","Address1-input"},
+        {"AddressLine2","Address2-input"}
+    };
+    ViewData["Title"] = @Localizer["Breathing Space"];
+}
+
+<div class="govuk-grid-column-two-thirds @(!ViewData.ModelState.IsValid ? "govuk-error-summary" : "display-none")" id="error-summary">
+    <h2 class="govuk-error-summary__title">
+        @Localizer["There is a problem"]
+    </h2>
+    <div id="error-list" bss-error-summary="All" id-overwrite="IdOverwrite" class="govuk-error-summary__body"></div>
+</div>
+
+<div class="govuk-grid-column-two-thirds" id="content">
+    <form class="form" asp-controller="BreathingSpace" asp-action="CreditorAddressSubmit" asp-route-journeyKey="@ViewData["JourneyKey"].ToString()" asp-route-parentJourneyKey="@ViewData["ParentJourneyKey"]?.ToString()" method="post">
+        <input asp-for="DebtId" type="hidden" />
+        <input asp-for="ReturnAction" type="hidden" />
+        <a id="back-link" href="javascript: history.go(-1)" class="govuk-back-link"> @Localizer["Back"]</a>
+        <fieldset class="govuk-fieldset" name="creditor">
+            <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
+                <h1 class="govuk-fieldset__heading" id="creditor-address-submit-heading">
+                    @Localizer["Add creditor address"]
+                </h1>
+            </legend>
+            <span class="govuk-label govuk-!-font-weight-bold" id="creditor-address-submit-creditor-label">
+                <strong>@Localizer["Creditor"]</strong>
+            </span>
+            <p class="govuk-body" id="creditor-address-submit-creditor-name">
+                @ViewBag.CreditorName
+                <a asp-action="CreditorSearch"
+                   asp-route-returnAction="@Model.ReturnAction"
+                   asp-route-debtId="@Model.DebtId"
+                   asp-route-edit="true"
+                   asp-route-journeyKey="@ViewData["JourneyKey"].ToString()"
+                   asp-route-parentJourneyKey="@ViewData["ParentJourneyKey"]?.ToString()"
+class="govuk-link" id="creditor-address-submit-change-call-to-action">Change <span class="govuk-visually-hidden"> creditor</span></a>
+            </p>
+                <strong>@Localizer["Creditor Address"]</strong>
+            </span>
+            <partial name="_AddressWithValidationPartial" model="Model" />
+        </fieldset>
+        <button id="save-button" class="govuk-button" data-module="govuk-button" type="submit">
+            @Localizer["Save and continue"]
+        </button>
+    </form>
+</div>

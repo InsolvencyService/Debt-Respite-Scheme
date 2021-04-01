@@ -1,0 +1,37 @@
+﻿@using Insolvency.Common
+@model Insolvency.Portal.Models.ViewModels.DebtorRemoveDebtViewModel;
+
+<div class="govuk-grid-column-full" id="content-top">
+    <a id="back-link" href="javascript: history.go(-1)" class="govuk-back-link"> @Localizer["Back"]</a>
+    <h1 id="heading" class="govuk-heading-l">Confirm you're removing this debt</h1>
+</div>
+<div class="govuk-grid-column-two-thirds" id="content">
+    <h2 id="remove-debt-subtitle" class="govuk-heading-s govuk-!-margin-bottom-4">Debt@(Model.DebtDetailViewModel.Debt.HasDebtTypeName ? $": {Model.DebtDetailViewModel.Debt.SelectedDebtTypeName}": null)</h2>
+    <partial name="_DebtDetailPartial" model="Model.DebtDetailViewModel" />
+    <h3 id="remove-debt-reason" class="govuk-label govuk-!-font-weight-bold"><strong>Reason you're removing the debt</strong></h3>
+    <p id="remove-debt-reason-text" class="govuk-body">@Model.Reason.GetDisplayName()</p>
+    <h3 id="remove-debt-reason-more-details" class="govuk-label govuk-!-font-weight-bold"><strong>Details to support the decision</strong></h3>
+    <p id="remove-debt-reason-more-details-text" class="govuk-body">@Model.MoreDetails</p>
+
+    <div class="govuk-warning-text">
+        <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+        <strong id="remove-debt-confirmation-warning" class="govuk-warning-text__text">
+            <span id="remove-debt-confirmation-warning-assist" class="govuk-warning-text__assistive">Warning</span>
+            By removing this debt from Breathing Space, creditor protections will be removed.
+        </strong>
+    </div>
+
+    <form id="remove-debt-form"
+          class="form"
+          asp-action="DebtorRemoveDebtConfirmation"
+          asp-route-journeyKey="@ViewData["JourneyKey"].ToString()"
+          asp-route-parentJourneyKey="@ViewData["ParentJourneyKey"].ToString()"
+          method="post">
+        <input type="hidden" asp-for="DebtDetailViewModel.Debt.Id" value="@Model.DebtDetailViewModel.Debt.Id" />
+        <input type="hidden" asp-for="Reason" value="@Model.Reason" />
+        <input type="hidden" asp-for="MoreDetails" value="@Model.MoreDetails" />
+        <button id="submit-button" class="govuk-button" value="submit" data-module="govuk-button" type="submit">
+            Remove debt
+        </button>
+    </form>
+</div>

@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Insolvency.Notifications.APIFunction": {
+      "commandName": "Project",
+      "commandLineArgs": "host start -p 7075"
+    }
+  }
+}

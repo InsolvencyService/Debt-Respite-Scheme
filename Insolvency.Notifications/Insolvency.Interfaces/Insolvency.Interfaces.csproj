@@ -1,0 +1,13 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Insolvency.Identity.Models\Insolvency.Identity.Models.csproj" />
+    <ProjectReference Include="..\Insolvency.Models\Insolvency.Models.csproj" />
+    <ProjectReference Include="..\Insolvency.Notifications.Models\Insolvency.Notifications.Models.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,52 @@
+﻿@model Insolvency.Portal.Models.ViewModels.CreditorAddAdHocDebtViewModel;
+
+@{
+    ViewData["Title"] = @Localizer["Breathing Space"];
+}
+
+<div class="govuk-grid-column-two-thirds @(!ViewData.ModelState.IsValid ? "govuk-error-summary" : "display-none") " id="error-summary">
+    <h2 class="govuk-error-summary__title">
+        @Localizer["There is a problem"]
+    </h2>
+    <div id="error-list" bss-error-summary="All" class="govuk-error-summary__body"></div>
+</div>
+
+<div class="govuk-grid-column-two-thirds" id="content">
+    <form class="form" asp-controller="BreathingSpace" asp-action="CreditorAddAdHocDebt" asp-route-journeyKey="@ViewData["JourneyKey"].ToString()" asp-route-parentJourneyKey="@ViewData["ParentJourneyKey"]?.ToString()" method="post">
+        <input asp-for="Id" type="hidden" />
+        <input asp-for="ReturnAction" type="hidden" />
+        <a id="back-link" href="javascript: history.go(-1)" class="govuk-back-link"> @Localizer["Back"]</a>
+        <fieldset class="govuk-fieldset" name="client">
+            <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
+                <h1 class="govuk-fieldset__heading" id="creditor-add-ad-hoc-debt-heading">
+                    @Localizer["Add debt type, amount and reference"]
+                </h1>
+            </legend>
+            <div class="govuk-form-group">
+                <h2 class="govuk-body govuk-!-font-weight-bold" id="creditor-add-ad-hoc-debt-creditor-label">@Localizer["Creditor"]</h2>
+                <p class="govuk-body">
+                    @Model.CreditorName
+                    <a class="govuk-link"
+                       asp-route-returnAction="@Model.ReturnAction"
+                       asp-action="CreditorSearch"
+                       asp-route-debtId="@Model.Id"
+                       asp-route-journeyKey="@ViewData["JourneyKey"].ToString()"
+                       asp-route-parentJourneyKey="@ViewData["ParentJourneyKey"]?.ToString()"
+                       id="creditor-change">@Localizer["Change"]<span class="govuk-visually-hidden"> creditor</span></a>
+                </p>
+            </div>
+            <div class="govuk-form-group">
+                <div class="govuk-form-group">
+                    <bss-input asp-for="DebtAmount" input-class="govuk-!-width-one-third"></bss-input>
+                    <bss-input asp-for="SelectedDebtTypeName" input-class="govuk-!-width-one-third"></bss-input>
+                    <bss-input asp-for="Reference" input-class="govuk-!-width-one-third"></bss-input>
+                    <input type="hidden" asp-for="CreditorId" />
+                </div>
+            </div>
+            <input type="hidden" asp-for="CreditorName" />
+        </fieldset>
+        <button id="save-button" class="govuk-button" data-module="govuk-button" type="submit">
+            @Localizer["Save and continue"]
+        </button>
+    </form>
+</div>

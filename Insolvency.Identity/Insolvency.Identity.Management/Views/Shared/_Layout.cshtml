@@ -1,0 +1,52 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="generator" content="Jekyll v4.1.1">
+    <title>Identity Role Management</title>
+
+    <link rel="canonical" href="https://getbootstrap.com/docs/4.5/examples/product/">
+
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <style>
+        .bd-placeholder-img {
+            font-size: 1.125rem;
+            text-anchor: middle;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        @@media (min-width: 768px) {
+            .bd-placeholder-img-lg {
+                font-size: 3.5rem;
+            }
+        }
+    </style>
+    <!-- Custom styles for this template -->
+    <link href="~/css/site.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="site-header sticky-top py-1">
+        <div class="container d-flex flex-column flex-md-row justify-content-center">
+            <a class="py-2 d-none d-md-inline-block" href="/">My Profile</a>
+        </div>
+    </nav>
+
+    <main class="col-md-9 m-sm-auto col-lg-10 pt-3 px-4" id="main-content" role="main">
+        <div class="container-fluid">
+            @RenderBody()
+        </div>
+
+    </main>
+
+    <footer class="container py-5">
+        <div class="row">
+        </div>
+    </footer>
+</body>
+</html>

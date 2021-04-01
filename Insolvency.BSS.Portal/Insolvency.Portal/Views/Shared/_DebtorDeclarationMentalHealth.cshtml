@@ -1,0 +1,20 @@
+﻿@model Insolvency.Portal.Models.ViewModels.DebtorPersonalDetailViewModel;
+
+<p class="govuk-body">@Localizer["By submitting this application, you agree that:"]</p>
+<ul class="govuk-list govuk-list--bullet">
+    <li>
+        @Localizer["You've seen evidence from a mental health professional that "]<strong id="debtor-declaration-name-1">@Model.FullName</strong>@Localizer[" is receiving mental health crisis treatment"]
+    </li>
+    <li>
+        @Localizer["You've carried out a credit check on "]<strong id="debtor-declaration-name-2">@Model.FullName</strong>@Localizer[" with a credit reference agency"]
+    </li>
+    <li>
+        @Localizer["The information you've provided is complete and correct to the best of your knowledge"]
+    </li>
+    <li>
+        @Localizer["Your client meets the required conditions and eligibility criteria"]
+    </li>
+    <li>
+        @Localizer["You’ll confirm "]<strong id="debtor-declaration-name-2">@Model.FullName</strong>@Localizer[" is continuing to receive mental health crisis treatment every 30 days while they are in a mental health crisis moratorium"]
+    </li>
+</ul>

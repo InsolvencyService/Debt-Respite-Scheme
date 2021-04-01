@@ -1,0 +1,81 @@
+﻿@model IEnumerable<Insolvency.Portal.Models.ViewModels.BusinessAddressViewModel>;
+
+@{
+    var returnAction = ViewData["return-action"] as string;
+    var isEnded = ViewData.ContainsKey("IsBreathingSpaceEnded") ? (bool)ViewData["IsBreathingSpaceEnded"] : false;
+}
+
+<dl class="govuk-summary-list">
+    @if (Model.Any())
+    {
+        int i = 0;
+        @foreach (var address in Model)
+        {
+            i++;
+            <div class="govuk-summary-list__row">
+                <dt id="debtor-summary-business-address-lbl-@(i)" class="govuk-summary-list__key">
+                    @Localizer[$"{address.BusinessName}"]
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    <partial name="_AddressHiddenPartial"
+                             model="@address.HideBusinessAddress"
+                             view-data='@new ViewDataDictionary(ViewData) { { "id-value", i.ToString() } }' />
+                    <span id="debtor-summary-business-address-@(i)">
+                        @address.BusinessAddress.AddressLine1<br>
+                        @if (address.BusinessAddress.HasAddressLine2)
+                        {
+                            @address.BusinessAddress.AddressLine2<br>
+                        }
+                        @if (address.BusinessAddress.HasTownCity)
+                        {
+                            @address.BusinessAddress.TownCity<br>
+                        }
+                        @if (address.BusinessAddress.HasCounty)
+                        {
+                            @address.BusinessAddress.County<br>
+                        }
+                        @address.BusinessAddress.Postcode
+                    </span>
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                    @if (!isEnded)
+                    {
+                        <ul class="govuk-list">
+                            <li>
+                                <a id="debtor-summary-chng-business-address-@(i)" class="govuk-link govuk-body"
+                                   asp-controller="BreathingSpace"
+                                   asp-action="DebtorAddBusiness"
+                                   asp-route-businessId="@address.BusinessId"
+                                   asp-route-returnAction="@returnAction"
+                                   asp-route-journeyKey="@Guid.NewGuid()"
+                                   asp-route-parentJourneyKey="@ViewData["JourneyKey"]?.ToString()">
+                                    @Localizer["Change"] <span class="govuk-visually-hidden"> business</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a id="debtor-summary-del-business-address-@(i)" class="govuk-link govuk-body" href="#">
+                                    @Localizer["Delete"] <span class="govuk-visually-hidden"> business</span>
+                                </a>
+                            </li>
+                        </ul>
+                    }
+                </dd>
+            </div>
+        }
+    }
+</dl>
+@if (!isEnded)
+{
+    <p>
+        <a id="debtor-summary-add-business"
+           class="govuk-link govuk-body"
+           asp-controller="BreathingSpace"
+           asp-action="DebtorBusinessDetails"
+           asp-route-returnAction="@returnAction"
+           asp-route-journeyKey="@Guid.NewGuid()"
+           asp-route-parentJourneyKey="@ViewData["JourneyKey"]?.ToString()">
+            @Localizer["Add client business"]
+        </a>
+    </p>
+}
+

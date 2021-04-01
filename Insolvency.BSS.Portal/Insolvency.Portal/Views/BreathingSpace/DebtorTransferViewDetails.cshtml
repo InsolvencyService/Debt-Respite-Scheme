@@ -1,0 +1,17 @@
+﻿@model Insolvency.Portal.Models.ViewModels.DebtorTransferViewModel;
+
+@{
+    ViewData["Title"] = "View Transfer Debtor Details";
+}
+
+<div class="govuk-grid-column-full">
+    <a id="back-link" href="javascript: history.go(-1)" class="govuk-back-link"> @Localizer["Back"]</a>
+</div>
+<div class="govuk-grid-column-three-quarters" id="content">
+    <h1 id="debtor-transfer-confirmation-heading" class="govuk-heading-l">
+        @Model.RequestingMoneyAdviceOrganisation has requested a transfer of this Breathing Space
+    </h1>
+    <partial name="_NonOwningDebtorTransferDetailsPartial"
+             model="Model"
+             view-data='@new ViewDataDictionary(ViewData) { { "display-reason", true }, { "display-requested-by", true } }' />
+</div>

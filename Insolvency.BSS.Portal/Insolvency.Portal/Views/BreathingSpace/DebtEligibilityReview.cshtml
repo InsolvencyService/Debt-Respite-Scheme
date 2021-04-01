@@ -1,0 +1,116 @@
+﻿@using Insolvency.Portal.Models.ViewModels
+@model Insolvency.Portal.Models.ViewModels.DebtEligibilityReviewSummaryViewModel;
+
+@{
+    var IdOverwrite = new Dictionary<string, string> {
+        {"SubmitOption","debt-eligibility-submit-yes"}
+    };
+    ViewData["Title"] = @Localizer["Debt Eligibility Review"];
+
+    var isSubmitOptionValid = true;
+    if (ViewContext.ViewData.ModelState.TryGetValue(nameof(Model.SubmitOption), out var notes))
+    {
+        isSubmitOptionValid = notes.Errors.Count == 0;
+    }
+
+    var isSupportingDetailValid = true;
+    if (ViewContext.ViewData.ModelState.TryGetValue(nameof(Model.ReviewSupportingDetail), out var reason))
+    {
+        isSupportingDetailValid = reason.Errors.Count == 0;
+    }
+}
+
+<div class="govuk-grid-column-two-thirds @(!ViewData.ModelState.IsValid ? "govuk-error-summary" : "display-none") " id="error-summary">
+    <h2 class="govuk-error-summary__title">
+        @Localizer["There is a problem"]
+    </h2>
+    <div id="error-list" bss-error-summary="All" id-overwrite="IdOverwrite" class="govuk-error-summary__body"></div>
+</div>
+
+<div class="govuk-grid-column-full">
+    <a id="back-link" href="javascript: history.go(-1)" class="govuk-back-link">Back</a>
+</div>
+<div class="govuk-grid-column-two-thirds" id="content">
+    <h1 id="ma-debt-eligibility-heading" class="govuk-heading-l">
+        Review details
+    </h1>
+    <h2 id="ma-debt-review-eligibility-creditor-req" class="govuk-heading-m">@Model.DebtDetailViewModel.Creditor.Name asked for a review of this debt</h2>
+    <partial name="_DebtReviewDetailPartial" model="Model.DebtDetailViewModel" />
+    <h3 id="ma-debt-eligibility-reason-title" class="govuk-heading-s govuk-!-margin-bottom-1">Reason for the review</h3>
+    <p id="ma-debt-eligibility-review-reason" class="govuk-body">@Model.DebtDetailViewModel.DebtEligibilityReview.ReviewReason</p>
+
+    <h3 id="ma-debt-eligibility-review-support-title" class="govuk-heading-s govuk-!-margin-bottom-1">Details to support the review</h3>
+    <p id="ma-debt-eligibility-review-support-reason" class="govuk-body break-word">@Model.DebtDetailViewModel.DebtEligibilityReview.CreditorNote</p>
+    <h3 id="ma-debt-eligibility-requested-by-title" class="govuk-heading-s govuk-!-margin-bottom-0">Requested by</h3>
+    <p id="ma-debt-eligibility-requested-by" class="govuk-body govuk-!-margin-bottom-7">
+        Sammy Hewitt, @Model.DebtDetailViewModel.Creditor.Name, @Model.DebtDetailViewModel.DebtEligibilityReview.FormattedCreatedOnOrdinal at @Model.DebtDetailViewModel.DebtEligibilityReview.FormattedCreatedOnTime
+    </p>
+    <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
+    <form asp-action="DebtEligibilityReview"
+          asp-controller="BreathingSpace"
+          asp-route-journeyKey="@ViewData["JourneyKey"].ToString()"
+          asp-route-parentJourneyKey="@ViewData["ParentJourneyKey"]?.ToString()">
+        <div class="govuk-form-group @(!isSubmitOptionValid ? "govuk-form-group--error" : string.Empty)">
+            <fieldset class="govuk-fieldset" aria-describedby="ma-debt-eligibility-remove-confirmation">
+                <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                    <h2 id="ma-debt-eligibility-remove-confirmation" class="govuk-fieldset__heading">
+                        Do you want to remove this debt?
+                    </h2>
+                </legend>
+                <span id="errors"
+                      class="govuk-error-message field-validation-valid"
+                      asp-validation-for="SubmitOption">
+                </span>
+                <div class="govuk-radios" data-module="govuk-radios">
+                    <div class="govuk-radios__item">
+                        <input class="govuk-radios__input condition"
+                               id="debt-eligibility-submit-yes"
+                               asp-for="SubmitOption"
+                               type="radio"
+                               value="@Option.Yes"
+                               checked="@Model.IsYesChecked" />
+                        <label class="govuk-label govuk-radios__label" aria-describedby="debt-eligibility-submit-yes" id="ma-debt-eligibility-remove-confirmation-yes" for="debt-eligibility-submit-yes">
+                            Yes
+                        </label>
+                    </div>
+                    <div class="govuk-radios__item">
+                        <input class="govuk-radios__input"
+                               id="debt-eligibility-submit-no"
+                               asp-for="SubmitOption"
+                               type="radio"
+                               value="@Option.No"
+                               checked="@Model.IsNoChecked" />
+                        <label id="ma-debt-eligibility-remove-confirmation-no" aria-describedby="debt-eligibility-submit-no" class="govuk-label govuk-radios__label" for="debt-eligibility-submit-no">
+                            No
+                        </label>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+        <div class="govuk-form-group @(!isSupportingDetailValid ? "govuk-form-group--error" : string.Empty)">
+            <label id="ma-debt-eligibility-removal-support-title" class="govuk-label govuk-!-font-weight-bold" for="ReviewSupportingDetail">
+                <strong>Please provide details to support your decision</strong>
+            </label>
+            <span class="govuk-error-message field-validation-valid"
+                  asp-validation-for="ReviewSupportingDetail">
+            </span>
+            <textarea asp-for="ReviewSupportingDetail" id="ReviewSupportingDetail-input" class="govuk-textarea" rows="4" aria-describedby="ma-debt-eligibility-removal-support-title"></textarea>
+        </div>
+        <button id="ma-debt-eligibility-review-save" type="submit" class="govuk-button" data-module="govuk-button">
+            Save and continue
+        </button>
+    </form>
+</div>
+<div class="govuk-grid-column-one-third">
+    <h2 id="ma-debt-eligibility-related-title" class="govuk-heading-s related">Related content</h2>
+    <p>
+        <a id="ma-debt-eligibility-related-content"
+           href="https://www.gov.uk/government/publications/debt-respite-scheme-breathing-space-guidance/debt-respite-scheme-breathing-space-guidance-for-money-advisers#before-a-breathing-space-starts"
+           class="govuk-link"
+           target="_blank"
+           rel="noreferrer noopener"
+           role="link">
+            See guidance on debt eligibility on gov.uk (opens in a new tab)
+        </a>
+    </p>
+</div>

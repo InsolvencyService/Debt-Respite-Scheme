@@ -1,0 +1,78 @@
+﻿@using Insolvency.Identity.Models
+@model Insolvency.Management.Models.ViewModels.UserProfile.UserProfileViewModel
+<div class="row">
+    <div class="btn-toolbar col-sm-12">
+        @if (Model.IsAdmin)
+        {
+            <div class="btn-group mr-2">
+                <a class="btn btn-primary" href="@Url.Action("Organisations", "RoleManagement")" role="button">Manage your Organisations &raquo;</a>
+            </div>
+        }
+        <div class="btn-group mr-2">
+            <a class="btn btn-primary" href="@Url.Action("ClientCredentials", "ClientCredentialsManagement")" role="button">Manage your Clients &raquo;</a>
+        </div>
+        @if (!string.IsNullOrWhiteSpace(Model.ManageGroupProfileUrl) && Model.IsAdmin)
+        {
+            <div class="btn-group mr-2">
+                <a class="btn btn-primary" href="@Model.ManageGroupProfileUrl" role="button">Manage your Team &raquo;</a>
+            </div>
+        }
+        @if (!string.IsNullOrWhiteSpace(Model.ManageProfileUrl))
+        {
+            <div class="btn-group mr-2">
+                <a class="btn btn-primary" href="@Model.ManageProfileUrl" role="button">Manage your Profile &raquo;</a>
+            </div>
+        }
+        @if (User.Identity.IsAuthenticated)
+        {
+            <form asp-controller="Logout" asp-action="Logout" method="post">
+                <div class="btn-group mr-2">
+                    <button class="btn btn-secondary" role="button" type="submit">Logout</button>
+                </div>
+            </form>
+        }
+    </div>
+</div>
+<div class="d-flex align-items-center p-3 my-3 rounded shadow-sm row">
+    <div class="col-sm-12">
+        <h2>Name: @Model.Name</h2>
+        <h4>Email: @Model.Email</h4>
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-12">
+        <h3>Organisations</h3>
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-3 col-border"><strong>Name</strong></div>
+    <div class="col-sm-4 col-border"><strong>Identifier</strong></div>
+    <div class="col-sm-2 col-border"><strong>Type</strong></div>
+    <div class="col-sm-3 col-border"><strong>Roles</strong></div>
+</div>
+@foreach (var org in Model.Organisations)
+{
+    <div class="row">
+        <div class="col-sm-3 col-border">@org.Name</div>
+        <div class="col-sm-4 col-border">@org.ExternalId</div>
+        <div class="col-sm-2 col-border">@org.Type</div>
+        <div class="col-sm-3 col-border">
+            <ul class="list-group list-group-flush">
+                @foreach (var roleUser in org.RoleUsers)
+                {
+                    <li class="list-group-item">
+                        @if (roleUser.Role == RoleType.Developer)
+                        {
+                            <strong>@roleUser.Role:</strong> @string.Join(", ", roleUser.Scopes.OrderBy(x => x.OrganisationScopeName)
+                             .Select(x => x.OrganisationScopeName))
+                        }
+                        else
+                        {
+                            <strong>@roleUser.Role</strong>
+                        }
+                    </li>
+                }
+            </ul>
+        </div>
+    </div>
+}

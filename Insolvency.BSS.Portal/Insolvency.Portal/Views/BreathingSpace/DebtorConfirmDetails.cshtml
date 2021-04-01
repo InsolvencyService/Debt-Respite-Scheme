@@ -1,0 +1,44 @@
+﻿@model Insolvency.Portal.Models.ViewModels.DebtorDetailViewModel;
+
+@{
+    ViewData["Title"] = @Localizer["Debtor Confirm Details"];
+    ViewData["return-action"] = "DebtorConfirmDetails";
+}
+
+<div class="govuk-grid-column-full" id="content">
+    <form class="form" method="post" asp-controller="BreathingSpace" asp-action="Index">
+        <h1 class="govuk-heading-xl">
+            @Localizer["Check client details"]
+        </h1>
+        <h2 id="debtor-personal-detail-heading" class="govuk-heading-m">@Localizer["Personal details"]</h2>
+        <partial name="_DebtorPersonalDetailsPartial" model="Model.PersonalDetail" />
+        <h2 class="govuk-heading-m">@Localizer["Addresses"]</h2>
+        <partial name="_DebtorAddressDetailsPartial" model="Model.AddressDetail" />
+        <p>
+            <a id="debtor-summary-add-prev-add"
+               class="govuk-link govuk-body"
+               asp-controller="BreathingSpace"
+               asp-action="DebtorAddresses"
+               asp-route-returnAction="DebtorConfirmDetails"
+               asp-route-journeyKey="@Guid.NewGuid()"
+               asp-route-parentJourneyKey="@ViewData["JourneyKey"]?.ToString()">
+                @Localizer["Add previous address"]
+            </a>
+        </p>
+        <h2 id="debtor-details-notification-header" class="govuk-heading-m">@Localizer["Notification preference"]</h2>
+        <partial name="_DebtorNotificationPartial" model="Model.NotificationDetail" />
+        <h2 class="govuk-heading-m">@Localizer["Business"]</h2>
+        <partial name="_DebtorBusinessDetailPartial" model="Model.BusinessDetails" />
+        <div class="govuk-summary-list govuk-!-margin-bottom-2">
+            <a id="debtor-confirm-details-btn"
+               class="govuk-button govuk-!-margin-top-5"
+               data-module="govuk-button"
+               asp-controller="BreathingSpace"
+               asp-action="DebtorAccountSummary"
+               asp-route-journeyKey="@Guid.NewGuid()"
+               asp-route-parentJourneyKey="@ViewData["JourneyKey"]?.ToString()">
+                @Localizer["Save and continue"]
+            </a>
+        </div>
+    </form>
+</div>

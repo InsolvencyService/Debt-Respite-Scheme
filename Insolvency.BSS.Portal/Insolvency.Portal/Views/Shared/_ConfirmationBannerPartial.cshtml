@@ -1,0 +1,16 @@
+﻿@using Insolvency.Portal.Services.Banner
+@inject BannerService bannerService
+
+@{ 
+    var banner = bannerService.GetBanner();
+}
+@if (banner != null)
+{
+<div class="govuk-inset-text govuk-tag--green govuk-!-margin-bottom-5 govuk-!-margin-top-0" id="confirmation-banner">
+    @if (!string.IsNullOrEmpty(banner.Heading))
+    {
+        <h2 id="account-review-confirmation-title" class="govuk-heading-m govuk-!-margin-bottom-2">@banner.Heading</h2>
+    }
+    <p id="account-review-confirmation" class="govuk-body">@banner.Text</p>
+</div>
+}

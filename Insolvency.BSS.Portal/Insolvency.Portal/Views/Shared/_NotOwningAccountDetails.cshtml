@@ -1,0 +1,56 @@
+﻿@model Insolvency.Portal.Models.ViewModels.DebtorAccountSummaryViewModel;
+
+<h1 class="govuk-heading-m govuk-!-margin-bottom-4" id="not-owning-organization-client-details-header">
+    Client details
+</h1>
+<div class="govuk-!-margin-bottom-1 govuk-body-m" id="not-owning-organization-client-details-client">
+    Client: @Model.DebtorDetail.PersonalDetail.FullName
+</div>
+<div class="govuk-!-margin-bottom-1 govuk-body-m" id="not-owning-organization-client-details-date-of-birth">
+    Date of birth: @Model.DebtorDetail.PersonalDetail.FormattedDob
+</div>
+@if (Model.DebtorDetail.AddressDetail.ShouldDisplayAddress)
+{
+    <div class="govuk-!-margin-bottom-1 govuk-body-m" id="not-owning-organization-client-details-address">
+        Address: @Model.DebtorDetail.AddressDetail.CurrentAddress.ToSingleLineString()
+    </div>
+}
+@if (Model.DebtorDetail.HasBusiness)
+{
+    if (Model.DebtorDetail.BusinessDetails.First().ShouldDisplayBusinessName)
+    {
+        <div class="govuk-!-margin-bottom-1 govuk-body-m" id="not-owning-organization-client-details-business-name">
+            Business name: @Model.DebtorDetail.BusinessDetails.First().BusinessName
+        </div>
+    }
+    if (Model.DebtorDetail.BusinessDetails.First().ShouldDisplayBusinessAddress)
+    {
+        <div class="govuk-!-margin-bottom-6 govuk-body-m" id="not-owning-organization-client-details-business-address">
+            Business address: @Model.DebtorDetail.BusinessDetails.First().BusinessAddress.ToSingleLineString()
+        </div>
+    }
+}
+@if (Model.MoneyAdviceOrganisation.ShouldDisplayMoneyOrganization)
+{
+    <h2 class="govuk-heading-m govuk-!-margin-bottom-4" id="not-owning-organization-ma-organisation-details-header">
+        Money advice organisation details
+    </h2>
+    @if (Model.MoneyAdviceOrganisation.ShouldDisplayName)
+    {
+        <div class="govuk-!-margin-bottom-1 govuk-body-m" id="not-owning-organization-ma-organisation-details-name">
+            Name: @Model.MoneyAdviceOrganisation.Name
+        </div>
+    }
+    @if (Model.MoneyAdviceOrganisation.ShouldDisplayEmail)
+    {
+        <div class="govuk-!-margin-bottom-1 govuk-body-m" id="not-owning-organization-ma-organisation-details-email">
+            Email: @Model.MoneyAdviceOrganisation.Email
+        </div>
+    }
+    @if (Model.MoneyAdviceOrganisation.ShouldDisplayTelephone)
+    {
+        <div class="govuk-!-margin-bottom-6 govuk-body-m" id="not-owning-organization-ma-organisation-details-telephone">
+            Telephone: @Model.MoneyAdviceOrganisation.Telephone
+        </div>
+    }
+}

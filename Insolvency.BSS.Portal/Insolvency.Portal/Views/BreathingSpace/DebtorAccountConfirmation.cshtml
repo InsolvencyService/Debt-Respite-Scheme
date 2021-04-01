@@ -1,0 +1,17 @@
+﻿@model Insolvency.Portal.Models.ViewModels.DebtorAccountConfirmationViewModel;
+
+@{ ViewData["Title"] = @Localizer["Debtor Account Confirmation"]; }
+
+<div class="govuk-grid-column-two-thirds" id="content">
+    <div class="govuk-panel govuk-panel--confirmation">
+        <h1 class="govuk-panel__title">
+            @Localizer["Breathing Space submitted"]
+        </h1>
+        <div class="govuk-panel__body" id="account-confirmation-reference">
+            @Localizer["Your client's reference number"]<br><strong>@Model.MoratoriumReference</strong>
+        </div>
+    </div>
+    <h2 class="govuk-heading-m">@Localizer["What happens next"]</h2>
+    <p class="govuk-body">@Localizer["Your client has been submitted into Breathing Space. We will notify your client's creditors that their Breathing Space has started."]</p>
+    <p><a id="account-confirmation-back-to-home" class="govuk-link govuk-body" asp-controller="BreathingSpace" asp-action="Index">@Localizer["Return to service homepage"]</a></p>
+</div>

@@ -1,0 +1,278 @@
+﻿@using Insolvency.Common.Enums
+@model Insolvency.Portal.Models.ViewModels.DebtorAccountEndReasonViewModel;
+
+@{
+    var IdOverwrite = new Dictionary<string, string> {
+        { "IsPartOfThirtyDayReviewStoppedTreament","submit-stopped-treatment-sub-question-yes" },
+        { "SubmitOption","submit-stopped-treatment" },
+        { "IsPartOfThirtyDayReviewUnableToReachPointOfContact","submit-unable-to-reach-point-of-contact-sub-question-yes" },
+        { "NoLongerEligibleReason","submit-no-longer-eligible" },
+        { "TreatmentEndDay", "treatmentEndDate-day-input" },
+        { "TreatmentEndMonth", "treatmentEndDate-month-input" },
+        { "TreatmentEndYear", "treatmentEndDate-year-input" }
+    };
+    ViewData["Title"] = @Localizer["Breathing Space End Reason"]; }
+
+<div class="govuk-grid-column-two-thirds @(!ViewData.ModelState.IsValid ? "govuk-error-summary" : "display-none")" id="error-summary">
+    <h2 class="govuk-error-summary__title bss-font-size-s--all">
+        @Localizer["There is a problem"]
+    </h2>
+    <div id="error-list" bss-error-summary="All" id-overwrite="IdOverwrite" class="govuk-error-summary__body bss-font-size-s--all">
+    </div>
+</div>
+
+<div class="govuk-grid-column-two-thirds" id="content">
+    <a id="back-link" href="javascript: history.go(-1)" class="govuk-back-link"> @Localizer["Back"]</a>
+    <form method="post"
+          asp-action="DebtorAccountMentalHealthEndReason"
+          asp-controller="BreathingSpace"
+          asp-route-journeyKey="@ViewData["JourneyKey"].ToString()"
+          asp-route-parentJourneyKey="@ViewData["ParentJourneyKey"].ToString()">
+        <input type="hidden" asp-for="IsInMentalHealthMoratorium" />
+        <div class="govuk-form-group @(!ViewData.ModelState.IsValid ? "govuk-form-group--error" : string.Empty)">
+            <fieldset class="govuk-fieldset">
+                <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
+                    <h1 class="govuk-fieldset__heading">
+                        @Localizer["Why are you ending your client's Breathing Space?"]
+                    </h1>
+                </legend>
+                <span id="errors"
+                      class="govuk-error-message field-validation-valid"
+                      asp-validation-for="SubmitOption">
+                </span>
+                <div class="govuk-radios">
+                    <div class="govuk-radios__item">
+                        <input class="govuk-radios__input condition"
+                               id="submit-stopped-treatment"
+                               asp-for="SubmitOption"
+                               type="radio"
+                               value="@(BreathingSpaceEndReasonType.StoppedTreatment)">
+                        <label class="govuk-label govuk-radios__label" for="submit-stopped-treatment">
+                            @Localizer["The client has stopped receiving mental health crisis treatment"]
+                        </label>
+                        <div id="submit-stopped-treatment-sub-question" class="govuk-radios__conditional condition-body">
+
+                            <div id="submit-stopped-treatment-sub-question-error-list" asp-validation-summary="All" class="govuk-error-summary__body bss-font-size-s--all">
+                            </div>
+                            <span class="govuk-label govuk-label--s">
+                                @Localizer["What date did the treatment end?"]
+                            </span>
+                            <bss-input-date day="TreatmentEndDay"
+                                            month="TreatmentEndMonth"
+                                            year="TreatmentEndYear"
+                                            is-valid-date-of-birth="IsValidTreatmentEndDate"
+                                            id="treatmentEndDate"
+                                            hint=" For example, 12 11 2020"></bss-input-date>
+
+                            <label class="govuk-label govuk-label--s">
+                                @Localizer["Has this decision been made as part of a 30 day review?"]
+                            </label>
+                            <div class="govuk-radios govuk-radios--inline">
+                                <div class="govuk-radios__item">
+                                    <input class="govuk-radios__input"
+                                           id="submit-stopped-treatment-sub-question-yes"
+                                           asp-for="IsPartOfThirtyDayReviewStoppedTreament"
+                                           type="radio"
+                                           value="true" />
+                                    <label class="govuk-label govuk-radios__label" for="submit-stopped-treatment-sub-question-yes">
+                                        @Localizer["Yes"]
+                                    </label>
+                                </div>
+                                <div class="govuk-radios__item">
+                                    <input class="govuk-radios__input"
+                                           id="submit-stopped-treatment-sub-question-no"
+                                           asp-for="IsPartOfThirtyDayReviewStoppedTreament"
+                                           type="radio"
+                                           value="false" />
+                                    <label class="govuk-label govuk-radios__label" for="submit-stopped-treatment-sub-question-no">
+                                        @Localizer["No"]
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="govuk-radios__item">
+                        <input class="govuk-radios__input condition"
+                               id="submit-unable-to-reach-point-of-contact"
+                               asp-for="SubmitOption"
+                               type="radio"
+                               value="@(BreathingSpaceEndReasonType.UnableToReachPointOfContact)">
+                        <label class="govuk-label govuk-radios__label" for="submit-unable-to-reach-point-of-contact">
+                            @Localizer["We've not been able to reach the point of contact to confirm mental health crisis treatment is ongoing"]
+                        </label>
+                        <div id="submit-unable-to-reach-point-of-contact-sub-question" class="govuk-radios__conditional condition-body">
+                            <span class="govuk-error-message field-validation-valid"
+                                  asp-validation-for="IsPartOfThirtyDayReviewUnableToReachPointOfContact"
+                                  id="submit-unable-to-reach-point-of-contact-sub-question-error">
+                            </span>
+                            <label class="govuk-label govuk-label--s">
+                                @Localizer["Has this decision been made as part of a 30 day review?"]
+                            </label>
+                            <div class="govuk-radios govuk-radios--inline">
+                                <div class="govuk-radios__item">
+                                    <input class="govuk-radios__input"
+                                           id="submit-unable-to-reach-point-of-contact-sub-question-yes"
+                                           asp-for="IsPartOfThirtyDayReviewUnableToReachPointOfContact"
+                                           type="radio"
+                                           value="true" />
+                                    <label class="govuk-label govuk-radios__label" for="submit-unable-to-reach-point-of-contact-sub-question-yes">
+                                        @Localizer["Yes"]
+                                    </label>
+                                </div>
+                                <div class="govuk-radios__item">
+                                    <input class="govuk-radios__input"
+                                           id="submit-unable-to-reach-point-of-contact-sub-question-no"
+                                           asp-for="IsPartOfThirtyDayReviewUnableToReachPointOfContact"
+                                           type="radio"
+                                           value="false" />
+                                    <label class="govuk-label govuk-radios__label" for="submit-unable-to-reach-point-of-contact-sub-question-no">
+                                        @Localizer["No"]
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="govuk-radios__item">
+                        <input class="govuk-radios__input condition"
+                               id="submit-no-longer-eligible"
+                               asp-for="SubmitOption"
+                               type="radio"
+                               value="@(BreathingSpaceEndReasonType.NoLongerEligible)">
+                        <label class="govuk-label govuk-radios__label" for="submit-no-longer-eligible">
+                            @Localizer["The client is not eligible anymore"]
+                        </label>
+                        <div id="submit-no-longer-eligible-sub-question" class="govuk-radios__conditional condition-body">
+                            <span class="govuk-error-message field-validation-valid"
+                                  asp-validation-for="NoLongerEligibleReason"
+                                  id="submit-no-longer-eligible-sub-question-error">
+                            </span>
+                            <label class="govuk-label govuk-label--s">
+                                @Localizer["Why is the client not eligible?"]
+                            </label>
+                            <div class="govuk-radios">
+                                <div class="govuk-radios__item">
+                                    <input class="govuk-radios__input"
+                                           id="submit-no-longer-eligible-sub-question-not-in-england-or-wales"
+                                           asp-for="NoLongerEligibleReason"
+                                           type="radio"
+                                           value="@(BreathingSpaceEndReasonNoLongerEligibleReasonType.NotInEnglandOrWales)" />
+                                    <label class="govuk-label govuk-radios__label" for="submit-no-longer-eligible-sub-question-not-in-england-or-wales">
+                                        @Localizer["The client does not live or usually reside in England or Wales"]
+                                    </label>
+                                </div>
+                                <div class="govuk-radios__item">
+                                    <input class="govuk-radios__input"
+                                           id="submit-no-longer-eligible-sub-question-debt-relief-order"
+                                           asp-for="NoLongerEligibleReason"
+                                           type="radio"
+                                           value="@(BreathingSpaceEndReasonNoLongerEligibleReasonType.DebtReliefOrder)" />
+                                    <label class="govuk-label govuk-radios__label" for="submit-no-longer-eligible-sub-question-debt-relief-order">
+                                        @Localizer["The client has a Debt Relief Order"]
+                                    </label>
+                                </div>
+                                <div class="govuk-radios__item">
+                                    <input class="govuk-radios__input"
+                                           id="submit-no-longer-eligible-sub-question-interim-order-or-individual-voluntary-arrangement"
+                                           asp-for="NoLongerEligibleReason"
+                                           type="radio"
+                                           value="@(BreathingSpaceEndReasonNoLongerEligibleReasonType.InterimOrderOrIndividualVoluntaryArrangement)" />
+                                    <label class="govuk-label govuk-radios__label" for="submit-no-longer-eligible-sub-question-interim-order-or-individual-voluntary-arrangement">
+                                        @Localizer["The client has an interim order or Individual Voluntary Arrangement"]
+                                    </label>
+                                </div>
+                                <div class="govuk-radios__item">
+                                    <input class="govuk-radios__input"
+                                           id="submit-no-longer-eligible-sub-question-undischarged-bankrupt"
+                                           asp-for="NoLongerEligibleReason"
+                                           type="radio"
+                                           value="@(BreathingSpaceEndReasonNoLongerEligibleReasonType.UndischargedBankrupt)" />
+                                    <label class="govuk-label govuk-radios__label" for="submit-no-longer-eligible-sub-question-undischarged-bankrupt">
+                                        @Localizer["The client is an undischarged bankrupt"]
+                                    </label>
+                                </div>
+                                <div class="govuk-radios__item">
+                                    <input class="govuk-radios__input"
+                                           id="submit-no-longer-eligible-sub-question-has-another-breathing-space-within-twelve-months"
+                                           asp-for="NoLongerEligibleReason"
+                                           type="radio"
+                                           value="@(BreathingSpaceEndReasonNoLongerEligibleReasonType.HasHadAnotherBreathingSpaceWithinTwelveMonths)" />
+                                    <label class="govuk-label govuk-radios__label" for="submit-no-longer-eligible-sub-question-has-another-breathing-space-within-twelve-months">
+                                        @Localizer["The client has had another Breathing Space in the last 12 months"]
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="govuk-radios__item">
+                        <input class="govuk-radios__input"
+                               id="submit-debt-management-solution"
+                               asp-for="SubmitOption"
+                               type="radio"
+                               value="@(BreathingSpaceEndReasonType.DebtManagementSolution)">
+                        <label class="govuk-label govuk-radios__label" for="submit-debt-management-solution">
+                            @Localizer["The client is now using a debt management solution"]
+                        </label>
+                    </div>
+                    <div class="govuk-radios__item">
+                        <input class="govuk-radios__input"
+                               id="submit-able-to-pay-debts"
+                               asp-for="SubmitOption"
+                               type="radio"
+                               value="@(BreathingSpaceEndReasonType.AbleToPayDebts)">
+                        <label class="govuk-label govuk-radios__label" for="submit-able-to-pay-debts">
+                            @Localizer["The client is now able to pay their debts"]
+                        </label>
+                    </div>
+                    <div class="govuk-radios__item">
+                        <input class="govuk-radios__input"
+                               id="submit-cancelled"
+                               asp-for="SubmitOption"
+                               type="radio"
+                               value="@(BreathingSpaceEndReasonType.Cancelled)">
+                        <label class="govuk-label govuk-radios__label" for="submit-cancelled">
+                            @Localizer["The client has asked us to cancel"]
+                        </label>
+                    </div>
+                    <div class="govuk-radios__item">
+                        <input class="govuk-radios__input"
+                               id="submit-deceased"
+                               asp-for="SubmitOption"
+                               type="radio"
+                               value="@(BreathingSpaceEndReasonType.Deceased)">
+                        <label class="govuk-label govuk-radios__label" for="submit-deceased">
+                            @Localizer["The client has died"]
+                        </label>
+
+                        <div id="submit-client-is-deceased-form" class="govuk-radios__conditional">
+                            <div id="date-of-death-error-list" asp-validation-summary="All" class="govuk-error-summary__body bss-font-size-s--all">
+                            </div>
+                            <span class="govuk-label govuk-label--s">
+                                @Localizer["What was the date of death?"]
+                            </span>
+                            <bss-input-date day="DeathDay"
+                                            month="DeathMonth"
+                                            year="DeathYear"
+                                            is-valid-date-of-birth="IsValidDateOfDeath"
+                                            id="deathOfDeath"
+                                            hint=" For example, 12 11 2020"></bss-input-date>
+                        </div>
+                    </div>
+                    <div class="govuk-radios__item">
+                        <input class="govuk-radios__input"
+                               id="submit-invalid-information"
+                               asp-for="SubmitOption"
+                               type="radio"
+                               value="@(BreathingSpaceEndReasonType.InvalidInformation)">
+                        <label class="govuk-label govuk-radios__label" for="submit-invalid-information">
+                            @Localizer["We consider the information provided by the approved mental health professional contains inaccurate, misleading or fraudulent information"]
+                        </label>
+                    </div>
+
+                </div>
+            </fieldset>
+        </div>
+        <button id="save-button" class="govuk-button" value="Save and continue" data-module="govuk-button" type="submit">
+            @Localizer["Save and continue"]
+        </button>
+    </form>
+</div>

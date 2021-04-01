@@ -1,0 +1,27 @@
+﻿@model Insolvency.Management.Models.ViewModels.ClientCredentials.AvailableScopesViewModel
+<div class="row">
+    <div class="col-md-12 order-md-1">
+        <h4 class="mb-3">Select Scopes</h4>
+        <form method="post" asp-action="AvailableScopes" asp-controller="ClientCredentialsManagement">
+            <hr class="mb-4">
+            @foreach (var scope in Model.AvailableScopes)
+            {
+                <div class="custom-control custom-checkbox">
+                    <input type="checkbox" class="custom-control-input" id="@scope" name="SelectedScopes" value="@scope">
+                    <label class="custom-control-label" for="@scope">@scope</label>
+                </div>
+            }
+            @if (Model.AvailableScopes.Any())
+            {
+                <hr class="mb-4">
+                <button class="btn btn-primary btn-lg btn-block" type="submit">Submit</button>
+            }
+            else
+            {
+                <p>You do not have any access to the scopes of your selected Organisations</p>
+                <hr class="mb-4">
+                <a class="btn btn-primary btn-lg btn-block" href="@Url.Action("AvailableOrganisations")" role="button">Go Back</a>
+            }
+        </form>
+    </div>
+</div>

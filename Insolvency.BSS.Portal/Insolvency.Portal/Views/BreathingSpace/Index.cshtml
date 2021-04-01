@@ -1,0 +1,89 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@using Insolvency.Portal.Extensions;
+@using Insolvency.Common.Enums
+
+@model Insolvency.Portal.Models.ViewModels.MoneyAdviserLandingPageViewModel
+@inject IViewLocalizer Localizer
+
+@{
+    ViewData["Title"] = @Localizer["Breathing Space"];
+    var user = Context.GetPortalUser();
+}
+
+@section navigation
+{
+    <partial name="_HomeNavigation" model="@HomeNavigationActiveLink.Home" />
+}
+<div id="content" class="govuk-grid-column-full-from-desktop">
+
+    <h1 id="organisation-name" class="govuk-heading-xl govuk-!-margin-bottom-5">
+        <span id="page-caption" class="govuk-caption-xl">
+            @Localizer["Breathing Space portal for"]
+        </span>
+        @user.SelectedOrganisationName
+    </h1>
+    <h2 class="govuk-heading-s">
+        <span id="total-info-heading-begin">We currently have</span><br />
+        <span id="total-info-breathing-space-count" class="govuk-!-font-size-80">@Model.ActiveBreathingSpacesCount</span><br />
+        <span id="total-info-heading-end">active Breathing Spaces</span>
+    </h2>
+</div>
+
+<div id="brething-space-menu-content" class="govuk-grid-column-two-thirds-from-desktop govuk-!-padding-0">
+    <div id="brething-space-menu-content-box" class="app-border-panel app-landing-page-content">
+        <a id="active-breathing-spaces-link" class="govuk-link govuk-body govuk-!-font-weight-bold govuk-link--no-visited-state" asp-action="Browse" asp-route-BrowseByCategory="@BreathingSpaceBrowseCategory.ActiveBreathingSpaces" role="link"><strong>Active Breathing Spaces (@Model.ActiveBreathingSpacesCount)</strong></a>
+        <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
+        <ul id="breathing-space-task-list" class="govuk-list">
+            <li>
+                <span id="tasks-to-do-caption" class="govuk-body govuk-!-font-weight-bold"><strong>Tasks to do (@Model.TasksToDoCount)</strong></span><br />
+            </li>
+            <li>
+                <a id="review-a-debt-link" class="govuk-link govuk-body govuk-link--no-visited-state" asp-action="Browse" asp-route-BrowseByCategory="@BreathingSpaceBrowseCategory.TasksToDo" asp-route-BrowseByTask="@BreathingSpaceBrowseTask.DebtsToBeReviewed" role="link">Creditor asked us to review a debt (@Model.DebtReviewsCount)</a><br />
+            </li>
+            <li>
+                <a id="review-a-client-link" class="govuk-link govuk-body govuk-link--no-visited-state" asp-action="Browse" asp-route-BrowseByCategory="@BreathingSpaceBrowseCategory.TasksToDo" asp-route-BrowseByTask="@BreathingSpaceBrowseTask.ClientsToBeReviewed" role="link">Creditor asked us to review a client (@Model.ClientReviewsCount)</a><br />
+            </li>
+            <li>
+                <a id="proposed-new-debt-link" class="govuk-link govuk-body govuk-link--no-visited-state" asp-action="Browse" asp-route-BrowseByCategory="@BreathingSpaceBrowseCategory.TasksToDo" asp-route-BrowseByTask="@BreathingSpaceBrowseTask.NewDebtsProposed" role="link">Creditor proposed a new debt (@Model.NewlyProposedDebtsCount)</a><br />
+            </li>
+            <li>
+                <a id="transfer-sold-debt-link" class="govuk-link govuk-body govuk-link--no-visited-state" asp-action="Browse" asp-route-BrowseByCategory="@BreathingSpaceBrowseCategory.TasksToDo" asp-route-BrowseByTask="@BreathingSpaceBrowseTask.DebtsToBeTransferred" role="link">Creditor asked us to transfer a sold debt (@Model.SoldDebtsTransfersCount)</a><br />
+            </li>
+            <li>
+                <a id="transfer-client-link" class="govuk-link govuk-body govuk-link--no-visited-state" asp-action="Browse" asp-route-BrowseByCategory="@BreathingSpaceBrowseCategory.TasksToDo" asp-route-BrowseByTask="@BreathingSpaceBrowseTask.ClientsToBeTransferred" role="link">Money adviser asked to transfer the client (@Model.ClientTransferRequestsCount)</a><br />
+            </li>
+            <li>
+                <a id="client-has-been-transferred-link" class="govuk-link govuk-body govuk-link--no-visited-state" asp-action="Browse" asp-route-BrowseByCategory="@BreathingSpaceBrowseCategory.TasksToDo" asp-route-BrowseByTask="@BreathingSpaceBrowseTask.ClientsTransferredToMoneyAdviser" role="link">Money adviser transferred the client to your organisation (@Model.ClientTransfersMoneyAdviserCount)</a><br />
+            </li>
+        </ul>
+    </div>
+</div>
+<div id="brething-space-create-content" class="govuk-grid-column-one-third-from-desktop govuk-!-padding-0">
+    <div id="brething-space-create-content-box" class="app-border-panel app-landing-page-content">
+        <span class="govuk-body govuk-!-font-weight-bold"><strong>Create new</strong></span>
+        <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
+        <div class="govuk-warning-text govuk-!-margin-bottom-2">
+            <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+            <strong class="govuk-warning-text__text">
+                <span class="govuk-warning-text__assistive" id="create-new-eligible-warning">@Localizer["Client eligibility"]</span>
+                @Localizer["Client eligibility"]
+            </strong>
+        </div>
+        <a id="view-guidance-link" 
+           class="govuk-link govuk-body" 
+           href="https://www.gov.uk/government/publications/debt-respite-scheme-breathing-space-guidance/debt-respite-scheme-breathing-space-guidance-for-money-advisers#before-a-breathing-space-starts" 
+           target="_blank" 
+           rel="noreferrer noopener" 
+           role="link">View guidance on GOV.UK (opens in new tab)</a><br />
+        <br />
+        <p class="govuk-body">Make sure you've checked your client is eligible before you start</p>
+        <a asp-controller="BreathingSpace"
+           asp-action="ClientDetails"
+           asp-route-journeyKey="@Guid.NewGuid()"
+           id="create-button"
+           class="govuk-button"
+           data-module="govuk-button">
+            @Localizer["Create new Breathing Space"]
+        </a>
+    </div>
+</div>

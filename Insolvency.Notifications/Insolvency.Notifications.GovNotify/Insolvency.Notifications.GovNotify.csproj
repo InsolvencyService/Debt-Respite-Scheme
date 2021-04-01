@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Notify" Version="2.9.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Insolvency.Interfaces\Insolvency.Interfaces.csproj" />
+    <ProjectReference Include="..\Insolvency.Notifications.Models\Insolvency.Notifications.Models.csproj" />
+  </ItemGroup>
+
+</Project>

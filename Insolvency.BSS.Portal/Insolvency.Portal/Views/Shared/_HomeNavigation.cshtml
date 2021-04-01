@@ -1,0 +1,42 @@
+﻿@using Insolvency.Portal.Extensions;
+@using Insolvency.Common.Enums
+
+@model Insolvency.Common.Enums.HomeNavigationActiveLink?
+
+@{
+    var user = Context.GetPortalUser();
+    string GetLink(HomeNavigationActiveLink navigationLinkId, string action, string controller, string content)
+    {
+        if (navigationLinkId == Model)
+        {
+            return $"<span id=\"home-navigation-{content.ToLower()}-link\" class=\"govuk-link govuk-body govuk-link--no-visited-state active\">{content}</span>";
+        }
+        else
+        {
+            var href = @Url.Action(action, controller, new { journeyKey = Guid.NewGuid() });
+            return $"<a id=\"home-navigation-{content.ToLower()}-link\" href=\"{href}\" class=\"govuk-link govuk-body govuk-link--no-visited-state\" role=\"link\">{content}</a>";
+        }
+    };
+}
+
+<div id="home-navigation" class="govuk-grid-row govuk-!-margin-0">
+
+    <div id="home-navigation-content" class="govuk-grid-column-full app-home-navigation govuk-!-padding-0">
+        <div id="home-navigation-content-left" class="app-home-navigation-left">
+            @Html.Raw(GetLink(HomeNavigationActiveLink.Home, "Index", "BreathingSpace", "Home"))
+            @Html.Raw(GetLink(HomeNavigationActiveLink.Search, "AccountSearch", "BreathingSpace", "Search"))
+        </div>
+        @if (user?.IsAuthenticated ?? false)
+        {
+            <div id="home-navigation-content-right" class="app-home-navigation-right">
+                <span id="home-navigation-user-name" class="govuk-body">@user.Name</span>
+                <a id="home-navigation-organisation-name"
+               class="govuk-link govuk-body govuk-link--no-visited-state"
+               href="#home-navigation-organisation-name"
+               role="link">
+                    <span class="govuk-visually-hidden">Go to </span>@user.SelectedOrganisationName<span class="govuk-visually-hidden"> home page</span>
+                </a>
+            </div>
+        }
+    </div>
+</div>

@@ -1,0 +1,57 @@
+﻿@model Insolvency.Portal.Models.ViewModels.DebtorTransferViewModel;
+@{
+    var displayReason = ViewData["display-reason"] as bool?;
+    var displayRequestedBy = ViewData["display-requested-by"] as bool?;
+    var displayTransferBy = ViewData["display-transfer-by"] as bool?;
+}
+
+<h2 class="govuk-heading-s govuk-!-margin-bottom-4 govuk-!-margin-top-6" id="debtor-transfer-breathing-space-details-header">
+    Details
+</h2>
+<ul class="govuk-list" id="debtor-transfer-review-details">
+    <li id="debtor-transfer-details-client-name">Name: @Model.FullName</li>
+    <li id="debtor-transfer-details-reference">Reference: @Model.Reference</li>
+    @if (Model.ActiveMoratoriumStartDate.HasValue)
+    {
+        <li id="debtor-transfer-details-started">Started: @Model.FormattedActiveMoratoriumStartDate</li>
+    }
+    @if (Model.ActiveMoratoriumEndDate.HasValue)
+    {
+        <li id="debtor-transfer-details-due-to-end">Due to end: @Model.FormattedActiveMoratoriumEndDate</li>
+    }
+</ul>
+
+@if (displayTransferBy.HasValue && displayTransferBy.Value)
+{
+    <h2 class="govuk-label-wrapper govuk-!-margin-top-6" id="debtor-transferred-by-label-wrapper">
+        <label id="debtor-transferred-by-label" class="govuk-label govuk-label--s">
+            Transferred by
+        </label>
+    </h2>
+    <div id="debtor-transferred-by" class="govuk-body govuk-!-margin-top-0 break-word">
+        @Model.TransferredBy
+    </div>
+}
+
+@if (displayReason.HasValue && displayReason.Value)
+{
+    <h2 class="govuk-label-wrapper govuk-!-margin-top-6" id="debtor-transfer-reason-label-wrapper">
+        <label id="debtor-transfer-reason-label" class="govuk-label govuk-label--s">
+            Reason for the transfer
+        </label>
+    </h2>
+    <div id="debtor-transfer-reason" class="govuk-body govuk-!-margin-top-0 break-word">
+        @Model.TransferReason
+    </div>
+}
+@if (displayRequestedBy.HasValue && displayRequestedBy.Value)
+{
+    <h2 class="govuk-label-wrapper govuk-!-margin-top-6" id="debtor-transfer-review-requested-by-label-wrapper">
+        <label id="debtor-transfer-requested-by-reason-label" class="govuk-label govuk-label--s">
+            Requested by
+        </label>
+    </h2>
+    <div id="debtor-transfer-requested-by" class="govuk-body govuk-!-margin-top-0 break-word">
+        @Model.RequestedBy
+    </div>
+}

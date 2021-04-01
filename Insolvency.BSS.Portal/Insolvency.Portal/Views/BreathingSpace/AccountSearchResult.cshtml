@@ -1,0 +1,119 @@
+﻿@using Insolvency.Common.Enums
+@model Insolvency.Portal.Models.ViewModels.AccountSearchViewModel;
+
+@{
+    ViewData["Title"] = @Localizer["Account Search Result"]; 
+}
+
+@section navigation
+{
+<partial name="_HomeNavigation" model="@HomeNavigationActiveLink.Search" />
+}
+
+<div class="govuk-grid-column-full" id="content">
+    <a id="back-link" href="javascript: history.go(-1)" class="govuk-back-link">Back</a>
+    <h1 id="account-search-result-text" class="govuk-heading-xl">Search results</h1>
+    <h2 id="account-search-result-heading" class="govuk-heading-m">
+        @if (Model.IsSearchByRef)
+        {
+            @Html.Raw("Searched by Breathing Space reference")
+        }
+        else
+        {
+            @Html.Raw("Searched by last name and date of birth")
+        }
+    </h2>
+    <ul class="govuk-list">
+        @if (Model.IsSearchByRef)
+        {
+            <li id="account-search-result-by-reference">Breathing space reference: @Model.Reference</li>
+        }
+        else
+        {
+            <li id="account-search-result-by-surname">Lastname: @Model.Surname</li>
+            <li id="account-search-result-by-dob">Date of birth: @Model.FormattedSearchDate</li>
+        }
+        <li>
+            <a id="account-search-change-filter"
+               asp-controller="BreathingSpace"
+               asp-action="AccountSearch"
+               asp-route-journeyKey="@ViewData["JourneyKey"].ToString()">
+                Change search terms
+            </a>
+        </li>
+    </ul>
+    <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
+    @if (Model.SearchResultViewModel != null)
+    {
+        <p id="account-search-result-helper" class="govuk-body">
+            Showing:
+            <span id="search-result-count" class="govuk-!-font-weight-bold"><strong>@Model.SearchResultViewModel.SearchPagination.TotalItems results</strong></span>
+        </p>
+        @if (Model.SearchResultViewModel.SearchResultView.Any())
+        {
+            <ul class="govuk-list">
+                @for (int i = 0; i < Model.SearchResultViewModel.SearchResultView.Count(); i++)
+                {
+                    var item = Model.SearchResultViewModel.SearchResultView[i];
+                    <li>
+                        <div class="card">
+                            <a id="acount-search-result-@(i)"
+                   asp-controller="BreathingSpace"
+                   asp-action="AccountSearchNavigate"
+                   asp-route-moratoriumId="@item.MoratoriumId"
+                   asp-route-journeyKey="@ViewData["JourneyKey"].ToString()"
+                   class="govuk-link govuk-!-font-weight-bold govuk-!-display-block govuk-!-margin-bottom-3">
+                                <strong><span class="govuk-visually-hidden">View details for </span>@item.ClientName.GetFullName()</strong>
+                            </a>
+                            <hr class="govuk-section-break govuk-section-break--visible">
+                            <strong class="govuk-tag @(!item.IsActive ? "govuk-tag--grey" : null) govuk-!-margin-top-3">@item.FormattedMoratoriumStatus</strong> <strong>@item.MoratoriumType</strong> Breathing Space
+                            <ul class="govuk-list govuk-!-margin-bottom-0">
+                                @if (!item.IsDraft)
+                                {
+                                    <li id="account-search-result-reference-@(i)">Reference: @item.Reference</li>
+                                    <li id="account-search-result-date-@(i)">
+                                        Started: @item.FormattedStartDate - @item.EndedDateHelperText @item.FormattedEndDate
+                                    </li>
+                                }
+                                @if (item.HasDob)
+                                {
+                                    <li id="account-search-result-dob-@(i)">
+                                        DOB: @item.FormatedDob
+                                    </li>
+                                }
+                                @if (item.Address != null)
+                                {
+                                    <li id="account-search-result-address-@(i)">
+                                        Address: @item.Address.ToSingleLineString()
+                                    </li>
+                                }
+                                @if (item.HasOrganisationName)
+                                {
+                                    <li id="account-search-result-org-@(i)">Money advice organisation: @item.OrganisationName</li>
+                                }
+                            </ul>
+                        </div>
+                    </li>
+                }
+            </ul>
+            <form class="form" method="post" asp-action="AccountSearch" asp-route-journeyKey="@ViewData["JourneyKey"].ToString()">
+                <input asp-for="Surname" type="hidden" />
+                <input asp-for="Reference" type="hidden" />
+                <input asp-for="BirthDay" type="hidden" />
+                <input asp-for="BirthMonth" type="hidden" />
+                <input asp-for="BirthYear" type="hidden" />
+                <input asp-for="SearchOption" type="hidden" />
+                @Html.Raw(Model.SearchResultViewModel.SearchPagination.PaginationHtml)
+            </form>
+        }
+        else
+        {
+            <p id="account-search-result-no-item" class="govuk-body-l bss-custom-overflow">
+                @Localizer[$"No results found for {Model.SearchResultViewModel.SearchParameterView.FilterMessage}"]
+            </p>
+            <p id="account-search-result-try-again" class="govuk-body-m">
+                @Localizer["Please try searching again using different search criteria."]
+            </p>
+        }
+    }
+</div>

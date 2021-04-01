@@ -1,0 +1,27 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <UserSecretsId>08f02b8a-86e8-4ec7-b1e5-1e5ae0fa1020</UserSecretsId>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <ApplicationInsightsResourceId>/subscriptions/e61d0ca0-89e7-4866-80bf-ebb5b5a7f494/resourceGroups/insolvencyservice-poc-rg-01/providers/microsoft.insights/components/bss-dev-appinsights</ApplicationInsightsResourceId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.13.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.AzureAD.UI" Version="3.1.5" />
+    <PackageReference Include="Microsoft.AspNetCore.DataProtection.StackExchangeRedis" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="3.1.10" />
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.10.9" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.3" />
+    <PackageReference Include="RestSharp" Version="106.11.4" />
+    <PackageReference Include="RestSharp.Serializers.NewtonsoftJson" Version="106.11.4" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="3.1.0" Condition="'$(Configuration)' == 'Debug'" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Insolvency.Portal.Gateways\Insolvency.Portal.Gateways.csproj" />
+    <ProjectReference Include="..\Insolvency.Portal.Interfaces\Insolvency.Portal.Interfaces.csproj" />
+    <ProjectReference Include="..\Insolvency.RestClient\Insolvency.RestClient.csproj" />
+  </ItemGroup>
+</Project>

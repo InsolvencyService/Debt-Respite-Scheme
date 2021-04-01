@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Insolvency.Notifications.BSS.Notifications": {
+      "commandName": "Project",
+      "commandLineArgs": "host start -p 7072"
+    }
+  }
+}

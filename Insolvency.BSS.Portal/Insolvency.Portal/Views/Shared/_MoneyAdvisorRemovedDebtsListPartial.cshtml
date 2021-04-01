@@ -1,0 +1,43 @@
+﻿@model List<Insolvency.Portal.Models.ViewModels.DebtDetailViewModel>;
+
+@if (Model != null && Model.Any())
+{
+    <h2 class="govuk-heading-l govuk-!-margin-bottom-2" id="ma-removed-debts-header">Removed Debts</h2>
+    <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
+    var removedDebts = Model.Where(debt => debt.HasDebtBeenRemoved).ToArray();
+    @for (var i = 0; i < removedDebts.Length; i++)
+    {
+        var debtDetail = removedDebts[i];
+
+        <div class="govuk-grid-row">
+            <partial name="_DebtDetailInsideTabBodyPartial"
+                     model="debtDetail"
+                     view-data='@new ViewDataDictionary(ViewData) { { "id-value", $"removed-debts-{i.ToString()}" } }' />
+            <div class="govuk-grid-column-one-third">
+                <ul class="govuk-list">
+                    @if (debtDetail.HasDebtBeenRemovedAfterReview)
+                    {
+                        <li>
+                            <a id="ma-remove-debt-review-detail-link-@(i)" href="#" class="govuk-body govuk-link">
+                                View review details
+                            </a>
+                        </li>
+                    }
+                    @if (debtDetail.HasDebtBeenRemovedDirectly)
+                    {
+                        <li>
+                            <a id="ma-remove-debt-removal-reason-link-@(i)" href="#" class="govuk-body govuk-link">
+                                View reason the debt was removed
+                            </a>
+                        </li>
+                    }
+                </ul>
+
+            </div>
+        </div>
+        @if (i != (removedDebts.Length - 1))
+        {
+            <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
+        }
+    }
+}

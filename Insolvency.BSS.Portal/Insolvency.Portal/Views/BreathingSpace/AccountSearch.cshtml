@@ -1,0 +1,107 @@
+﻿@using Insolvency.Common.Enums
+@using Insolvency.Portal.Models.ViewModels
+@model Insolvency.Portal.Models.ViewModels.AccountSearchViewModel;
+
+@{
+    var IdOverwrite = new Dictionary<string, string> {
+        {"BirthDay","dob-day-input"},
+        {"BirthMonth","dob-month-input"},
+        {"BirthYear","dob-year-input"},
+        {"IsValidDateOfBirth","dob-day-input"},
+        {"SearchOption","searchedby-ref"}
+    };
+    ViewData["Title"] = @Localizer["AccountSearch"];
+}
+
+@section navigation
+{
+<partial name="_HomeNavigation" model="@HomeNavigationActiveLink.Search" />
+}
+
+<div class="govuk-grid-column-two-thirds @(!ViewData.ModelState.IsValid ? "govuk-error-summary" : "display-none")" id="error-summary">
+    <h2 class="govuk-error-summary__title">
+        @Localizer["There is a problem"]
+    </h2>
+    <div id="error-list" bss-error-summary="All" id-overwrite="IdOverwrite" class="govuk-error-summary__body">
+    </div>
+</div>
+
+<div class="govuk-grid-column-full govuk-!-margin-top-5" id="content">
+    <form class="form" asp-action="AccountSearch" asp-controller="BreathingSpace" asp-route-journeyKey="@ViewData["JourneyKey"].ToString()">
+        <div class="govuk-form-group @(!ViewData.ModelState.IsValid ? "govuk-form-group--error" : string.Empty)">
+            <fieldset class="govuk-fieldset" aria-describedby="account-search-heading">
+                <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                    <h1 id="account-search-heading" class="govuk-fieldset__heading">
+                        Search by
+                    </h1>
+                </legend>
+                <span class="govuk-error-message field-validation-valid"
+                      asp-validation-for="SearchOption">
+                </span>
+                <div id="account-search-searchedby-hint" class="govuk-hint">
+                    Select one option.
+                </div>
+                <div class="govuk-radios govuk-radios--conditional" data-module="govuk-radios">
+                    <div class="govuk-radios__item">
+                        <input class="govuk-radios__input condition"
+                               id="searchedby-ref"
+                               asp-for="SearchOption"
+                               type="radio"
+                               value="@SearchOption.Reference"
+                               checked="@(Model.IsSearchByRef ? "true" : null)"
+                               aria-controls="conditional-searchedby"
+                               aria-expanded="false">
+                        <label id="account-search-searchedby-ref-hint" class="govuk-label govuk-radios__label" for="searchedby-ref">
+                            Breathing Space reference
+                        </label>
+                    </div>
+                    <div class="govuk-radios__conditional @(!Model.IsSearchByRef ? "govuk-radios__conditional--hidden" : string.Empty)" id="conditional-searchedby">
+                        <div class="govuk-form-group">
+                            <bss-input asp-for="Reference" input-hint="For example, BSS-0000000000" input-class="govuk-input govuk-!-width-one-quarter" />
+                        </div>
+                    </div>
+                    <div class="govuk-radios__item">
+                        <input class="govuk-radios__input"
+                               id="searchedby-dob-name"
+                               asp-for="SearchOption"
+                               type="radio"
+                               value="@SearchOption.LastnameAndDob"
+                               checked="@(Model.IsSearchByLastnameAndDob ? "true" : null)"
+                               aria-controls="conditional-searchedby-2"
+                               aria-expanded="false">
+                        <label id="account-search-searchedby-dob-hint" class="govuk-label govuk-radios__label" for="searchedby-dob-name">
+                            Last name and date of birth
+                        </label>
+                    </div>
+                    <div class="govuk-radios__conditional @(!Model.IsSearchByLastnameAndDob ? "govuk-radios__conditional--hidden" : string.Empty)" id="conditional-searchedby-2">
+                        <h2 id="account-search-dob-name-header" class="govuk-heading-s">Enter client's last name and date of birth </h2>
+                        <div class="govuk-form-group">
+                            <bss-input asp-for="Surname" input-class="govuk-input govuk-!-width-one-quarter" />
+                        </div>
+                        <div class="govuk-form-group">
+                            <fieldset class="govuk-fieldset" role="group" aria-describedby="dob-hint">
+                                <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
+                                    <h2 id="account-search-searchedby-dob-hint" class="govuk-label">
+                                        What is your client's date of birth?
+                                    </h2>
+                                </legend>
+                                <span id="dob-hint" class="govuk-hint">
+                                    For example, 21 2 1980
+                                </span>
+                                <bss-input-date day="BirthDay"
+                                                month="BirthMonth"
+                                                year="BirthYear"
+                                                is-valid-date-of-birth="IsValidDateOfBirth"
+                                                id="dob"
+                                                validation-message="@(Localizer[ViewData["DateValidationMessage"].ToString()].Value)" />
+                            </fieldset>
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+        <button id="save-button" class="govuk-button" value="Search" data-module="govuk-button" type="submit">
+            Search
+        </button>
+    </form>
+</div>

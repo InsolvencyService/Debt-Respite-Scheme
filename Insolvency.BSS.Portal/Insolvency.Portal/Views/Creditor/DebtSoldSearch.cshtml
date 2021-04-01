@@ -1,0 +1,48 @@
+﻿@model Insolvency.Portal.Models.ViewModels.CreditorSearchViewModel;
+
+@{
+    ViewData["Title"] = "Debt Has Been Sold";
+    var isCreditorNameValid = true;
+    if (ViewContext.ViewData.ModelState.TryGetValue(nameof(Model.CreditorName), out var creditorName))
+    {
+        isCreditorNameValid = creditorName.Errors.Count == 0;
+    }
+}
+
+<div class="govuk-grid-column-two-thirds @(!ViewData.ModelState.IsValid ? "govuk-error-summary" : "display-none") " id="error-summary">
+    <h2 class="govuk-error-summary__title">
+        @Localizer["There is a problem"]
+    </h2>
+    <div id="error-list" bss-error-summary="All" class="govuk-error-summary__body"></div>
+</div>
+
+<div class="govuk-grid-column-full">
+    <a id="back-link" href="javascript: history.go(-1)" class="govuk-back-link"> @Localizer["Back"]</a>
+</div>
+<div class="govuk-grid-column-two-thirds" id="content">
+    <h1 id="heading" class="govuk-heading-xl">Who have you sold the debt to?</h1>
+    <form id="creditorSearchForm" class="form" asp-action="DebtSoldSearch" method="post" asp-route-journeyKey="@ViewData["JourneyKey"].ToString()">
+        <div class="govuk-form-group @(!isCreditorNameValid ? "govuk-form-group--error" : string.Empty)">
+            <div id='autocomplete' role='combobox' aria-expanded='false' aria-owns='autocomplete-results' aria-haspopup='listbox'>
+                <bss-input asp-for="CreditorName"
+                           label-class="govuk-!-font-weight-bold"
+                           input-class="govuk-!-width-two-third"
+                           input-hint="This can be the name of an organisation or an individual. For example, ABC Bank Ltd or Joe Johnson"
+                           aria-autocomplete="none"
+                           autocomplete="off"
+                           aria-controls="autocomplete-results">
+                </bss-input>
+            </div>
+            <ul id='autocomplete-results' class='hidden' role='listbox' aria-label='Search for a creditor ogranisation by name'></ul>
+        </div>
+        <input id="creditor-id" asp-for="CreditorId" type="hidden" />
+        <input id="journey-key" value="@ViewData["JourneyKey"].ToString()" type="hidden" />
+        <input id="parent-journey-key" value="@ViewData["ParentJourneyKey"]?.ToString()" type="hidden" />
+        <button id="save-button" class="govuk-button" data-module="govuk-button" type="submit">
+            @Localizer["Save and continue"]
+        </button>
+    </form>
+</div>
+<script src="~/js/jquery-3.5.1.min.js"></script>
+<script src="~/js/creditor-typeahead.js"></script>
+<script src="~/js/creditor-typeahead_debt-sold-overwrite.js"></script>

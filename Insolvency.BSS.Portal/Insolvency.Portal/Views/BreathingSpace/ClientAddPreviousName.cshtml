@@ -1,0 +1,35 @@
+﻿@model Insolvency.Portal.Models.ViewModels.ClientAddPreviousNameViewModel
+
+@{ ViewData["Title"] = @Localizer["Add Previous Name"]; }
+
+<div class="govuk-grid-column-two-thirds @(!ViewData.ModelState.IsValid ? "govuk-error-summary" : "display-none")" id="error-summary">
+    <h2 class="govuk-error-summary__title">
+        @Localizer["There is a problem"]
+    </h2>
+    <div id="error-list" bss-error-summary="All" class="govuk-error-summary__body"></div>
+</div>
+
+
+<div class="govuk-grid-column-two-thirds" id="content">
+    <form asp-action="ClientAddPreviousName" class="form"
+          asp-route-journeyKey="@ViewData["JourneyKey"].ToString()"
+          asp-route-parentJourneyKey="@ViewData["ParentJourneyKey"]?.ToString()">
+        <a id="back-link" href="javascript: history.go(-1)" class="govuk-back-link"> @Localizer["Back"]</a>
+        <input asp-for="PreviousNameId" type="hidden" />
+        <input asp-for="ReturnAction" type="hidden" />
+
+        <fieldset class="govuk-fieldset" name="client">
+            <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
+                <h1 class="govuk-fieldset__heading">
+                    @Localizer["Add client's previous name"]
+                </h1>
+            </legend>
+            <bss-input asp-for="FirstName" />
+            <bss-input asp-for="MiddleName" />
+            <bss-input asp-for="LastName" />
+        </fieldset>
+        <button id="save-button" class="govuk-button" value="Create" data-module="govuk-button" type="submit">
+            @Localizer["Save and continue"]
+        </button>
+    </form>
+</div>

@@ -1,0 +1,135 @@
+﻿@model Insolvency.Portal.Models.ViewModels.DebtorEligibilityReviewDecisionViewModel;
+
+@{
+    ViewData["Title"] = @Localizer["Breathing Space"]; 
+}
+
+@{
+    var IdOverwrite = new Dictionary<string, string> {
+        {"EndBreathingSpace","submit-end-breathing-space-yes"}
+    };
+    var isEndBreathingSpaceValid = true;
+    if (ViewContext.ViewData.ModelState.TryGetValue(nameof(Model.EndBreathingSpace), out var endBreathingSpaceDecision))
+    {
+        isEndBreathingSpaceValid = endBreathingSpaceDecision.Errors.Count == 0;
+    }
+    var areNotesValid = true;
+    if (ViewContext.ViewData.ModelState.TryGetValue(nameof(Model.MoneyAdviserNotes), out var notes))
+    {
+        areNotesValid = notes.Errors.Count == 0;
+    }
+}
+
+<div class="govuk-grid-column-full">
+    <a id="back-link" href="javascript: history.go(-1)" class="govuk-back-link"> @Localizer["Back"]</a>
+</div>
+<div class="govuk-grid-column-two-thirds @(!ViewData.ModelState.IsValid ? "govuk-error-summary" : "display-none")" id="error-summary">
+    <h2 class="govuk-error-summary__title bss-font-size-s--all" id="errors-header">
+        @Localizer["There is a problem"]
+    </h2>
+    <div id="error-list" bss-error-summary="All" id-overwrite="IdOverwrite" class="govuk-error-summary__body bss-font-size-s--all">
+    </div>
+</div>
+<div>
+    <div class="govuk-grid-column-two-thirds" id="content">
+        <div class="govuk-body-m">
+            <h1 class="govuk-heading-l" id="client-eligibility-review-header">
+                @Localizer["Client eligibility review"]
+            </h1>
+            <h2 class="govuk-heading-m" id="client-eligibility-review-subheader">
+                @Model.ClientEligibilityReviewSubtitle
+            </h2>
+            <p>
+                <label class="govuk-label govuk-label--s" id="client-eligibility-review-not-eligible-label">
+                    @Localizer["Why this client is not eligible"]
+                </label>
+                @Model.Reason
+            </p>
+            <p>
+                <label class="govuk-label govuk-label--s" id="client-eligibility-review-details-to-support-review">
+                    @Localizer["Details to support the review"]
+                </label>
+                @Model.CreditorNotes
+            </p>
+            <p>
+                <label class="govuk-label govuk-label--s" id="client-eligibility-review-requeste-by-label">
+                    @Localizer["Requested by"]
+                </label>
+                @Model.RequestedBy
+            </p>
+        </div>
+        <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+        <form method="post"
+              asp-action="DebtorEligibilityReview"
+              asp-controller="BreathingSpace"
+              asp-route-journeyKey="@ViewData["JourneyKey"].ToString()"
+              asp-route-parentJourneyKey="@ViewData["ParentJourneyKey"].ToString()">
+            <div class="govuk-form-group @(!isEndBreathingSpaceValid ? "govuk-form-group--error" : string.Empty)">
+                <fieldset class="govuk-fieldset">
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                        <h1 class="govuk-fieldset__heading" id="client-eligibility-review-end-breathing-space-header">
+                            @Localizer["Do you want to end your client's Breathing Space?"]
+                        </h1>
+                    </legend>
+                    <span id="errors"
+                          class="govuk-error-message field-validation-valid"
+                          asp-validation-for="EndBreathingSpace">
+                    </span>
+                    <div class="govuk-radios">
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input condition"
+                                   id="submit-end-breathing-space-yes"
+                                   asp-for="EndBreathingSpace"
+                                   type="radio"
+                                   value="@true">
+                            <label class="govuk-label govuk-radios__label" for="submit-end-breathing-space-yes">
+                                @Localizer["Yes"]
+                            </label>
+                        </div>
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input"
+                                   id="submit-end-breathing-space-no"
+                                   asp-for="EndBreathingSpace"
+                                   type="radio"
+                                   value="@false">
+                            <label class="govuk-label govuk-radios__label" for="submit-end-breathing-space-no">
+                                @Localizer["No"]
+                            </label>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+            <div class="govuk-form-group @(!areNotesValid ? "govuk-form-group--error" : string.Empty)">
+                <h2 class="govuk-label-wrapper">
+                    <label class="govuk-label govuk-label--s" id="client-eligibility-review-textarea-label" asp-for="MoneyAdviserNotes">
+                        @Localizer["Please provide details to support the decision"]
+                    </label>
+                </h2>
+                <span id="review-details-error"
+                      class="govuk-error-message field-validation-valid"
+                      asp-validation-for="MoneyAdviserNotes">
+                </span>
+                <textarea class="govuk-textarea" asp-for="MoneyAdviserNotes" id="MoneyAdvisorNotes-input" rows="5"></textarea>
+            </div>
+
+            <button id="save-button" class="govuk-button" value="Save and continue" data-module="govuk-button" type="submit">
+                @Localizer["Save and continue"]
+            </button>
+        </form>
+    </div>
+    <div id="sidebar" class="govuk-grid-column-one-third">
+        <p class="govuk-body-s sidebar-links">
+            <h3 id="sidebar-heading" class="govuk-heading-s">
+                @Localizer["Related Content"]
+            </h3>
+            <a id="sidebar-link"
+               href="https://www.gov.uk/government/publications/debt-respite-scheme-breathing-space-guidance/debt-respite-scheme-breathing-space-guidance-for-money-advisers#before-a-breathing-space-starts"
+               class="govuk-link govuk-body-m"
+               target="_blank"
+               rel="noreferrer noopener"
+               role="link">
+                @Localizer["See guidance on client eligibility on GOV.UK (opens in a new tab)"]
+            </a>
+        </p>
+    </div>
+</div>

@@ -1,0 +1,41 @@
+﻿@model Insolvency.Portal.Models.ViewModels.Creditor.CreditorDebtorDetailViewModel
+
+<h2 class="govuk-heading-m" id="creditor-client-details">
+    Client details
+</h2>
+<ul class="govuk-list">
+    <li id="creditor-debtor-name">Client Name: @Model.PersonalDetail.FullName</li>
+    @*<li>Previous Name:</li>*@
+    <li id="creditor-debtor-dob">Date of Birth: @Model.PersonalDetail.FormattedDob</li>
+    @if (!Model.AddressDetail.AddressHidden)
+    {
+        @if (Model.AddressDetail.CurrentAddress != null)
+        {
+            <li id="creditor-debtor-current-address">Current Address: @Model.AddressDetail.CurrentAddress.ToSingleLineString()</li>
+        }
+        @if (Model.AddressDetail.PreviousAddresses.Any())
+        {
+            int i = 0;
+            @foreach (var address in Model.AddressDetail.PreviousAddresses)
+            {
+                i++;
+                <li id="creditor-debtor-previous-address-@i">Previous Address: @address.ToSingleLineString()</li>
+                <li id="creditor-debtor-previous-address-move-in@i">@Localizer["Moved in"] @address.FormattedDateFrom</li>
+                <li id="creditor-debtor-previous-address-move-out@i">@Localizer["Moved out"] @address.FormattedDateTo</li>
+            }
+        }
+    }
+    @if (Model.BusinessDetails != null && Model.BusinessDetails.Any())
+    {
+        int i = 0;
+        @foreach (var business in Model.BusinessDetails)
+        {
+            i++;
+            <li id="creditor-debtor-business-name-@i">Business name: @business.BusinessName</li>
+            @if (business.BusinessAddress != null && !business.HideBusinessAddress)
+            {
+                <li id="creditor-debtor-business-address-@i">Business address: @business.BusinessAddress.ToSingleLineString()</li>
+            }
+        }
+    }
+</ul>

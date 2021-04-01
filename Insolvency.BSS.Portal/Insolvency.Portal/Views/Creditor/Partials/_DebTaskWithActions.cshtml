@@ -1,0 +1,111 @@
+﻿@using Insolvency.Common.Enums
+@model Insolvency.Portal.Models.ViewModels.Creditor.CreditorDebtPartialViewModel;
+
+@{
+    var i = ViewData["Index"];
+    var eligbleForReview = (bool)ViewData["EligbleForReview"];
+}
+
+
+@if (Model.Status == DebtStatus.Active_ReviewRequested)
+{
+    <strong class="govuk-tag govuk-tag--blue app-task-list__tag" id="debt-task-tag-@i">Sent to Money Adviser</strong>
+    <h3 id="debt-task-header-@i" class="govuk-heading-s govuk-!-margin-bottom-1">
+        We have asked the money adviser to review this debt
+    </h3>
+}
+else if (Model.Status == DebtStatus.Active_RecoveryActionStopped)
+{
+    <strong class="govuk-tag app-task-list__tag" id="debt-task-tag-@i">Complete</strong>
+    <h3 id="debt-task-header-@i" class="govuk-heading-s govuk-!-margin-bottom-1">
+        All action against this debt has been stopped
+    </h3>
+}
+else if (Model.Status == DebtStatus.Active_AfterReview)
+{
+    <strong class="govuk-tag govuk-tag--grey app-task-list__tag" id="debt-task-tag-@i">To Do</strong>
+    <h3 id="debt-task-header-@i" class="govuk-heading-s govuk-!-margin-bottom-1">
+        A money adviser has reviewed the debt
+    </h3>
+    <h4 id="debt-task-subheader-@i" class="govuk-heading-s govuk-!-margin-bottom-1 govuk-!-margin-top-5">
+        Outcome
+    </h4>
+    <p class="govuk-body">Debt was not removed after review</p>
+}
+else if (Model.Status == DebtStatus.RemovedAfterAdviserReview)
+{
+    <strong class="govuk-tag govuk-tag--grey app-task-list__tag" id="debt-task-tag-@i">To Do</strong>
+    <h3 id="debt-task-header-@i" class="govuk-heading-s govuk-!-margin-bottom-1">
+        A money adviser has reviewed the debt
+    </h3>
+    <h4 id="debt-task-subheader-@i" class="govuk-heading-s govuk-!-margin-bottom-1 govuk-!-margin-top-5">
+        Outcome
+    </h4>
+    <p class="govuk-body">Debt removed after review</p>
+}
+else if (Model.SoldToCreditorId != null)
+{
+
+    <strong class="govuk-tag govuk-tag--blue app-task-list__tag" id="debt-task-tag-@i">Sent to Money Adviser</strong>
+    <h3 id="debt-task-header-@i" class="govuk-heading-s govuk-!-margin-bottom-1">
+        We’ve told the money adviser we’ve sold this debt
+    </h3>
+}
+else
+{
+    <strong class="govuk-tag govuk-tag--grey app-task-list__tag" id="debt-task-tag-@i">To do</strong>
+    <h3 id="debt-task-header-@i" class="govuk-heading-s govuk-!-margin-bottom-1">
+        A money adviser has added a new debt
+    </h3>
+}
+
+<partial name="Partials/_DebtDetailsListItem" model="Model" view-data="ViewData" />
+
+@if (Model.Status == DebtStatus.Active_AfterReview || Model.Status == DebtStatus.RemovedAfterAdviserReview)
+{
+    <a href="#" class="govuk-button govuk-button--secondary govuk-!-margin-right-2" id="debt-view-details-@i">View review details and confirm you have completed your to do</a>
+}
+else if (Model.Status == DebtStatus.Active_ReviewRequested)
+{
+    <a class="govuk-link" href="#" id="debt-view-details-@i">View review details</a>
+}
+else if (Model.SoldToCreditorId != null && !Model.PreviouslySold)
+{
+    <a class="govuk-link" href="#" id="debt-view-details-@i">View review details</a>
+}
+else
+{
+    <h3 class="govuk-heading-s govuk-!-margin-bottom-2">Choose an option</h3>
+    <span class="app-task-list__task-name">
+        @if (Model.Status != DebtStatus.Active_RecoveryActionStopped)
+        {
+            <a asp-action="DebtStoppedAllAction"
+               asp-route-index="@i"
+               asp-route-journeyKey="@Guid.NewGuid()"
+               asp-route-parentJourneyKey="@ViewData["ParentJourneyKey"]?.ToString()"
+               id="debt-task-debt-stop-action-@i"
+               class="govuk-button govuk-button--secondary govuk-!-margin-right-2">
+                We've stopped all action
+            </a>
+        }
+        @if (eligbleForReview)
+        {
+            <a asp-action="DebtEligibilityReview"
+               asp-route-index="@i"
+               asp-route-journeyKey="@Guid.NewGuid()"
+               asp-route-parentJourneyKey="@ViewData["ParentJourneyKey"]?.ToString()"
+               id="debt-task-debt-request-review-@i"
+               class="govuk-button govuk-button--secondary govuk-!-margin-right-2">
+                The debt's not eligible, ask for a review
+            </a>
+        }
+        <a asp-action="DebtSoldSearch"
+           asp-route-index="@i"
+           asp-route-journeyKey="@Guid.NewGuid()"
+           asp-route-parentJourneyKey="@ViewData["ParentJourneyKey"]?.ToString()"
+           id="debt-task-debt-sold-@i"
+           class="govuk-button govuk-button--secondary govuk-!-margin-right-2">
+            We've sold this debt
+        </a>
+    </span>
+}

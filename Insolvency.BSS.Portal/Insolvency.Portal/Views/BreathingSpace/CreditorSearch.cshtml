@@ -1,0 +1,53 @@
+﻿@model Insolvency.Portal.Models.ViewModels.CreditorSearchViewModel;
+
+@{
+    ViewData["Title"] = @Localizer["Breathing Space"];
+    var isCreditorNameValid = true;
+    if (ViewContext.ViewData.ModelState.TryGetValue(nameof(Model.CreditorName), out var creditorName))
+    {
+        isCreditorNameValid = creditorName.Errors.Count == 0;
+    }
+}
+
+<div class="govuk-grid-column-two-thirds @(!ViewData.ModelState.IsValid ? "govuk-error-summary" : "display-none") " id="error-summary">
+    <h2 class="govuk-error-summary__title">
+        @Localizer["There is a problem"]
+    </h2>
+    <div id="error-list" bss-error-summary="All" class="govuk-error-summary__body"></div>
+</div>
+
+<div class="govuk-grid-column-two-thirds" id="content">
+    <form id="creditorSearchForm" class="form" asp-controller="BreathingSpace" asp-action="CreditorSearch" asp-route-journeyKey="@ViewData["JourneyKey"].ToString()" asp-route-parentJourneyKey="@ViewData["ParentJourneyKey"]?.ToString()" method="post">
+        <input asp-for="DebtId" type="hidden" />
+        <input asp-for="ReturnAction" type="hidden" />
+        <input asp-for="IsEdit" type="hidden" />
+        <input id="journey-key" value="@ViewData["JourneyKey"].ToString()" type="hidden" />
+        <input id="parent-journey-key" value="@ViewData["ParentJourneyKey"]?.ToString()" type="hidden" />
+        <a id="back-link" href="javascript: history.go(-1)" class="govuk-back-link"> @Localizer["Back"]</a>
+        <fieldset class="govuk-fieldset" name="client">
+            <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
+                <h1 class="govuk-fieldset__heading">
+                    @Localizer["Add a creditor for this debt"]
+                </h1>
+            </legend>
+            <div class="govuk-form-group @(!isCreditorNameValid ? "govuk-form-group--error" : string.Empty)">
+                <div id='autocomplete' role='combobox' aria-expanded='false' aria-owns='autocomplete-results' aria-haspopup='listbox'>
+                    <bss-input asp-for="CreditorName"
+                               label-class="govuk-!-font-weight-bold"
+                               input-class="govuk-!-width-two-third"
+                               input-hint="@Localizer["This can be the name of an organisation. For example, ABC Bank Ltd or Joe Johnson"].Value"
+                               aria-autocomplete="none"
+                               autocomplete="off"
+                               aria-controls="autocomplete-results">
+                    </bss-input>
+                </div>
+                <ul id='autocomplete-results' class='hidden' role='listbox' aria-label='Search for a creditor ogranisation by name'></ul>
+            </div>
+        </fieldset>
+        <button id="save-button" class="govuk-button" data-module="govuk-button" type="submit">
+            @Localizer["Save and continue"]
+        </button>
+    </form>
+</div>
+<script src="~/js/jquery-3.5.1.min.js"></script>
+<script src="~/js/creditor-typeahead.js"></script>

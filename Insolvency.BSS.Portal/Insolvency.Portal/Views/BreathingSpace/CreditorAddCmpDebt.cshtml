@@ -1,0 +1,92 @@
+﻿@model Insolvency.Portal.Models.ViewModels.CreditorAddCmpDebtViewModel;
+
+@{
+    ViewData["Title"] = @Localizer["Breathing Space"];
+}
+
+<div class="govuk-grid-column-two-thirds @(!ViewData.ModelState.IsValid ? "govuk-error-summary" : "display-none") " id="error-summary">
+    <h2 class="govuk-error-summary__title">
+        @Localizer["There is a problem"]
+    </h2>
+    <div id="error-list" bss-error-summary="All" class="govuk-error-summary__body"></div>
+</div>
+
+<div class="govuk-grid-column-two-thirds" id="content">
+    <form class="form" asp-controller="BreathingSpace" asp-action="CreditorAddCmpDebt" asp-route-journeyKey="@ViewData["JourneyKey"].ToString()" asp-route-parentJourneyKey="@ViewData["ParentJourneyKey"]?.ToString()" method="post">
+        <input asp-for="Id" type="hidden" />
+        <input asp-for="ReturnAction" type="hidden" />
+        <a id="back-link" href="javascript: history.go(-1)" class="govuk-back-link"> @Localizer["Back"]</a>
+        <fieldset class="govuk-fieldset" name="client">
+            <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
+                <h1 class="govuk-fieldset__heading" id="creditor-add-cmp-debt-heading">
+                    @Localizer["Add debt type, amount and reference"]
+                </h1>
+            </legend>
+            <div class="govuk-form-group">
+                <h2 class="govuk-body govuk-!-font-weight-bold" id="creditor-add-cmp-debt-creditor-label">@Localizer["Creditor"]</h2>
+                <p class="govuk-body"
+                   id="creditor-add-cmp-debt-creditor-name">
+                    @Model.CreditorName
+                    <a class="govuk-link"
+                       asp-action="CreditorSearch"
+                       asp-route-returnAction="@Model.ReturnAction"
+                       asp-route-debtId="@Model.Id"
+                       asp-route-journeyKey="@ViewData["JourneyKey"].ToString()"
+                       asp-route-parentJourneyKey="@ViewData["ParentJourneyKey"]?.ToString()"
+                       id="creditor-add-cmp-debt-change-call-to-action">
+                       @Localizer["Change"]<span class="govuk-visually-hidden"> creditor</span>
+                    </a>
+                </p>
+            </div>
+            <div class="govuk-form-group">
+                @if (Model.IsSingleDebtType)
+                {
+                    <h2 class="govuk-body govuk-!-font-weight-bold" id="creditor-add-cmp-debt-debt-type-label"><strong>@Localizer["Type of debt"]</strong></h2>
+                    <p class="govuk-body" id="creditor-add-cmp-debt-debt-type-name">@Model.DebtTypes.First().Name</p>
+                    <input asp-for="SelectedDebtTypeId" value="@Model.DebtTypes.First().Id" type="hidden" />
+                }
+                else
+                {
+                    <div class="govuk-form-group">
+                        <div class="govuk-radios">
+                            <div class="govuk-form-group">
+                                <fieldset class="govuk-fieldset">
+                                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                                        <p class="govuk-label " id="creditor-add-cmp-debt-debt-type-label">
+                                            @Localizer["Type of debt (optional)"]
+                                        </p>
+                                    </legend>
+                                    <div class="govuk-radios">
+                                        @for (int i = 0; i < Model.DebtTypes.Count; i++)
+                                        {
+                                            var debt = Model.DebtTypes[i];
+                                            <div class="govuk-radios__item">
+                                                <input class="govuk-radios__input" id="@($"debt_type_{i + 1}")" type="radio" value="@debt.Id" asp-for="SelectedDebtTypeId">
+                                                <label class="govuk-label govuk-radios__label" for="@($"debt_type_{i + 1}")" id="creditor-add-cmp-debt-debt-type-name-(@i)">
+                                                    @debt.Name
+                                                </label>
+                                            </div>
+                                        }
+                                    </div>
+                                </fieldset>
+                            </div>
+                        </div>
+                    </div>
+                }
+                <div class="govuk-form-group">
+                    <bss-input asp-for="DebtAmount" input-class="govuk-!-width-one-third"></bss-input>
+                    <bss-input asp-for="Reference" input-class="govuk-!-width-one-third" input-hint="@Localizer["This is your personal reference for the debt"].Value"></bss-input>
+                    @if (Model.IsGovernmentCreditor)
+                    {<bss-input asp-for="NINO" input-class="govuk-!-width-one-third" input-hint="It’s on your National Insurance card, benefit letter, payslip or P60. For example, ‘QQ 12 34 56 C’."></bss-input>}
+                </div>
+            </div>
+            <input type="hidden" asp-for="IsGovernmentCreditor" />
+            <input type="hidden" asp-for="IsSingleDebtType" />
+            <input type="hidden" asp-for="CreditorId" />
+            <input type="hidden" asp-for="CreditorName" />
+        </fieldset>
+        <button id="save-button" class="govuk-button" data-module="govuk-button" type="submit">
+            @Localizer["Save and continue"]
+        </button>
+    </form>
+</div>

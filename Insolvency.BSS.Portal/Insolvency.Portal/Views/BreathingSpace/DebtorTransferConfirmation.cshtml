@@ -1,0 +1,27 @@
+﻿@model Insolvency.Portal.Models.ViewModels.DebtorTransferViewModel;
+
+@{
+    ViewData["Title"] = "Transfer Debtor Confirmation";
+}
+
+<div class="govuk-grid-column-full">
+    <a id="back-link" href="javascript: history.go(-1)" class="govuk-back-link"> @Localizer["Back"]</a>
+</div>
+<div class="govuk-grid-column-three-quarters" id="content">
+    <form method="post"
+          asp-action="DebtorTransferConfirmation"
+          asp-controller="BreathingSpace"
+          asp-route-journeyKey="@ViewData["JourneyKey"].ToString()"
+          asp-route-parentJourneyKey="@ViewData["ParentJourneyKey"].ToString()">
+        <h1 id="debtor-transfer-confirmation-heading" class="govuk-heading-l">
+            Confirm you’re asking to transfer this Breathing Space to your organisation
+        </h1>
+        <partial name="_NonOwningDebtorTransferDetailsPartial"
+                 model="Model" 
+                 view-data='@new ViewDataDictionary(ViewData) { { "display-reason", true } }' />
+        <input type="hidden" asp-for="TransferReason" id="debtor-transfer-reason-input" />
+        <button id="continue-button" class="govuk-button" value="Confirm and continue" data-module="govuk-button" type="submit">
+            Confirm and continue
+        </button>
+    </form>
+</div>

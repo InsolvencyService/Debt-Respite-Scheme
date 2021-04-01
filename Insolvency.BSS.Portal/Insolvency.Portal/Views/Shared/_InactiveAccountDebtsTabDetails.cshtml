@@ -1,0 +1,71 @@
+﻿@model Insolvency.Portal.Models.ViewModels.DebtorAccountSummaryViewModel;
+
+@{
+    var returnAction = ViewData["return-action"] as string;
+}
+<h2 class="govuk-heading-m" id="inactive-account-debts-tab-heading">
+    @if (!Model.DebtDetails.Any())
+    {
+        @Localizer["Add debts to Breathing Space"]
+    }
+    else
+    {
+        @Localizer["Debts to be added to Breathing Space"]
+    }
+</h2>
+@if (Model.DebtDetails.Any())
+{
+    <dl class="govuk-summary-list govuk-!-margin-bottom-3">
+        @{
+            int i = 0;
+        }
+        @foreach (var debtDetail in Model.DebtDetails)
+        {
+            i++;
+
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    @debtDetail.Debt.SelectedDebtTypeName
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @Localizer["Creditor: "] @debtDetail.Creditor.Name<br />
+                    @if (debtDetail.Debt.HasDebtAmount)
+                    {
+                        @Localizer["Amount: "] @Localizer["£"]@debtDetail.Debt.DebtAmount<br />
+                    }
+                    @if (debtDetail.Debt.HasReference)
+                    {
+                        @Localizer["Reference: "] @debtDetail.Debt.Reference<br />
+                    }
+                    @if (debtDetail.Debt.HasNi)
+                    {
+                        @Localizer["National Insurance Number: "] @debtDetail.Debt.NINO
+                    }
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                    <a id="debtor-summary-chng-debt-@(i)"
+                       class="govuk-link govuk-body"
+                       asp-controller="BreathingSpace"
+                       asp-action="CreditorSearch"
+                       asp-route-fromCreateBreathingSpace="@true"
+                       asp-route-debtId="@(debtDetail.Debt.Id)"
+                       asp-route-returnAction="@returnAction"
+                       asp-route-journeyKey="@Guid.NewGuid()"
+                       asp-route-parentJourneyKey="@(ViewData["JourneyKey"]?.ToString() ?? Guid.NewGuid().ToString())">
+                        @Localizer["Change"] <span class="govuk-visually-hidden"> creditor</span>
+                    </a>
+                    @Localizer["or"]
+                    <a id="debtor-summary-del-debt-@(i)"
+                       class="govuk-link govuk-body"
+                       asp-controller="BreathingSpace"
+                       asp-action="DebtorRemovePresubmissionDebt"
+                       asp-route-debtId="@(debtDetail.Debt.Id)"
+                       asp-route-journeyKey="@Guid.NewGuid()"
+                       asp-route-parentJourneyKey="@(ViewData["JourneyKey"]?.ToString() ?? Guid.NewGuid().ToString())">
+                        @Localizer["Delete"] <span class="govuk-visually-hidden"> creditor</span>
+                    </a>
+                </dd>
+            </div>
+        }
+    </dl>
+}

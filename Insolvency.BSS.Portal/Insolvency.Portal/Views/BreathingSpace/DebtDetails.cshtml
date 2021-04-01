@@ -1,0 +1,100 @@
+﻿@model Insolvency.Portal.Models.ViewModels.DebtDetailViewModel;
+
+<div class="govuk-grid-column-full" id="content">
+    <a id="back-link" class="govuk-back-link" href="javascript: history.go(-1)">@Localizer["Back"]</a>
+    <form class="form">
+        <fieldset class="govuk-fieldset" name="client">
+            <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
+                <h1 class="govuk-fieldset__heading" id="debt-details-heading">
+                    @Localizer["Check the debt details"]
+                </h1>
+            </legend>
+            <div class="govuk-summary-list govuk-!-margin-bottom-2">
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key" id="debt-details-name-label">
+                        @Localizer["Name"]
+                    </dt>
+                    <dd class="govuk-summary-list__value" id="creditor-name">
+                        @Model.Creditor.Name
+                    </dd>
+                    <dd class="govuk-summary-list__actions" id="creditor-name-change">
+                        <a class="govuk-link govuk-body"
+                           asp-controller="BreathingSpace"
+                           asp-action="CreditorSearch"
+                           asp-route-fromCreateBreathingSpace="@true"
+                           asp-route-debtId="@(Model.Debt.Id)"
+                           asp-route-returnAction="@Model.Debt.ReturnAction"
+                           asp-route-journeyKey="@ViewData["JourneyKey"].ToString()"
+                           asp-route-parentJourneyKey="@ViewData["ParentJourneyKey"]?.ToString()">
+                            @Localizer["Change"] <span class="govuk-visually-hidden"> creditor</span>
+                        </a>
+                    </dd>
+                </div>
+                @if (Model.IsNonCmpDebt)
+                {
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key" id="debt-details-address-label">
+                            @Localizer["Address"]
+                        </dt>
+                        <dd class="govuk-summary-list__value">
+                            <span class="govuk-!-display-block" id="creditor-address-line1">@Model.Creditor.AddressLine1</span>
+                            <span class="govuk-!-display-block" id="creditor-address-line2">@Model.Creditor.AddressLine2</span>
+                            <span class="govuk-!-display-block" id="creditor-address-city">@Model.Creditor.TownCity</span>
+                            <span class="govuk-!-display-block" id="creditor-address-county">@Model.Creditor.County</span>
+                            <span class="govuk-!-display-block" id="creditor-address-postcode">@Model.Creditor.PostCode</span>
+                        </dd>
+                        <dd class="govuk-summary-list__actions">
+                            <a class="govuk-link govuk-body"
+                               asp-controller="BreathingSpace"
+                               asp-action="CreditorSearch"
+                               asp-route-fromCreateBreathingSpace="@true"
+                               asp-route-debtId="@(Model.Debt.Id)"
+                               asp-route-returnAction="@Model.Debt.ReturnAction"
+                               asp-route-journeyKey="@ViewData["JourneyKey"].ToString()"
+                               asp-route-parentJourneyKey="@ViewData["ParentJourneyKey"]?.ToString()"
+                               id="creditor-address-change">
+                                @Localizer["Change"] <span class="govuk-visually-hidden"> creditor</span>
+                            </a>
+                        </dd>
+                    </div>
+                }
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key" id="debt-details-debt-type">
+                        @( String.IsNullOrWhiteSpace(Model.Debt.SelectedDebtTypeName) ? "Debt" : Model.Debt.SelectedDebtTypeName)
+                    </dt>
+                    <dd class="govuk-summary-list__value">
+                        @if (Model.Debt.DebtAmount != null)
+                        {
+                            <span class="govuk-!-display-block" id="debt-amount">Amount: £@Model.Debt.DebtAmount</span>
+                        }
+                        @if (Model.Debt.Reference != null)
+                        {
+                            <span class="govuk-!-display-block" id="debt-reference">Reference: @Model.Debt.Reference</span>}
+                        @if (Model.Debt.NINO != null)
+                        {
+                            <span class="govuk-!-display-block" id="debt-nin">National Insurance Number: @Model.Debt.NINO</span>
+                        }
+                    </dd>
+                    <dd class="govuk-summary-list__actions">
+                        <a class="govuk-link govuk-body"
+                           asp-controller="BreathingSpace"
+                           asp-action="CreditorSearch"
+                           asp-route-fromCreateBreathingSpace="@true"
+                           asp-route-debtId="@(Model.Debt.Id)"
+                           asp-route-returnAction="@Model.Debt.ReturnAction"
+                           asp-route-journeyKey="@ViewData["JourneyKey"].ToString()"
+                           asp-route-parentJourneyKey="@ViewData["ParentJourneyKey"]?.ToString()"
+                           id="debt-change">
+                            @Localizer["Change"] <span class="govuk-visually-hidden"> creditor</span>
+                        </a>
+                    </dd>
+                </div>
+            </div>
+        </fieldset>
+        <div class="govuk-summary-list govuk-!-margin-bottom-2">
+            <a class="govuk-button govuk-!-margin-top-5" data-module="govuk-button" asp-controller="BreathingSpace" asp-action=@(Model.FromCreateBreathingSpace ? "DebtorAccountSummary" : "DebtorAccountDetails") asp-route-journeyKey="@ViewData["ParentJourneyKey"]?.ToString()" id="next-step">
+                @Localizer["Save and continue"]
+            </a>
+        </div>
+    </form>
+</div>

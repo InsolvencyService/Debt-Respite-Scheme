@@ -1,0 +1,36 @@
+﻿@model Insolvency.Portal.Models.ViewModels.DebtorDetailViewModel;
+
+@{
+    var returnAction = ViewData["return-action"] as string;
+}
+
+<h2 class="govuk-heading-l" id="ma-details-header">
+    Client details
+</h2>
+@if (Model.PersonalDetail.IsInMentalHealthMoratorium)
+{
+    <h3 id="debtor-point-contact-detail-heading" class="govuk-heading-m">Point of contact</h3>
+    <partial name="_DebtorPointContactSummaryPartial" model="Model.DebtorNominatedContactSummary" />
+}
+<h3 id="debtor-personal-detail-heading" class="govuk-heading-m">@Localizer["Personal details"]</h3>
+<partial name="_DebtorPersonalDetailsPartial" model="Model.PersonalDetail" />
+<h3 id="ma-details-addresses-header" class="govuk-heading-m">@Localizer["Addresses"]</h3>
+<partial name="_DebtorAddressDetailsPartial" model="Model.AddressDetail" />
+@if (!Model.PersonalDetail.IsEnded)
+{
+    <p>
+        <a id="debtor-summary-add-prev-add"
+       class="govuk-link govuk-body"
+       asp-controller="BreathingSpace"
+       asp-action="DebtorAddresses"
+       asp-route-returnAction="@returnAction"
+       asp-route-journeyKey="@Guid.NewGuid()"
+       asp-route-parentJourneyKey="@ViewData["JourneyKey"]?.ToString()">
+            @Localizer["Add previous address"]
+        </a>
+    </p>
+}
+<h3 id="debtor-details-notification-header" class="govuk-heading-m">@Localizer["Notification preference"]</h3>
+<partial name="_DebtorNotificationPartial" model="Model.NotificationDetail" />
+<h3 id="ma-details-business-header" class="govuk-heading-m">@Localizer["Business"]</h3>
+<partial name="_DebtorBusinessDetailPartial" model="Model.BusinessDetails" />

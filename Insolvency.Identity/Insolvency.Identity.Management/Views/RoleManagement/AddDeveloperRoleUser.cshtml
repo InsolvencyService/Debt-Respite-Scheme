@@ -1,0 +1,23 @@
+﻿@model Insolvency.Management.Models.ViewModels.RoleManagement.AddDeveloperRoleUserViewModel
+<div class="row">
+    <div class="col-md-12 order-md-1">
+        <h4 class="mb-3">Add Developer Role User</h4>
+        <form method="post" asp-action="AddDeveloperRoleUser" asp-controller="RoleManagement">
+            <div class="mb-3">
+                <label for="email">Email</label>
+                <input type="email" asp-for="Email" class="form-control" id="email" placeholder="you@example.com">
+                <span class="invalid-feedback" asp-validation-for="Email"></span>
+            </div>
+            <hr class="mb-4">
+            @foreach (var scope in Model.AssignableScopes)
+            {
+                <div class="custom-control custom-checkbox">
+                    <input type="checkbox" class="custom-control-input" id="@scope.Name" name="AssignedScopes" value="@scope.Name">
+                    <label class="custom-control-label" for="@scope.Name">@scope.Name</label>
+                </div>
+            }
+            <hr class="mb-4">
+            <button class="btn btn-primary btn-lg btn-block" type="submit">Submit</button>
+        </form>
+    </div>
+</div>

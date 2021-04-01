@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Insolvency.Audit.Messaging.Function": {
+      "commandName": "Project",
+      "commandLineArgs": "host start --port 7074"
+    }
+  }
+}

@@ -1,0 +1,33 @@
+﻿@using Insolvency.Common.Enums
+@model Insolvency.Portal.Models.ViewModels.Creditor.CreditorDebtPartialViewModel;
+@{
+    Html.ViewData.TemplateInfo.HtmlFieldPrefix = "Debt";
+    var i = (int)ViewData["Index"];
+}
+<ul class="govuk-list">
+    @if (Model.HasType)
+    {
+        <li id="debt-task-debt-type-@i">Debt type: @Model.Type </li>
+    }
+    @if (Model.HasAmount)
+    {
+        <li id="debt-task-debt-amount-@i">Amount: £@Model.Amount</li>
+    }
+    @if (Model.HasNINO)
+    {
+        <li id="debt-task-debt-nin-@i">NI number: @Model.NINO</li>
+    }
+    @if (Model.HasReference)
+    {
+        <li id="debt-task-debt-ref-@i"> Reference: @Model.Reference</li>
+    }
+    <li id="debt-task-debt-createdon-@i"> Debt was entered on @Model.FormattedStartsOn</li>
+    @if (!Model.IsInMentalHealthBreathingSpace && Model.Status != DebtStatus.Active_AfterReview && Model.Status != DebtStatus.RemovedAfterAdviserReview)
+    {
+        <li id="debt-task-breathingspace-end-@i">Breathing space ends @Model.FormattedBreathingSpaceEndDate</li>
+    }
+    @if (Model.Status == DebtStatus.RemovedAfterAdviserReview && Model.EndsOn != null)
+    {
+        <li id="debt-task-debt-enddedon-@i">Debt removed on @Model.FormattedEndsOn</li>
+    }
+</ul>

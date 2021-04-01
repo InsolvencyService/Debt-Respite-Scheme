@@ -1,0 +1,21 @@
+﻿@model Insolvency.Management.Models.ViewModels.RoleManagement.OrganisationsViewModel
+<div class="row">
+    <div class="col-sm-12">
+        <h3>Organisations</h3>
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-4 col-border"><strong>Name</strong></div>
+    <div class="col-sm-2 col-border"><strong>Type</strong></div>
+    <div class="col-sm-4 col-border"><strong>Onboarder Email</strong></div>
+    <div class="col-sm-2 col-border"></div>
+</div>
+@foreach (var org in Model.Organisations)
+{
+    <div class="row">
+        <div class="col-sm-4 col-border">@org.Name</div>
+        <div class="col-sm-2 col-border">@org.Type</div>
+        <div class="col-sm-4 col-border">@org.OnboarderEmail</div>
+        <div class="col-sm-2 col-border text-center"><a class="btn btn-sm btn-link" href="@Url.Action("OrganisationRoleUsers", new { organisationId = org.Id })" role="button">View »</a></div>
+    </div>
+}

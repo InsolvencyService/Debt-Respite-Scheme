@@ -1,0 +1,55 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization;
+@using Insolvency.Portal.Controllers;
+@model SelectOrganisationViewModel
+@inject IViewLocalizer Localizer
+<div class="govuk-width-container">
+    <main class="govuk-main-wrapper">
+        @if (Model.CurrentSelectedOrganisation != null && Model.RedirectedFromMiddlewear)
+        {
+            <div class="govuk-grid-row">
+                <div class="govuk-grid-column-two-thirds govuk-error-summary" id="error-summary">
+                    <h2 class="govuk-error-summary__title">
+                        There is a problem
+                    </h2>
+                    <div id="error-list" class="govuk-error-summary__body validation-summary-errors" data-valmsg-summary="true">
+                        <ul class="govuk-list govuk-error-summary__list">
+                            <li>
+                                <a class="govuk-link" href="#organisation-selector" id="error-list-item-FirstName-input-1">
+                                    The currently selected organisation "@Model.CurrentSelectedOrganisation.Name" has no permission to view the requested page.<br />
+                                    Please select other organisation...
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        }
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-two-thirds" id="content">
+                <form class="form" asp-controller="Account" asp-action="SelectOrganisation" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+                    <div class="govuk-form-group ">
+                        <fieldset id="organisation-selector" class="govuk-fieldset" name="client">
+                            <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
+                                <h1 class="govuk-fieldset__heading">
+                                    @Localizer["Select organisation"]
+                                </h1>
+                            </legend>
+                            <div class="govuk-radios">
+                                @foreach (var organisation in Model.Organisations)
+                                {
+                                    <div class="govuk-radios__item">
+                                        <input class="govuk-radios__input" id="radio-@organisation.Id" type="radio" name="Id" value="@organisation.Id" />
+                                        <label class="govuk-label govuk-radios__label" for="radio-@organisation.Id">@organisation.Name</label>
+                                    </div>
+                                }
+                            </div>
+                        </fieldset>
+                    </div>
+                    <button id="search-button" class="govuk-button" data-module="govuk-button" type="submit">
+                        @Localizer["Continue"]
+                    </button>
+                </form>
+            </div>
+        </div>
+    </main>
+</div>

@@ -1,0 +1,82 @@
+﻿@using Insolvency.Common.Enums
+@model Insolvency.Portal.Models.ViewModels.DebtorContactPreferenceViewModel;
+
+@{
+    var IdOverwrite = new Dictionary<string, string> {
+        {"SubmitOption","submit-email"}
+    };
+    ViewData["Title"] = @Localizer["Breathing Space"]; }
+
+<div class="govuk-grid-column-two-thirds @(!ViewData.ModelState.IsValid ? "govuk-error-summary" : "display-none")" id="error-summary">
+    <h2 class="govuk-error-summary__title bss-font-size-s--all">
+        @Localizer["There is a problem"]
+    </h2>
+    <div id="error-list" bss-error-summary="All" id-overwrite="IdOverwrite" class="govuk-error-summary__body bss-font-size-s--all">
+    </div>
+</div>
+
+<div class="govuk-grid-column-two-thirds" id="content">
+    <a id="back-link" href="javascript: history.go(-1)" class="govuk-back-link"> @Localizer["Back"]</a>
+    <form method="post"
+          asp-action="DebtorContactPreference"
+          asp-controller="BreathingSpace"
+          asp-route-journeyKey="@ViewData["JourneyKey"].ToString()">
+        <input asp-for="ReturnAction" type="hidden" />
+        <div class="govuk-form-group @(!ViewData.ModelState.IsValid ? "govuk-form-group--error" : string.Empty)">
+            <fieldset class="govuk-fieldset">
+                <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
+                    <h1 class="govuk-fieldset__heading">
+                        @Localizer["How would your client like to receive confirmation their Breathing Space has started and ended?"]
+                    </h1>
+                </legend>
+                <span id="errors"
+                      class="govuk-error-message field-validation-valid"
+                      asp-validation-for="SubmitOption">
+                </span>
+                <div class="govuk-radios">
+                    <div class="govuk-radios__item">
+                        <input class="govuk-radios__input condition"
+                               id="submit-email"
+                               asp-for="SubmitOption"
+                               type="radio"
+                               value="@(ContactPreferenceType.Email)"
+                               checked="@(Model.IsEmailChecked ? "true" : null)" />
+                        <label class="govuk-label govuk-radios__label" for="submit-email">
+                            @Localizer["Email"]
+                        </label>
+
+                        <div id="submit-email-form" class="govuk-radios__conditional condition-body">
+                            <bss-input asp-for="EmailAddress" input-class="govuk-!-width-two-thirds" />
+                            <bss-input input-class="govuk-!-width-two-thirds" asp-for="ConfirmEmailAddress" />
+                        </div>
+                    </div>
+                    <div class="govuk-radios__item">
+                        <input class="govuk-radios__input"
+                               id="submit-post"
+                               asp-for="SubmitOption"
+                               type="radio"
+                               value="@(ContactPreferenceType.Post)"
+                               checked="@(Model.IsPostChecked ? "true" : null)" />
+                        <label class="govuk-label govuk-radios__label" for="submit-post">
+                            @Localizer["Post"]
+                        </label>
+                    </div>
+                    <div class="govuk-radios__item">
+                        <input class="govuk-radios__input"
+                               id="submit-none"
+                               asp-for="SubmitOption"
+                               type="radio"
+                               value="@(ContactPreferenceType.None)"
+                               checked="@(Model.IsNoneChecked ? "true" : null)" />
+                        <label class="govuk-label govuk-radios__label" for="submit-none">
+                            @Localizer["My client does not want you to send them any notifications"]
+                        </label>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+        <button id="save-button" class="govuk-button" value="Save and continue" data-module="govuk-button" type="submit">
+            @Localizer["Save and continue"]
+        </button>
+    </form>
+</div>

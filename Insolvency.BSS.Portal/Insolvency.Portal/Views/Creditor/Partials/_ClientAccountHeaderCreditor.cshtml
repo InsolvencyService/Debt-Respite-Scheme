@@ -1,0 +1,39 @@
+﻿@model Insolvency.Portal.Models.ViewModels.DebtorPersonalDetailViewModel;
+
+<div class="govuk-grid-row keydetails  govuk-!-margin-top-5">
+    <div class="govuk-grid-column-one-half" id="account-name-and-status">
+        <h1 class="govuk-heading-l govuk-!-margin-bottom-3">
+            <span class="govuk-caption-l">
+                <strong id="account-header-status" class="govuk-tag">
+                    @Model.MoratoriumStatus
+                </strong>
+                Breathing Space account for
+            </span>
+            <span id="account-header-name">@Model.FullName</span>
+        </h1>
+    </div>
+    @if (Model.DisplayBreathingSpaceDates)
+    {
+        <div class="govuk-grid-column-one-half" id="account-header-dates">
+            <p class="header_highlight_info govuk-body">
+                <span class="govuk-!-margin-bottom-1" id="account-time-difference">
+                    <strong>Day @Model.MoratoriumCurrentDay()</strong>
+                    @if (Model.DisplayExpiryDate)
+                    {
+                        <span>of <strong>@Model.MoratoriumLength</strong></span>
+                    }
+                </span>
+                <span class="govuk-body-s" id="account-header-start-and-end">
+                    <span>Breathing space started: <strong>@Model.FormattedActiveMoratoriumStartDate</strong></span>
+                    @if (Model.DisplayExpiryDate)
+                    {
+                        <span>Breathing space ends: <strong>@Model.FormattedActiveMoratoriumEndDate</strong></span>
+                    }
+                </span>
+            </p>
+        </div>
+    }
+    <div class="govuk-grid-column-full">
+        <hr class="govuk-section-break govuk-section-break--visible keydetails">
+    </div>
+</div>

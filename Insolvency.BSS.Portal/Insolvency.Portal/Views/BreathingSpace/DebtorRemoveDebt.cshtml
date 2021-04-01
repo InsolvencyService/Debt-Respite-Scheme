@@ -1,0 +1,115 @@
+﻿@using Insolvency.Common
+@using Insolvency.Common.Enums
+@model Insolvency.Portal.Models.ViewModels.DebtorRemoveDebtViewModel;
+
+@{
+    var IdOverwrite = new Dictionary<string, string> {
+        {"Reason","remove-debt-submit-not-eligible"}
+    };
+    ViewData["Title"] = @Localizer["Breathing Space"];
+
+    var isMoreDetailsValid = true;
+    if (ViewContext.ViewData.ModelState.TryGetValue(nameof(Model.MoreDetails), out var notes))
+    {
+        isMoreDetailsValid = notes.Errors.Count == 0;
+    }
+    var isReasonValid = true;
+    if (ViewContext.ViewData.ModelState.TryGetValue(nameof(Model.Reason), out var reason))
+    {
+        isReasonValid = reason.Errors.Count == 0;
+    }
+}
+
+<div class="govuk-grid-column-full">
+    <a id="back-link" href="javascript: history.go(-1)" class="govuk-back-link"> @Localizer["Back"]</a>
+</div>
+
+<div class="govuk-grid-column-two-thirds @(!ViewData.ModelState.IsValid ? "govuk-error-summary" : "display-none") " id="error-summary">
+    <h2 class="govuk-error-summary__title">
+        @Localizer["There is a problem"]
+    </h2>
+    <div id="error-list" bss-error-summary="All" id-overwrite="IdOverwrite" class="govuk-error-summary__body"></div>
+</div>
+
+<main class="govuk-main-wrapper">
+    <div class="govuk-grid-column-two-thirds" id="content">
+        <div class="govuk-form-group">
+            <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                <h1 class="govuk-fieldset__heading" id="page-heading">Remove debt</h1>
+            </legend>
+            <h2 id="remove-debt-subtitle" class="govuk-heading-s govuk-!-margin-bottom-4">Debt@(Model.DebtDetailViewModel.Debt.HasDebtTypeName ? $": {Model.DebtDetailViewModel.Debt.SelectedDebtTypeName}": null)</h2>
+            <partial name="_DebtDetailPartial" model="Model.DebtDetailViewModel" />
+        </div>
+        <form id="remove-debt-form"
+              class="form"
+              asp-action="DebtorRemoveDebt"
+              asp-route-journeyKey="@ViewData["JourneyKey"].ToString()"
+              asp-route-parentJourneyKey="@ViewData["ParentJourneyKey"].ToString()"
+              method="post">
+            <div id="Reason-input" class="govuk-form-group @(!isReasonValid ? "govuk-form-group--error" : string.Empty)">
+                <fieldset class="govuk-fieldset">
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--l govuk-!-margin-bottom-0">
+                        <span id="reason-heading" class="govuk-heading-s govuk-!-margin-bottom-0">@Localizer["Why are you removing this debt?"]</span>
+                    </legend>
+                    <span id="val-message-reason" class="govuk-error-message field-validation-valid"
+                          asp-validation-for="Reason">
+                    </span>
+                    <div class="govuk-radios">
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input condition"
+                                   id="remove-debt-submit-not-eligible"
+                                   asp-for="Reason"
+                                   type="radio"
+                                   value="@(DebtRemovalReason.NotEligible)">
+                            <label class="govuk-label govuk-radios__label" for="remove-debt-submit-not-eligible" id="remove-debt-submit-not-eligible-label">
+                                @DebtRemovalReason.NotEligible.GetDisplayName()
+                            </label>
+                        </div>
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input"
+                                   id="remove-debt-submit-unfair"
+                                   asp-for="Reason"
+                                   type="radio"
+                                   value="@(DebtRemovalReason.UnfairPrejudices)">
+                            <label class="govuk-label govuk-radios__label" for="remove-debt-submit-unfair" id="remove-debt-submit-unfair-label">
+                                @DebtRemovalReason.UnfairPrejudices.GetDisplayName()
+                                <div id="reason-unfair-prejudices-hint" class="govuk-hint govuk-radios__hint">
+                                    For example, where you consider that there has been differential or discriminatory treatment in respect of you or your debt
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+            <div class="govuk-form-group @(!isMoreDetailsValid ? "govuk-form-group--error" : string.Empty)">
+                <h2 class="govuk-label-wrapper">
+                    <label class="govuk-label govuk-label--s" for="MoreDetails-input">
+                        @Localizer["Provide details"]
+                    </label>
+                </h2>
+                <span id="val-message-more-details" class="govuk-error-message field-validation-valid"
+                      asp-validation-for="MoreDetails">
+                </span>
+                <textarea class="govuk-textarea" asp-for="MoreDetails" id="MoreDetails-input" rows="5"></textarea>
+            </div>
+            <input type="hidden" asp-for="DebtDetailViewModel.Debt.Id" value="@Model.DebtDetailViewModel.Debt.Id" />
+            <button id="save-button" class="govuk-button" data-module="govuk-button" type="submit">
+                @Localizer["Save and continue"]
+            </button>
+        </form>
+    </div>
+    <div class="govuk-grid-column-one-third" id="sidebar">
+        <p class="govuk-body-s sidebar-links">
+            <h3 id="sidebar-heading" class="govuk-heading-s">Related Content</h3>
+            <a class="govuk-body govuk-link"
+               id="remove-debt-guidance-link"
+               href="https://www.gov.uk/government/publications/debt-respite-scheme-breathing-space-guidance/debt-respite-scheme-breathing-space-guidance-for-money-advisers#before-a-breathing-space-starts"
+               target="_blank"
+               rel="noreferrer noopener"
+               role="link">
+                See guidance about debt eligibility on GOV.UK (opens in a new tab)
+            </a>
+        </p>
+    </div>
+</main>
+

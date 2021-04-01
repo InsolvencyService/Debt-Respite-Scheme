@@ -1,0 +1,21 @@
+﻿@model Insolvency.Portal.Models.ViewModels.DebtDetailViewModel;
+
+<ul class="govuk-list">
+    <li id="debt-detail-creditor">Creditor: @Model.Creditor.Name</li>
+    @if (Model.Debt.HasDebtAmount)
+    {
+        <li id="debt-detail-debt-amount">Amount: £@Model.Debt.DebtAmount</li>
+    }
+    @if (Model.Debt.HasNi)
+    {
+        <li id="debt-detail-eligibility-ni">National insurance number: @Model.Debt.NINO</li>
+    }
+    @if (Model.Debt.HasReference)
+    {
+        <li id="debt-detail-debt-ref">Reference: @Model.Debt.Reference</li>
+    }
+    @if (Model.Debt.CommencementDate.HasValue)
+    {
+        <li id="debt-detail-debt-createdon">Debt was entered on @Model.Debt.FormattedCommencementDateOrdinal</li>
+    }
+</ul>

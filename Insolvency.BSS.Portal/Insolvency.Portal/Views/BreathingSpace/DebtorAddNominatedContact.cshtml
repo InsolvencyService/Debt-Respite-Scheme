@@ -1,0 +1,151 @@
+﻿@using Insolvency.Common.Enums
+@model Insolvency.Portal.Models.ViewModels.DebtorNominatedContactViewModel;
+
+@{
+    var IdOverwrite = new Dictionary<string, string> {
+        {"PointContactRole","point-contact-co-ordinator"},
+        {"ContactConfirmationMethod","confirmation-method-email" }
+    };
+    ViewData["Title"] = "Add Nominated Contact";
+
+    var isPointContactValid = true;
+    var isConfirmationMethodValid = true;
+
+    if (ViewData.ModelState.TryGetValue("PointContactRole", out var pointContactRole))
+        isPointContactValid = pointContactRole.Errors.Count == 0;
+
+    if (ViewData.ModelState.TryGetValue("ContactConfirmationMethod", out var confirmationMethod))
+        isConfirmationMethodValid = confirmationMethod.Errors.Count == 0;
+}
+
+<div class="govuk-grid-column-two-thirds @(!ViewData.ModelState.IsValid ? "govuk-error-summary" : "display-none")" id="error-summary">
+    <h2 class="govuk-error-summary__title">
+        @Localizer["There is a problem"]
+    </h2>
+    <div id="error-list" bss-error-summary="All" id-overwrite="IdOverwrite" class="govuk-error-summary__body"></div>
+</div>
+
+<div class="govuk-grid-column-two-thirds" id="content">
+    <form class="form"
+          method="post"
+          asp-controller="BreathingSpace"
+          asp-action="DebtorAddNominatedContact"
+          asp-route-journeyKey="@ViewData["JourneyKey"].ToString()">
+        <input asp-for="ContactId" type="hidden" />
+        <input asp-for="RoleId" type="hidden" />
+        <input asp-for="IsAddressChangeRequested" type="hidden" />
+        <input asp-for="ReturnAction" type="hidden" />
+        <input asp-for="IsEdit" type="hidden" />
+        <input asp-for="CommunicationAddress.AddressId" value="@(Model.CommunicationAddress?.AddressId ?? default)" type="hidden" />
+        <input asp-for="CommunicationAddress.AddressLine1" type="hidden" />
+        <input asp-for="CommunicationAddress.AddressLine2" type="hidden" />
+        <input asp-for="CommunicationAddress.TownCity" type="hidden" />
+        <input asp-for="CommunicationAddress.County" type="hidden" />
+        <input asp-for="CommunicationAddress.Country" type="hidden" />
+        <input asp-for="CommunicationAddress.Postcode" type="hidden" />
+
+        <a id="back-link" href="javascript: history.go(-1)" class="govuk-back-link">Back</a>
+        <h1 class="govuk-heading-l">
+            @Localizer["Add nominated point of contact"]
+        </h1>
+        <p class="govuk-body">
+            @Localizer["If a care co-ordinator has been appointed under the Care Programme Approach you should include their details here. Otherwise you should include details of an Approved Mental Health Professional, or a mental health nurse."]
+        </p>
+        <div class="govuk-form-group @(!isPointContactValid ? "govuk-form-group--error" : string.Empty)">
+            <fieldset id="point-contact-role" class="govuk-fieldset">
+                <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
+                    <label class="govuk-fieldset__heading" id="PointContactRole">
+                        @Localizer["What is the point of contacts role?"]
+                    </label>
+                </legend>
+                <span class="govuk-error-message field-validation-valid"
+                      asp-validation-for="PointContactRole">
+                </span>
+                <div class="govuk-radios">
+                    <div class="govuk-radios__item">
+                        <input class="govuk-radios__input condition"
+                               id="point-contact-co-ordinator"
+                               asp-for="PointContactRole"
+                               type="radio"
+                               value="@(PointContactRoleType.CareCoordinator)"
+                               checked="@(Model.IsCareCordinatorChecked ? "true" : null)" />
+                        <label class="govuk-label govuk-radios__label" for="point-contact-co-ordinator">
+                            @Localizer["Care co-ordinator"]
+                        </label>
+                    </div>
+                    <div class="govuk-radios__item">
+                        <input class="govuk-radios__input"
+                               id="point-contact-health-pro"
+                               asp-for="PointContactRole"
+                               type="radio"
+                               value="@(PointContactRoleType.MentalHealthProfessional)"
+                               checked="@(Model.IsMentalHealthProfessionalChecked ? "true" : null)" />
+                        <label class="govuk-label govuk-radios__label" for="point-contact-health-pro">
+                            @Localizer["Approved Mental Health Professional"]
+                        </label>
+                    </div>
+                    <div class="govuk-radios__item">
+                        <input class="govuk-radios__input"
+                               id="point-contact-health-nurse"
+                               asp-for="PointContactRole"
+                               type="radio"
+                               value="@(PointContactRoleType.MentalHealthNurse)"
+                               checked="@(Model.IsMentalHealthNurseChecked ? "true" : null)" />
+                        <label class="govuk-label govuk-radios__label" for="point-contact-health-nurse">
+                            @Localizer["Mental health nurse"]
+                        </label>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+        <div class="govuk-form-group">
+            <bss-input asp-for="FullName" is-auto-focus="@Model.IsFullNameFocus" />
+        </div>
+        <div class="govuk-form-group">
+            <bss-input input-class="govuk-input--width-20" asp-for="TelephoneNumber" is-auto-focus="@Model.IsTelephoneNumber" />
+        </div>
+        <div class="govuk-form-group">
+            <bss-input asp-for="EmailAddress" input-class="govuk-!-width-two-thirds" is-auto-focus="@Model.IsEmailAddressFocus" />
+            <bss-input input-class="govuk-!-width-two-thirds" asp-for="ConfirmEmailAddress" />
+        </div>
+        <div class="govuk-form-group @(!isConfirmationMethodValid ? "govuk-form-group--error" : string.Empty)">
+            <fieldset id="confirmation-method" class="govuk-fieldset">
+                <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
+                    <label class="govuk-fieldset__heading">
+                        @Localizer["How would the point of contact like to receive confirmation the Breathing Space has started and ended?"]
+                    </label>
+                </legend>
+                <span class="govuk-error-message field-validation-valid"
+                      asp-validation-for="ContactConfirmationMethod">
+                </span>
+                <div class="govuk-radios" data-module="govuk-radios">
+                    <div class="govuk-radios__item">
+                        <input class="govuk-radios__input"
+                               id="confirmation-method-email"
+                               asp-for="ContactConfirmationMethod"
+                               type="radio"
+                               value="@(PointContactConfirmationMethod.Email)"
+                               checked="@(Model.IsEmailChecked ? "true" : null)" />
+                        <label class="govuk-label govuk-radios__label" for="confirmation-method-email">
+                            @Localizer["Email"]
+                        </label>
+                    </div>
+                    <div class="govuk-radios__item">
+                        <input class="govuk-radios__input"
+                               id="confirmation-method-post"
+                               asp-for="ContactConfirmationMethod"
+                               type="radio"
+                               value="@(PointContactConfirmationMethod.Post)"
+                               checked="@(Model.IsPostChecked ? "true" : null)" />
+                        <label class="govuk-label govuk-radios__label" for="confirmation-method-post">
+                            @Localizer["Post"]
+                        </label>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+        <button id="debtor-nominated-contact-save" class="govuk-button" data-module="govuk-button" type="submit">
+            @Localizer["Save and continue"]
+        </button>
+    </form>
+</div>

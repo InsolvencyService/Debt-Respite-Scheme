@@ -1,0 +1,64 @@
+﻿@model Insolvency.Portal.Models.ViewModels.DebtorAccountSummaryViewModel;
+@{
+    ViewData["Title"] = @Localizer["Account Summary"];
+    ViewData["return-action"] = "DebtorAccountDetails";
+    var anyDebtsEntered = Model.DebtDetails != null && Model.DebtDetails.Any();
+}
+
+@section navigation
+{
+    <partial name="_HomeNavigation" model="@null" />
+}
+<div class="govuk-width-container" id="content">
+    <partial name="_DebtorAccountHeaderMoneyAdvisor" model="Model" />
+    <partial name="_ConfirmationBannerPartial" />
+    <a id="ma-add-debt"
+       asp-controller="BreathingSpace"
+       asp-action="CreditorSearch"
+       asp-route-fromCreateBreathingSpace="@true"
+       asp-route-journeyKey="@Guid.NewGuid()"
+       asp-route-parentJourneyKey="@(ViewData["JourneyKey"]?.ToString() ?? Guid.NewGuid().ToString())"
+       class="govuk-button govuk-button--secondary govuk-!-margin-right-2"
+       data-module="govuk-button">
+        Add a debt
+    </a>
+    <div class="govuk-tabs" data-module="govuk-tabs">
+        <h2 id="ma-tabs-header" class="govuk-tabs__title">
+            Contents
+        </h2>
+        <ul class="govuk-tabs__list" role="tablist">
+            <li class="govuk-tabs__list-item govuk-tabs__list-item--selected" role="presentation">
+                <a class="govuk-tabs__tab" href="#debts" id="tab-debts" role="tab" aria-controls="problem-debt" aria-selected="false" tabindex="-1" style="">
+                    Debts
+                </a>
+            </li>
+            <li class="govuk-tabs__list-item" role="presentation">
+                <a class="govuk-tabs__tab" href="#details" id="tab-details" role="tab" aria-controls="personal-details" aria-selected="false" tabindex="-1" style="">
+                    Client details
+                </a>
+            </li>
+        </ul>
+        <section class="govuk-tabs__panel govuk-tabs__panel--hidden" id="debts" role="tabpanel" aria-labelledby="tab_problem-debt">
+            <partial name="_InactiveAccountDebtsTabDetails" model="Model" />
+        </section>
+        <section class="govuk-tabs__panel govuk-tabs__panel--hidden" id="details" role="tabpanel" aria-labelledby="tab_personal-details">
+            <partial name="_MoneyAdvisorDebtorDetailsPartial" model="Model.DebtorDetail" />
+        </section>
+    </div>
+    <a id="debtor-details-save"
+       class="govuk-button"
+       data-module="govuk-button"
+       asp-controller="BreathingSpace"
+       asp-action="DebtorAccountSave"
+       asp-route-submit="@(anyDebtsEntered ? "true" : "false")"
+       asp-route-journeyKey="@ViewData["JourneyKey"].ToString()">
+        @if (anyDebtsEntered)
+        {
+            @Localizer["Save and continue"]
+        }
+        else
+        {
+            @Localizer["Save and close"]
+        }
+    </a>
+</div>

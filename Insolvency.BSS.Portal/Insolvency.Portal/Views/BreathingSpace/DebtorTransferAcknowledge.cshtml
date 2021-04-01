@@ -1,0 +1,73 @@
+﻿@model Insolvency.Portal.Models.ViewModels.DebtorTransferAcknowledgeViewModel
+@{
+    var IdOverwrite = new Dictionary<string, string> {
+        {"CompleteTransfer","submit-complete-transfer-yes"}
+    };
+    ViewData["Title"] = "Complete BreathingSpace Transfer";
+}
+<div class="govuk-grid-column-two-thirds @(!ViewData.ModelState.IsValid ? "govuk-error-summary" : "display-none")" id="error-summary">
+    <h2 class="govuk-error-summary__title">
+        @Localizer["There is a problem"]
+    </h2>
+    <div id="error-list" bss-error-summary="All" id-overwrite="IdOverwrite" class="govuk-error-summary__body"></div>
+</div>
+
+<div class="govuk-grid-column-full">
+    <a id="back-link" href="javascript: history.go(-1)" class="govuk-back-link"> @Localizer["Back"]</a>
+</div>
+<div class="govuk-grid-column-three-quarters" id="content">
+    <form method="post"
+          asp-action="DebtorTransferAcknowledge"
+          asp-controller="BreathingSpace"
+          asp-route-journeyKey="@ViewData["JourneyKey"].ToString()"
+          asp-route-parentJourneyKey="@ViewData["ParentJourneyKey"].ToString()">
+        <h1 id="debtor-transfer-confirm-heading" class="govuk-heading-l">
+            Transfer completed
+        </h1>
+        <p id="debtor-transfer-confirm-description" class="govuk-body-l">
+            @Model.TransferDebtorDetails.TransferringMoneyAdviserOrganisation have transferred this Breathing Space to @Model.TransferDebtorDetails.RequestingMoneyAdviceOrganisation
+        </p>
+        <partial name="_DebtorTransferDetailsPartial"
+                 model="Model.TransferDebtorDetails"
+                 view-data='@new ViewDataDictionary(ViewData) { { "display-reason", true }, { "display-transfer-by", true }, { "display-requested-by", true } }' />
+        <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+        <div class="govuk-form-group @(!ViewData.ModelState.IsValid ? "govuk-form-group--error" : string.Empty)">
+            <fieldset class="govuk-fieldset">
+                <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                    <span id="debtor-transfer-details-reason-heading" class="govuk-heading-s govuk-!-margin-bottom-0">
+                        @Localizer["Would you like to remove this task from your to do list?"]
+                    </span>
+                </legend>
+                <span id="errors" class="govuk-error-message field-validation-valid"
+                      asp-validation-for="CompleteTransfer">
+                </span>
+                <div class="govuk-radios">
+                    <div class="govuk-radios__item">
+                        <input class="govuk-radios__input condition"
+                               id="submit-complete-transfer-yes"
+                               asp-for="CompleteTransfer"
+                               type="radio"
+                               value="@true">
+                        <label class="govuk-label govuk-radios__label" for="submit-complete-transfer-yes" id="submit-complete-transfer-yes-label">
+                            @Localizer["Yes, we've done everything we need to"]
+                        </label>
+                    </div>
+                    <div class="govuk-radios__item">
+                        <input class="govuk-radios__input"
+                               id="submit-complete-transfer-no"
+                               asp-for="CompleteTransfer"
+                               type="radio"
+                               value="@false">
+                        <label class="govuk-label govuk-radios__label" for="submit-complete-transfer-no" id="submit-complete-transfer-no-label">
+                            @Localizer["No, we still have things to do"]
+                        </label>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+        <input asp-for="MoratoriumId" type="hidden"/>
+        <button id="submit-transfer-button" class="govuk-button" value="Transfer Breathing Space" data-module="govuk-button" type="submit">
+            Save and continue
+        </button>
+    </form>
+</div>
